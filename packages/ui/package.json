@@ -1,6 +1,6 @@
 {
   "name": "@vsch/ui",
-  "version": "2.0.0",
+  "version": "0.0.0",
   "description": "Frontend for VSC Home",
   "main": "index.js",
   "scripts": {
