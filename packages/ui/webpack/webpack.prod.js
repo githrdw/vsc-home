@@ -17,8 +17,8 @@ module.exports = {
       new TerserPlugin({
         // Use multi-process parallel running to improve the build speed
         // Default number of concurrent runs: os.cpus().length - 1
-        parallel: true
-      })
+        parallel: true,
+      }),
     ],
     // Automatically split vendor and commons
     // https://twitter.com/wSokra/status/969633336732905474
@@ -53,9 +53,6 @@ module.exports = {
             loader: 'css-loader',
             options: {
               sourceMap: false,
-              modules: {
-                localIdentName: '[local]___[contenthash:base64:5]',
-              },
             },
           },
           'sass-loader',
@@ -70,14 +67,18 @@ module.exports = {
       chunkFilename: `[name].css`,
     }),
     {
-      apply: (compiler) => {
+      apply: compiler => {
         compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
-          exec('npm run snap', { cwd: commonPaths.outputPath }, (err, stdout, stderr) => {
-            if (stdout) process.stdout.write(stdout);
-            if (stderr) process.stderr.write(stderr);
-          })
+          exec(
+            'npm run snap',
+            { cwd: commonPaths.outputPath },
+            (err, stdout, stderr) => {
+              if (stdout) process.stdout.write(stdout);
+              if (stderr) process.stderr.write(stderr);
+            }
+          );
         });
-      }
-    }
-  ]
+      },
+    },
+  ],
 };
