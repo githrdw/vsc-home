@@ -7,6 +7,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Portal,
 } from '@chakra-ui/react';
 import { useRecoilState } from 'recoil';
 import { WidthProvider, Responsive } from 'react-grid-layout';
@@ -25,8 +26,8 @@ const GridLayout = WidthProvider(Responsive);
 
 const grid = {
   cols: { lg: 12, md: 12, sm: 6, xs: 4, xxs: 2 },
-  className: 'layout',
   rowHeight: 30,
+  verticalCompact: false,
 };
 
 export const Grid = () => {
@@ -56,20 +57,22 @@ export const Grid = () => {
                 size="xs"
                 variant="outline"
               />
-              <MenuList>
-                <MenuItem icon={<AddIcon />} command="⌘T">
-                  New Tab
-                </MenuItem>
-                <MenuItem icon={<ExternalLinkIcon />} command="⌘N">
-                  New Window
-                </MenuItem>
-                <MenuItem icon={<RepeatIcon />} command="⌘⇧N">
-                  Open Closed Tab
-                </MenuItem>
-                <MenuItem icon={<EditIcon />} command="⌘O">
-                  Open File...
-                </MenuItem>
-              </MenuList>
+              <Portal>
+                <MenuList>
+                  <MenuItem icon={<AddIcon />} command="⌘T">
+                    New Tab
+                  </MenuItem>
+                  <MenuItem icon={<ExternalLinkIcon />} command="⌘N">
+                    New Window
+                  </MenuItem>
+                  <MenuItem icon={<RepeatIcon />} command="⌘⇧N">
+                    Open Closed Tab
+                  </MenuItem>
+                  <MenuItem icon={<EditIcon />} command="⌘O">
+                    Open File...
+                  </MenuItem>
+                </MenuList>
+              </Portal>
             </Menu>
             Welcome on board!
           </Box>
