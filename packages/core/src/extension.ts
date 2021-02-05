@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 
 		const view = new ViewLoader(context.extensionPath);
-
+		view.getWebviewContent();
 	});
 
 	context.subscriptions.push(disposable);

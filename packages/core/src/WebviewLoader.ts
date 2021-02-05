@@ -1,15 +1,16 @@
 import * as vscode from "vscode";
+import * as WebView from '@vsch/ui/dist/index.html';
 import { join } from 'path';
-import { default as WebView } from 'raw-loader!../lib/ui/index.html';
 
-const UI_DIR = "./lib/ui";
+const APP_DIR = './dist';
 
 export default class WebviewLoader {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _assetsPath: string;
 
   constructor(extensionPath: string) {
-    this._assetsPath = join(extensionPath, UI_DIR);
+    this._assetsPath = join(extensionPath, APP_DIR);
+
     this._panel = vscode.window.createWebviewPanel(
       "configView",
       "Config View",
@@ -19,11 +20,9 @@ export default class WebviewLoader {
         localResourceRoots: [vscode.Uri.file(this._assetsPath)]
       }
     );
-    const html = this.getWebviewContent();
-    this._panel.webview.html = html;
+
     this._panel.webview.onDidReceiveMessage(
       async message => {
-        console.log("MESSAGE");
         switch (message.command) {
           case 'init':
             const recent = await vscode.commands.executeCommand('_workbench.getRecentlyOpened');
@@ -36,16 +35,50 @@ export default class WebviewLoader {
     );
   }
 
-  private resolveAssets(path: string): string {
-    const uri = vscode.Uri.file(join(this._assetsPath, path));
-    return this._panel.webview.asWebviewUri(uri).toString();
+  private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {
+    const asset = await import(`@vsch/ui/dist/${path}`);
+    const uri = vscode.Uri.file(join(this._assetsPath, asset));
+    const url = this._panel.webview.asWebviewUri(uri).toString();
+    return { url, ...meta };
   }
 
-  private getWebviewContent(): string {
-    const wv =  WebView
-      .replace(/\w+\.(js|css)/gm,
-        (match) => this.resolveAssets(match));
-    console.warn({wv});
-    return wv;
+  private resolveAssetByMatch(string: string, match: RegExp): Promise<string> {
+    return new Promise((resolve) => {
+      const assetBuffer: AssetBuffer = [];
+      const matchFactory = string.matchAll(match);
+
+      let done;
+
+      while (!done) {
+        let value;
+        // Loop through each asset filename match
+        ({ done, value } = matchFactory.next());
+        if (!done) {
+          let { 0: { length }, 0: asset, index } = value;
+          // Create resolvable buffer with asset-urls and position meta
+          assetBuffer.push(this.resolveAsset(asset, {
+            length,
+            index
+          }));
+        }
+      }
+
+      var newString = string;
+
+      // Loop through each assets[].url
+      Promise.all(assetBuffer).then((assets: AssetContainer[]) => {
+        for (let { length, index, url } of assets) {
+          const position = newString.length - string.length + index;
+          // Replace match with resolved assets[].url
+          newString = newString.substr(0, position) + url + newString.substr(position + length);
+        }
+        resolve(newString);
+      });
+    });
+  }
+
+  public async getWebviewContent() {
+    const html = await this.resolveAssetByMatch(WebView, /\w+\.(js|css)/gm);
+    this._panel.webview.html = html;
   }
 }

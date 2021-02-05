@@ -34,6 +34,16 @@ const config = {
             loader: 'ts-loader'
           }
         ]
+      },
+      {
+        test: /\.html$/,
+        type: 'asset/source',
+        exclude: /node_modules(?!(\/|\\)@vsch\/ui)/
+      },
+      {
+        test: /\.(css|js|txt)$/,
+        type: 'asset/resource',
+        exclude: /node_modules(?!(\/|\\)@vsch\/ui)/
       }
     ]
   }
