@@ -6,7 +6,6 @@ import { RecoilRoot } from 'recoil';
 import theme from './theme';
 import Dashboard from './components/dashboard';
 
-console.time('init');
 const Application = () => {
   return (
     <>

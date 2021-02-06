@@ -47,28 +47,20 @@ export default class WebviewLoader {
       const assetBuffer: AssetBuffer = [];
       const matchFactory = string.matchAll(match);
 
-      let done;
-
-      while (!done) {
-        let value;
-        // Loop through each asset filename match
-        ({ done, value } = matchFactory.next());
-        if (!done) {
-          let { 0: { length }, 0: asset, index } = value;
-          // Create resolvable buffer with asset-urls and position meta
-          assetBuffer.push(this.resolveAsset(asset, {
-            length,
-            index
-          }));
-        }
+      for (const { 0: { length }, 0: asset, index } of matchFactory) {
+        // Create resolvable buffer with asset-urls and position meta
+        assetBuffer.push(this.resolveAsset(asset, {
+          length,
+          index
+        }));
       }
 
-      var newString = string;
+      let newString = string;
 
       // Loop through each assets[].url
       Promise.all(assetBuffer).then((assets: AssetContainer[]) => {
-        for (let { length, index, url } of assets) {
-          const position = newString.length - string.length + index;
+        for (const { length, index, url } of assets) {
+          const position = newString.length - string.length + (index || 0);
           // Replace match with resolved assets[].url
           newString = newString.substr(0, position) + url + newString.substr(position + length);
         }
