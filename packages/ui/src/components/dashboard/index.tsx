@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { useEffect } from 'react';
-import { $recentOpened } from '../../state';
+import { $workbench } from '../../state';
 
 import Grid from '../grid';
 
@@ -12,7 +12,9 @@ const vscode =
 console.warn({ vscode });
 
 const Dashboard = () => {
-  const [firstRecent, setFirstRecent] = useRecoilState($recentOpened);
+  const [firstRecent, setFirstRecent] = useRecoilState(
+    $workbench.recentlyOpened
+  );
 
   useEffect(() => {
     window.addEventListener('message', ({ data }) => {
