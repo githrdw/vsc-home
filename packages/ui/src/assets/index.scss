@@ -15,7 +15,12 @@ div#app {
 button {
   background: transparent;
   padding: 0;
+
+  svg.chakra-icon {
+    color: var(--vscode-foreground, #cccccc);
+  }
 }
+
 *,
 *::before,
 ::after {
@@ -25,19 +30,32 @@ button {
   border-width: 0;
   border-style: solid;
   box-sizing: border-box;
+
+  .vscode-light & {
+    border-color: rgba(0, 0, 0, 0.16);
+  }
 }
+
 .selection-allowed {
   user-select: text;
 }
 .react-grid-layout {
   .react-grid-item {
     &.react-grid-placeholder {
-      background: rgba(255, 255, 255, .5);
+      border: 2px dotted rgba(0, 0, 0, 0.5);
+      background: none;
       border-radius: 0.125rem;
-    }
 
-    &.cssTransforms {
-      transition-property: none;
+      .vscode-light & {
+        border: 2px dotted rgba(0, 0, 0, 0.5);
+      }
+    }
+    .react-resizable-handle::after {
+      border-right: inherit;
+      border-bottom: inherit;
     }
   }
+}
+.chakra-button__icon {
+  height: 16px;
 }

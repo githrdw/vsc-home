@@ -29,7 +29,7 @@ const $layout = selector({
           newWidgetLayout[index] = {
             ...widgetLayout[index],
             layout: {
-              ...widgetLayout[index].layout,
+              ...newWidgetLayout[index]?.layout,
               [breakpoint]: widget,
             },
           };

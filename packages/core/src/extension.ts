@@ -3,6 +3,11 @@
 import * as vscode from 'vscode';
 import ViewLoader from './webviewLoader';
 
+function openView({ extensionPath }: vscode.ExtensionContext) {
+	const view = new ViewLoader(extensionPath);
+	view.getWebviewContent();
+}
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -14,13 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('vsc-home.helloWorld', async () => {
+	let disposable = vscode.commands.registerCommand('vsc-home.openView', async () => {
 		// The code you place here will be executed every time your command is executed
-
-		const view = new ViewLoader(context.extensionPath);
-		view.getWebviewContent();
+		openView(context);
 	});
-
+	openView(context);
 	context.subscriptions.push(disposable);
 }
 

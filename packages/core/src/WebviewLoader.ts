@@ -3,6 +3,8 @@ import * as WebView from '@vsch/ui/dist/index.html';
 import { join } from 'path';
 
 const APP_DIR = './dist';
+const USR_ROOT = process.env.APPDATA || (process.platform === 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share");
+const USR_APP_DIR = join(USR_ROOT, 'vsc-home');
 
 export default class WebviewLoader {
   private readonly _panel: vscode.WebviewPanel;
@@ -12,26 +14,42 @@ export default class WebviewLoader {
     this._assetsPath = join(extensionPath, APP_DIR);
 
     this._panel = vscode.window.createWebviewPanel(
-      "configView",
-      "Config View",
+      "home",
+      "Home",
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        localResourceRoots: [vscode.Uri.file(this._assetsPath)]
+        localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(USR_APP_DIR)]
       }
     );
+    vscode.commands.executeCommand('workbench.action.pinEditor');
 
-    this._panel.webview.onDidReceiveMessage(
-      async message => {
-        switch (message.command) {
-          case 'init':
-            const recent = await vscode.commands.executeCommand('_workbench.getRecentlyOpened');
-            this._panel.webview.postMessage({
-              recent
+    this._panel.webview.onDidReceiveMessage((msg) => {
+      const { id, action, payload } = msg;
+      const respond = (payload = {}) => this._panel.webview.postMessage({ id, payload });
+      console.warn('RECEIVED', action);
+      switch (action) {
+        case 'init': {
+          vscode.commands.executeCommand('_workbench.getRecentlyOpened')
+            .then(recent => {
+              respond({ recent });
             });
-            return 1;
+
         }
-      },
+        case 'vscode.openFolder': {
+          console.warn({ msg, uri: vscode.Uri.file(payload.path) });
+          vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(payload.path), true)
+            .then(() => respond());
+        }
+        case 'vsch.loadWidget': {
+          const uri = vscode.Uri.file(join(USR_APP_DIR, 'app2/dist/remoteEntry.js'));
+          const url = this._panel.webview.asWebviewUri(uri).toString();
+          respond({
+            path: url
+          });
+        }
+      }
+    },
     );
   }
 
@@ -71,6 +89,8 @@ export default class WebviewLoader {
 
   public async getWebviewContent() {
     const html = await this.resolveAssetByMatch(WebView, /\w+\.(js|css)/gm);
+    // const APPLOG = this._panel.webview.asWebviewUri(vscode.Uri.file(join(USR_APP_DIR, 'log.js'))).toString();
+    // const html = WebView.replace('APPLOG', APPLOG);
     this._panel.webview.html = html;
   }
 }

@@ -24,9 +24,17 @@ const colors = {
 const styles = {
   global: {
     body: {
-      bg: 'transparent',
+      bg: 'var(--vscode-editor-background, #1e1e1e)',
       font: "var(--vscode-font-family, 'Segoe WPC', 'Segoe UI', sans-serif)",
-      color: "var(--vscode-foreground, '#cccccc')",
+      color: 'var(--vscode-foreground, #cccccc)',
+    },
+    button: {
+      color: 'var(--vscode-foreground, #cccccc)',
+      cursor: 'pointer',
+    },
+    input: {
+      color: 'var(--vscode-foreground, #cccccc)',
+      outline: 'none',
     },
   },
 };

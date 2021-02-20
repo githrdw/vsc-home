@@ -30,22 +30,15 @@ export const Grid = () => {
     return Children;
   }, [widgets]);
 
-  const _layouts = useMemo(() => {
-    return JSON.stringify(layout);
-  }, [widgets]);
-
   return (
-    <>
-      <code>{_layouts}</code>
-      <GridLayout
-        {...grid}
-        layouts={layout}
-        onLayoutChange={(l, layouts: any) => setLayout(layouts)}
-        measureBeforeMount
-      >
-        {RenderedWidgets}
-      </GridLayout>
-    </>
+    <GridLayout
+      {...grid}
+      layouts={layout}
+      onLayoutChange={(l, layouts: any) => setLayout(layouts)}
+      measureBeforeMount
+    >
+      {RenderedWidgets}
+    </GridLayout>
   );
 };
 

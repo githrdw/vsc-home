@@ -20,7 +20,7 @@
     "baseUrl": "./src",
     /* Maps imports to locations - e.g. ~models will go to ./src/models */
     "paths": {
-      "~*": [ "./*" ]
+      "@*": [ "./*" ]
     },
     /* List of folders to include type definitions from */
     "typeRoots": [

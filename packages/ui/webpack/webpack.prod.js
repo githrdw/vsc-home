@@ -28,7 +28,6 @@ module.exports = {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
           name: 'vendors',
-          chunks: 'initial',
         },
         async: {
           test: /[\\/]node_modules[\\/]/,

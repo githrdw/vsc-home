@@ -1,17 +1,20 @@
 import React from 'react';
 import { hydrate, render } from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react';
+import EventBus, { EventBusInstance } from './hooks/event-bus';
 import { RecoilRoot } from 'recoil';
 
 import theme from './theme';
-import Dashboard from './components/dashboard';
+import Dashboard from '@components/dashboard';
 
 const Application = () => {
   return (
     <>
       <ChakraProvider theme={theme} resetCSS={false}>
         <RecoilRoot>
-          <Dashboard />
+          <EventBus.Provider value={EventBusInstance}>
+            <Dashboard />
+          </EventBus.Provider>
         </RecoilRoot>
       </ChakraProvider>
     </>
