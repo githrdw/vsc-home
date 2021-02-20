@@ -1,17 +1,15 @@
 import * as vscode from "vscode";
 import * as WebView from '@vsch/ui/dist/index.html';
 import { join } from 'path';
-
-const APP_DIR = './dist';
-const USR_ROOT = process.env.APPDATA || (process.platform === 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share");
-const USR_APP_DIR = join(USR_ROOT, 'vsc-home');
+import vars from './vars';
+import Api from "./api";
 
 export default class WebviewLoader {
   private readonly _panel: vscode.WebviewPanel;
   private readonly _assetsPath: string;
 
   constructor(extensionPath: string) {
-    this._assetsPath = join(extensionPath, APP_DIR);
+    this._assetsPath = join(extensionPath, vars.APP_DIR);
 
     this._panel = vscode.window.createWebviewPanel(
       "home",
@@ -19,38 +17,12 @@ export default class WebviewLoader {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(USR_APP_DIR)]
+        localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
       }
     );
     vscode.commands.executeCommand('workbench.action.pinEditor');
 
-    this._panel.webview.onDidReceiveMessage((msg) => {
-      const { id, action, payload } = msg;
-      const respond = (payload = {}) => this._panel.webview.postMessage({ id, payload });
-      console.warn('RECEIVED', action);
-      switch (action) {
-        case 'init': {
-          vscode.commands.executeCommand('_workbench.getRecentlyOpened')
-            .then(recent => {
-              respond({ recent });
-            });
-
-        }
-        case 'vscode.openFolder': {
-          console.warn({ msg, uri: vscode.Uri.file(payload.path) });
-          vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(payload.path), true)
-            .then(() => respond());
-        }
-        case 'vsch.loadWidget': {
-          const uri = vscode.Uri.file(join(USR_APP_DIR, 'app2/dist/remoteEntry.js'));
-          const url = this._panel.webview.asWebviewUri(uri).toString();
-          respond({
-            path: url
-          });
-        }
-      }
-    },
-    );
+    new Api(this._panel.webview);
   }
 
   private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {

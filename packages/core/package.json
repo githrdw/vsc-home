@@ -21,8 +21,8 @@
 				"command": "vsc-home.openView",
 				"title": "Hello World",
 				"icon": {
-					"light": "./src/logo_vschome.min.svg",
-					"dark": "./src/logo_vschome.white.min.svg"
+					"light": "./assets/logo_vschome.min.svg",
+					"dark": "./assets/logo_vschome.white.min.svg"
 				}
 			}
 		],
@@ -40,7 +40,7 @@
 				{
 					"id": "home",
 					"title": "Home",
-					"icon": "./src/logo_vschome.white.min.svg"
+					"icon": "./assets/logo_vschome.white.min.svg"
 				}
 			]
 		},
@@ -49,7 +49,7 @@
 				{
 					"id": "settings",
 					"name": "Settings",
-					"icon": "./src/logo_vschome.white.min.svg",
+					"icon": "./assets/logo_vschome.white.min.svg",
 					"contextualTitle": "Home"
 				}
 			]
