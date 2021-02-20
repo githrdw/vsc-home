@@ -8,6 +8,7 @@ declare global {
     default: object;
   }
   interface Window {
+    _bus: any;
     acquireVsCodeApi(): {
       postMessage(data: object): void;
     };

@@ -10,11 +10,17 @@ export interface ExecuteParams {
   payload: object
 }
 
+export interface Payload {
+  error?: string
+}
+
+export interface RespondPayload {
+  (payload?: any): void
+}
+
 export interface ExecuteCore extends Core {
   vars: any,
-  respond: {
-    (payload?: object): void
-  }
+  respond: RespondPayload
 }
 
 export interface Run {

@@ -1,13 +1,13 @@
 import EventBus from '@hooks/event-bus/instance';
 import { ComponentType } from 'react';
 export interface DynamicComponentProps {
-  name: string;
+  lib: string;
   entry: string;
 }
 
 interface UnpackWidgetArgs {
   Bus: EventBus;
-  name: string;
+  lib: string;
   entry: string;
 }
 
@@ -20,6 +20,6 @@ export interface VschLoadWidget {
 }
 
 export interface FetchWidgetArgs {
-  name: string;
+  lib: string;
   path: string;
 }

@@ -47,21 +47,20 @@ module.exports = {
       // version is inferred from package.json
       // there is no version check for the required version
       // so it will always use the higher version found
-      // shared: {
-      //   react: {
-      //     eager: false,
-      //     import: 'react', // the "react" package will be used a provided and fallback module
-      //     shareKey: 'react', // under this name the shared module will be placed in the share scope
-      //     shareScope: 'default', // share scope with this name will be used
-      //     singleton: true, // only a single version of the shared module is allowed
-      //     version: '17.0.1',
-      //   },
-      //   'react-dom': {
-      //     eager: false,
-      //     singleton: true, // only a single version of the shared module is allowed
-      //     version: '17.0.1',
-      //   },
-      // },
+      shared: {
+        react: {
+          eager: true,
+          singleton: true, // only a single version of the shared module is allowed
+          version: '17.0.1',
+          requiredVersion: '17.0.1',
+        },
+        'react-dom': {
+          eager: true,
+          singleton: true, // only a single version of the shared module is allowed
+          version: '17.0.1',
+          requiredVersion: '17.0.1',
+        },
+      },
     }),
     new ProgressPlugin(),
     new HtmlWebpackPlugin({

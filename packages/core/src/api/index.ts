@@ -1,5 +1,5 @@
-import { Webview } from 'vscode';
-import { ExecuteParams, Core } from './d';
+import { Webview, window } from 'vscode';
+import { ExecuteParams, Core, Payload } from './d';
 
 import vars from '../vars';
 
@@ -29,7 +29,8 @@ export default class Api {
   }
 
   private generateResponse(id: string) {
-    return (payload = {}) => {
+    return (payload: Payload = {}) => {
+      if (payload.error) { window.showErrorMessage(payload.error); };
       this.core.webview.postMessage({
         id, payload
       });

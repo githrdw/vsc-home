@@ -6,7 +6,7 @@ export default function (core: ExecuteCore, command: string, payload: object) {
 }
 
 const run: Run = {
-  'geetRecentlyOpened': ({ respond }) => {
+  'getRecentlyOpened': ({ respond }) => {
     commands.executeCommand('_workbench.getRecentlyOpened')
       .then(recent => {
         respond({ recent });
