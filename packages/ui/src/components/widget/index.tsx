@@ -6,14 +6,12 @@ import {
   Flex,
   Heading,
   IconButton,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
   Portal,
   Progress,
-  Skeleton,
   Spacer,
 } from '@chakra-ui/react';
 import {
@@ -26,18 +24,21 @@ import {
 } from '@chakra-ui/icons';
 
 import IconPlaceholder from './icon-placeholder';
+import { WidgetProps } from './types';
 
-const sleep = (time: number) =>
-  new Promise(resolve => setTimeout(resolve, time * 1000));
-
-const Widget = ({ appearance, data, type }: any) => {
+const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
+  const { appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
 
+  const updateName = ({ target: { innerText } }: { target: HTMLHeadElement }) =>
+    onWidgetUpdate?.({
+      ...widgetMeta,
+      appearance: { title: innerText, color },
+    });
+
   const content = useMemo(() => {
-    const getter = async () => {
-      // await sleep(2);
-      return await import(/* webpackPreload: true */ `../widget-${type}`);
-    };
+    const getter = async () =>
+      await import(/* webpackPreload: true */ `../widget-${type}`);
     const widgetContent = getter();
     const Component = lazy(() => widgetContent);
 
@@ -54,7 +55,20 @@ const Widget = ({ appearance, data, type }: any) => {
         <IconPlaceholder bg={color}>
           <StarIcon w={5} h={4} />
         </IconPlaceholder>
-        <Heading size="sm" m={0}>
+        <Heading
+          size="sm"
+          w="calc(100% - 3.7rem)"
+          m={0}
+          ml="3.5rem"
+          p=".6rem"
+          position="absolute"
+          left={0}
+          whiteSpace="nowrap"
+          overflow="hidden"
+          suppressContentEditableWarning={true}
+          onBlur={updateName}
+          contentEditable
+        >
           {title}
         </Heading>
         <Spacer />

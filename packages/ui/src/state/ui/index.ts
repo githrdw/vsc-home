@@ -23,8 +23,8 @@ const $layout = selector({
     const newWidgetLayout: any[] = [];
     for (const breakpoint in newLayout) {
       for (const widget of newLayout[breakpoint]) {
-        const { i: _i } = widget;
-        const index = widgetLayout.findIndex(({ id }) => id === _i);
+        const { i } = widget;
+        const index = widgetLayout.findIndex(({ id }) => id === i);
         if (~index) {
           newWidgetLayout[index] = {
             ...widgetLayout[index],
