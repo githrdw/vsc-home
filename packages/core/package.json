@@ -12,13 +12,13 @@
 	],
 	"activationEvents": [
 		"*",
-		"onCommand:vsc-home.openView"
+		"onCommand:vsch.openMainView"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "vsc-home.openView",
+				"command": "vsch.openMainView",
 				"title": "Hello World",
 				"icon": {
 					"light": "./assets/logo_vschome.min.svg",
@@ -26,15 +26,6 @@
 				}
 			}
 		],
-		"menus": {
-			"editor/title": [
-				{
-					"when": "true",
-					"command": "vsc-home.openView",
-					"group": "navigation"
-				}
-			]
-		},
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -47,7 +38,8 @@
 		"views": {
 			"home": [
 				{
-					"id": "settings",
+          "type": "webview",
+					"id": "vsch.openSidebarView",
 					"name": "Settings",
 					"icon": "./assets/logo_vschome.white.min.svg",
 					"contextualTitle": "Home"

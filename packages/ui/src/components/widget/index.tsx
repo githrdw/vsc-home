@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useMemo } from 'react';
+import React, { Suspense, lazy, useMemo, FocusEvent } from 'react';
 
 import {
   Box,
@@ -30,11 +30,13 @@ const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
   const { appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
 
-  const updateName = ({ target: { innerText } }: { target: HTMLHeadElement }) =>
-    onWidgetUpdate?.({
-      ...widgetMeta,
-      appearance: { title: innerText, color },
-    });
+  const updateName = ({ target: { innerText } }: FocusEvent<HTMLElement>) => {
+    if (innerText !== title)
+      onWidgetUpdate?.({
+        ...widgetMeta,
+        appearance: { title: innerText, color },
+      });
+  };
 
   const content = useMemo(() => {
     const getter = async () =>

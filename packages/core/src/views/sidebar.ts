@@ -1,34 +1,37 @@
 import * as vscode from "vscode";
 import * as WebView from '@vsch/ui/dist/index.html';
 import { join } from 'path';
-import vars from './vars';
-import Api from "./api";
+import vars from '../vars';
+import Api from "../api";
 
-export default class WebviewLoader {
-  private readonly _panel: vscode.WebviewPanel;
+export default class SidebarViewLoader implements vscode.WebviewViewProvider {
+
+  private _webview: vscode.Webview | undefined;
   private readonly _assetsPath: string;
 
   constructor(extensionPath: string) {
     this._assetsPath = join(extensionPath, vars.APP_DIR);
+  }
+  public resolveWebviewView(
+    { webview }: { webview: vscode.Webview },
+  ) {
+    console.warn("lets create a sidebar");
+    this._webview = webview;
 
-    this._panel = vscode.window.createWebviewPanel(
-      "home",
-      "Home",
-      vscode.ViewColumn.One,
-      {
-        enableScripts: true,
-        localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
-      }
-    );
-    vscode.commands.executeCommand('workbench.action.pinEditor');
+    webview.options = {
+      // Allow scripts in the webview
+      enableScripts: true,
+      localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
+    };
 
-    new Api(this._panel.webview);
+    this.getWebviewContent();
+    new Api(this._webview);
   }
 
   private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {
     const asset = await import(`@vsch/ui/dist/${path}`);
     const uri = vscode.Uri.file(join(this._assetsPath, asset));
-    const url = this._panel.webview.asWebviewUri(uri).toString();
+    const url = this._webview?.asWebviewUri(uri).toString() || '';
     return { url, ...meta };
   }
 
@@ -63,6 +66,6 @@ export default class WebviewLoader {
     const html = await this.resolveAssetByMatch(WebView, /\w+\.(js|css)/gm);
     // const APPLOG = this._panel.webview.asWebviewUri(vscode.Uri.file(join(USR_APP_DIR, 'log.js'))).toString();
     // const html = WebView.replace('APPLOG', APPLOG);
-    this._panel.webview.html = html;
+    if (this._webview) { this._webview.html = html; }
   }
 }
