@@ -48,6 +48,8 @@ export const Grid = () => {
       layouts={layout}
       onLayoutChange={(l, layouts: any) => setLayout(layouts)}
       measureBeforeMount
+      isDroppable={true}
+      onDrop={e => console.warn('DROP', e)}
     >
       {RenderedWidgets}
     </GridLayout>

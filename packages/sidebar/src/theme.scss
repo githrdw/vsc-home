@@ -1,0 +1,24 @@
+$text-01: var(--vscode-foreground, #cccccc);
+
+@import "carbon-components/scss/globals/scss/css--helpers";
+@import "carbon-components/scss/globals/scss/vendor/@carbon/elements/scss/themes/mixins";
+
+body {
+  color: $text-01;
+  background-color: var(--vscode-editor-background, #1e1e1e);
+  font-family: var(--vscode-font-family, "Segoe WPC", "Segoe UI", sans-serif);
+  line-height: 1;
+  @include carbon--theme($carbon--theme--g100, true);
+  
+  --cds-interactive-01: var(--vscode-button-background, #0e639c);
+  --cds-hover-primary: var(--vscode-button-hoverBackground, #1177bb);
+  --cds-focus: var(--cds-hover-primary);
+  --cds-active-primary: var(--cds-hover-primary);
+  
+  --cds-link-01: var(--vscode-button-foreground, #ffffff);
+  
+}
+
+bx-clickable-tile::part(link) {
+  text-decoration: none !important;
+}

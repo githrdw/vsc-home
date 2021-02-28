@@ -1,16 +1,21 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import MainView from './views/main';
-import SidebarView from './views/sidebar';
+import MainWebview from './views/MainWebview';
+import SidebarWebview from './views/SidebarWebview';
 
 const openMainView = ({ extensionPath }: vscode.ExtensionContext) => {
-	const view = new MainView(extensionPath);
+	const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
+	const view = new MainWebview(extensionPath, assets);
+
 	view.getWebviewContent();
 };
 
 const openSidebarView = ({ extensionPath }: vscode.ExtensionContext) => {
-	return new SidebarView(extensionPath);
+	const assets = (file: string) => import(`@vsch/sidebar/dist/${file}`);
+	const view = new SidebarWebview(extensionPath, assets);
+
+	return view;
 };
 
 // this method is called when your extension is activated

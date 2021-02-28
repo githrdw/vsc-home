@@ -1,35 +1,26 @@
+
 import * as vscode from "vscode";
-import * as WebView from '@vsch/ui/dist/index.html';
-import { join } from 'path';
 import vars from '../vars';
 import Api from "../api";
+import { join } from 'path';
 
-export default class SidebarViewLoader implements vscode.WebviewViewProvider {
-
+export default class WebviewLoader {
+  protected readonly _assetsPath: string;
+  private readonly _resolver;
   private _webview: vscode.Webview | undefined;
-  private readonly _assetsPath: string;
 
-  constructor(extensionPath: string) {
+  constructor(extensionPath: string, resolver: (path: string) => Promise<any>) {
     this._assetsPath = join(extensionPath, vars.APP_DIR);
+    this._resolver = resolver;
   }
-  public resolveWebviewView(
-    { webview }: { webview: vscode.Webview },
-  ) {
-    console.warn("lets create a sidebar");
+
+  protected async setWebview(webview: vscode.Webview) {
     this._webview = webview;
-
-    webview.options = {
-      // Allow scripts in the webview
-      enableScripts: true,
-      localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
-    };
-
-    this.getWebviewContent();
-    new Api(this._webview);
+    new Api(webview);
   }
 
   private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {
-    const asset = await import(`@vsch/ui/dist/${path}`);
+    const asset = await this._resolver(path);
     const uri = vscode.Uri.file(join(this._assetsPath, asset));
     const url = this._webview?.asWebviewUri(uri).toString() || '';
     return { url, ...meta };
@@ -61,11 +52,9 @@ export default class SidebarViewLoader implements vscode.WebviewViewProvider {
       });
     });
   }
-
   public async getWebviewContent() {
-    const html = await this.resolveAssetByMatch(WebView, /\w+\.(js|css)/gm);
-    // const APPLOG = this._panel.webview.asWebviewUri(vscode.Uri.file(join(USR_APP_DIR, 'log.js'))).toString();
-    // const html = WebView.replace('APPLOG', APPLOG);
+    const WebView = await this._resolver('index.html');
+    const html = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
     if (this._webview) { this._webview.html = html; }
   }
 }

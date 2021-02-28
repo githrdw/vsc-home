@@ -39,12 +39,12 @@ const config = {
       {
         test: /\.html$/,
         type: 'asset/source',
-        exclude: /node_modules(?!(\/|\\)@vsch\/ui)/
+        exclude: /node_modules(?!(\/|\\)@vsch\/[ui|sidebar])/
       },
       {
-        test: /\.(css|js|txt)$/,
+        test: /\.(css|js)$/,
         type: 'asset/resource',
-        exclude: /node_modules(?!(\/|\\)@vsch\/ui)/
+        exclude: /node_modules(?!(\/|\\)@vsch\/[ui|sidebar])/
       }
     ]
   }
