@@ -6,5 +6,10 @@ export interface WidgetProps {
   };
   data?: {};
   type?: string;
+  layout?: {
+    [id: string]: object;
+  };
+  x?: number;
+  y?: number;
   onWidgetUpdate?: (data: WidgetProps) => void;
 }

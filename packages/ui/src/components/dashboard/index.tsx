@@ -25,9 +25,11 @@ const Dashboard = () => {
       if (layout) setWidgets(layout);
       isInitialized.current = true;
     });
-    Bus.emit('workbench.getRecentlyOpened', {}).then(({ recent }: any) => {
-      if (recent) setFirstRecent(recent.workspaces);
-    });
+    Bus.emit('workbench.getRecentlyOpened', {}, true).then(
+      ({ recent }: any) => {
+        if (recent) setFirstRecent(recent.workspaces);
+      }
+    );
   }, []);
 
   return <Grid />;

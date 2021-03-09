@@ -1,4 +1,4 @@
-import EventBus from '@hooks/event-bus/instance';
+import EventBus from 'core/src/utils/EventBusClient.js';
 import { ComponentType } from 'react';
 export interface DynamicComponentProps {
   lib: string;
