@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import Api from './api';
 import MainWebview from './views/MainWebview';
 import SidebarWebview from './views/SidebarWebview';
+import InitialAppdata from './utils/InitAppdata';
 
 const EventBus = new Api();
 
@@ -26,14 +27,12 @@ const openSidebarView = ({ extensionPath }: vscode.ExtensionContext) => {
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vsch" is now active!');
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
+
+	InitialAppdata();
+
 	const mainViewCommand = vscode.commands.registerCommand('vsch.openMainView', async () => {
 		// The code you place here will be executed every time your command is executed
 		openMainView(context);
