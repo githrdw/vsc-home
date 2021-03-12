@@ -19,11 +19,7 @@
 		"commands": [
 			{
 				"command": "vsch.openMainView",
-				"title": "Hello World",
-				"icon": {
-					"light": "./assets/logo_vschome.min.svg",
-					"dark": "./assets/logo_vschome.white.min.svg"
-				}
+				"title": "Open VSC-Home dashboard"
 			}
 		],
 		"viewsContainers": {
@@ -31,7 +27,7 @@
 				{
 					"id": "home",
 					"title": "Home",
-					"icon": "./assets/logo_vschome.white.min.svg"
+					"icon": "./assets/logo_vschome.white.min.png"
 				}
 			]
 		},
@@ -41,7 +37,6 @@
 					"type": "webview",
 					"id": "vsch.openSidebarView",
 					"name": "Settings",
-					"icon": "./assets/logo_vschome.white.min.svg",
 					"contextualTitle": "Home"
 				}
 			]
