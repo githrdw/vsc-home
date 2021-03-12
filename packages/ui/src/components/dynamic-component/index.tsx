@@ -26,7 +26,7 @@ const fetchWidget = ({ lib, path }: FetchWidgetArgs) => {
 
 const unpackWidget: UnpackWidgetFn = async ({ Bus, lib, entry }) => {
   // Resolve the uri path to the widget through API Core
-  const { path }: any = await Bus.emit('vsch.loadCustomWidget', { lib });
+  const { path }: any = await Bus.emit('vsch.core.loadCustomWidget', { lib });
   const globalName = `vsch_${lib}`;
 
   if (!path) throw new Error('No plugin path returned from API');
@@ -52,8 +52,6 @@ const unpackWidget: UnpackWidgetFn = async ({ Bus, lib, entry }) => {
 
 const DynamicComponent = ({ lib, entry }: DynamicComponentProps) => {
   const Bus = useContext(EventBus);
-  Bus.emit('vsch.getCustomWidgets', {}).then(console.log);
-
   const Widget = React.lazy(() =>
     unpackWidget({
       Bus,

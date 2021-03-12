@@ -1,3 +1,5 @@
+import { BUILTIN_WIDGETS, WIDGET_META } from './constants'
+
 const titles = [
   "Just keep swimming",
   "Why so serious?",
@@ -16,40 +18,23 @@ const randomGen = (list) => {
   return list[Math.round(Math.random() * (list.length - 1))]
 }
 
-const ComponentOnDrag = ({ dataTransfer }) => {
+const ComponentOnDrag = ({ dataTransfer, target }, meta) => {
   const { items } = dataTransfer || {}
+  const id = target.getAttribute("data-id")
 
-  const object = {
-    "id": "1",
-    "type": "recent",
-    "layout": {
-      "lg": {
-        "w": 3,
-        "h": 9,
-        "minW": 2,
-        "minH": 2
-      },
-      "md": {
-        "w": 3,
-        "h": 9,
-        "minW": 2,
-        "minH": 2
-      },
-      "sm": {
-        "w": 3,
-        "h": 9,
-        "minW": 2,
-        "minH": 2
-      }
-    },
-    "appearance": {
-      "title": randomGen(titles),
-      "icon": "star",
-      "color": randomGen(colors),
-    },
-    "data": {}
+  if (id.includes(':')) {
+    if (meta[id]) {
+      console.warn(meta[id])
+      items?.add(JSON.stringify(meta[id]), "vsch/widget?w=2&h=2")
+    }
   }
-  items?.add(JSON.stringify(object), "vsch/widget?w=2&h=2")
+  else {
+    items?.add(JSON.stringify({
+      ...WIDGET_META,
+      type: id,
+    }), "vsch/widget?w=2&h=2")
+
+  }
 }
 
 export {

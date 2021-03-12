@@ -1,4 +1,4 @@
-import { Uri, workspace, commands } from "vscode";
+import { Uri, workspace, commands, FileType } from "vscode";
 import { TextDecoder, TextEncoder } from "util";
 import { join } from 'path';
 import { ExecuteCore, Run } from './d';
@@ -39,12 +39,30 @@ const run: Run = {
   'core.getCustomWidgets': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT } }) => {
     const dir = join(USR_APP_DIR, WIDGETS_ROOT);
     const uri = Uri.file(dir);
+    let widgetsDetails = [];
+    let widgets: [string, FileType][] = [];
     try {
-      const widgets = await workspace.fs.readDirectory(uri);
-      respond({ widgets });
+      widgets = await workspace.fs.readDirectory(uri);
     } catch (e) {
-      respond({ error: e.toString() + ' while reading ' + dir });
+      return respond({ error: e.toString() + ' while reading ' + dir });
     }
+    for (const widget of widgets) {
+      const [path] = widget;
+      const lib = path.replace('vsch_', '');
+      const packageFile = join(dir, path, 'package.json');
+      const packageUri = Uri.file(packageFile);
+      try {
+        const data = await workspace.fs.readFile(packageUri);
+        const text = new TextDecoder("utf-8").decode(data);
+        const json = text ? JSON.parse(text) : null;
+        if (json) {
+          widgetsDetails.push({ lib, ...json.vsch });
+        }
+      } catch (e) {
+        console.error({ error: e.toString() + ' while reading ' + dir });
+      }
+    }
+    respond({ widgets: widgetsDetails });
   },
   'core.loadCustomWidget': ({ respond, webview, vars: { USR_APP_DIR, WIDGETS_ROOT } }, { lib }) => {
     const file = `vsch_${lib}/dist/remoteEntry.js`;

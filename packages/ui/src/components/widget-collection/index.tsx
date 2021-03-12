@@ -21,20 +21,22 @@ const getIcon = (type: number) => {
 const WidgetCollection = ({ size = 5, items }: WidgetCollectionProps) => {
   const ItemList = useMemo(() => {
     const Children = [];
-    for (const item of items.slice(0, size)) {
-      const type = item.workspace
-        ? FsTypes.Workspace
-        : item.folderUri
-        ? FsTypes.Folder
-        : FsTypes.File;
-      const path = item.workspace
-        ? item.workspace.configPath.path
-        : item.folderUri?.path;
-      Children.push(
-        <div key={path}>
-          <ListItem {...{ Icon: getIcon(type), path }} />
-        </div>
-      );
+    if (items) {
+      for (const item of items.slice(0, size)) {
+        const type = item.workspace
+          ? FsTypes.Workspace
+          : item.folderUri
+          ? FsTypes.Folder
+          : FsTypes.File;
+        const path = item.workspace
+          ? item.workspace.configPath.path
+          : item.folderUri?.path;
+        Children.push(
+          <div key={path}>
+            <ListItem {...{ Icon: getIcon(type), path }} />
+          </div>
+        );
+      }
     }
     return Children;
   }, [items]);

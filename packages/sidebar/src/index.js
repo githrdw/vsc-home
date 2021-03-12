@@ -2,24 +2,9 @@ import "./style.scss"
 import "mustache"
 import EventBus from 'core/src/utils/EventBusClient'
 import { ComponentOnDrag } from './component'
+import { BUILTIN_WIDGETS, WIDGET_META } from './constants'
 
 const Client = new EventBus()
-const ComponentRender = {
-  components: [
-    {
-      title: "Recent projects",
-      subtitle: "List of recent opened folders and workspaces"
-    },
-    {
-      title: "Collection",
-      subtitle: "Editable list of recent folders and workspaces"
-    },
-    {
-      title: "Notes",
-      subtitle: "WYSIWYG editor for taking notes"
-    },
-  ]
-}
 
 // Action button events
 const buttons = document.querySelectorAll("button[data-action]")
@@ -30,13 +15,32 @@ for (button of buttons) {
   })
 }
 
-// List and template render
-const template = document.getElementById('component-tmpl').innerText;
-const rendered = Mustache.render(template, ComponentRender);
-document.getElementById('components').innerHTML = rendered;
+const loadCustomWidgets = async () => {
+  const widgetsMeta = {}
+  const template = document.getElementById('component-tmpl').innerText;
+  const { widgets } = await Client.emit('vsch.core.getCustomWidgets') || []
+  for (const widgetIndex in widgets) {
+    const widget = widgets[widgetIndex]
+    const id = `${widget.lib}:${widget.entry}`
+    widgetsMeta[id] = {
+      ...WIDGET_META,
+      type: "custom",
+      data: {
+        widget
+      }
+    }
+    widget['id'] = id
+  }
+  const rendered = Mustache.render(template, { components: [...widgets, ...BUILTIN_WIDGETS] });
+  document.getElementById('components').innerHTML = rendered;
 
-// Drag events
-const components = document.querySelectorAll("article.component")
-for (component of components) {
-  component.addEventListener('dragstart', ComponentOnDrag)
+  // Drag events
+  const components = document.querySelectorAll("article.component")
+  const onDrag = (e) => ComponentOnDrag(e, widgetsMeta)
+  for (component of components) {
+    component.removeEventListener('dragstart', onDrag)
+    component.addEventListener('dragstart', onDrag)
+  }
 }
+// List and template render
+loadCustomWidgets()
