@@ -15,6 +15,10 @@
 		"onCommand:vsch.openMainView"
 	],
 	"main": "./dist/extension.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/githrdw/vsc-home"
+	},
 	"contributes": {
 		"commands": [
 			{

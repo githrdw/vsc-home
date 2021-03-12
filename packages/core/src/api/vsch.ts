@@ -27,13 +27,27 @@ const run: Run = {
   'ui.getLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default' }) => {
     const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
     const uri = Uri.file(file);
+    let notExisting;
     try {
       const data = await workspace.fs.readFile(uri);
       const text = new TextDecoder("utf-8").decode(data);
       const json = text ? JSON.parse(text) : null;
       respond({ layout: json });
     } catch (e) {
-      respond({ error: e.toString() + ' while reading ' + file });
+      if (e.code === "FileNotFound") {
+        notExisting = true;
+      } else {
+        respond({ error: e.toString() + ' while reading ' + file });
+      }
+    }
+
+    if (notExisting) {
+      try {
+        await workspace.fs.writeFile(uri, new Uint8Array());
+        respond({ layout: undefined });
+      } catch (e) {
+        respond({ error: e.toString() + ' while creating ' + file });
+      }
     }
   },
   'core.getCustomWidgets': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT } }) => {

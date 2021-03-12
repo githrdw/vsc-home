@@ -16,11 +16,4 @@ export default async function () {
   } catch (e) {
     console.warn(`Not able to create widgets directory in configuration directory: ${e.toString()}`);
   }
-
-  const layout = Uri.file(join(vars.USR_APP_DIR, vars.LAYOUTS_ROOT, 'default.json'));
-  try {
-    await workspace.fs.writeFile(layout, new Uint8Array());
-  } catch (e) {
-    console.warn(`Not able to create widgets directory in configuration directory: ${e.toString()}`);
-  }
 }
