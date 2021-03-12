@@ -1,7 +1,8 @@
 import { commands } from "vscode";
 import { Run, ExecuteCore } from './d';
 
-export default function (core: ExecuteCore, command: string, payload: object) {
+export default function (core: ExecuteCore, instructions: string[], payload: object) {
+  const [command] = instructions;
   run[command](core, payload);
 }
 

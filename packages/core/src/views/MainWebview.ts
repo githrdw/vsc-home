@@ -12,11 +12,12 @@ export default class MainWebview extends WebviewLoader {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        localResourceRoots: [vscode.Uri.file(this._assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
+        localResourceRoots: [vscode.Uri.file(this.assetsPath), vscode.Uri.file(vars.USR_APP_DIR)]
       }
     );
     webviewPanel.iconPath = vscode.Uri.file('');
 
-    this.setWebview(webviewPanel.webview);
+    const { webview, onDidDispose } = webviewPanel;
+    this.setWebview(webview, onDidDispose);
   }
 }

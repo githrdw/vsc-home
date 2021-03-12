@@ -1,28 +1,47 @@
-
 import * as vscode from "vscode";
 import vars from '../vars';
-import Api from "../api";
 import { join } from 'path';
 
 export default class WebviewLoader {
-  protected readonly _assetsPath: string;
-  private readonly _resolver;
-  private _webview: vscode.Webview | undefined;
+  protected readonly assetsPath: string;
+  protected webviewCallback: ((webview: vscode.Webview) => (webview: vscode.Webview) => void) | undefined;
+  protected destroyCallback: ((webview: vscode.Webview) => void) | undefined;
+  private readonly getAsset;
+  public webview: vscode.Webview | undefined;
 
   constructor(extensionPath: string, resolver: (path: string) => Promise<any>) {
-    this._assetsPath = join(extensionPath, vars.APP_DIR);
-    this._resolver = resolver;
+    this.webviewCallback = undefined;
+    this.assetsPath = join(extensionPath, vars.APP_DIR);
+    this.getAsset = resolver;
   }
 
-  protected async setWebview(webview: vscode.Webview) {
-    this._webview = webview;
-    new Api(webview);
+  // Callback when Webview is set, returns destroyCallback that is fired when webview destroys
+  public onReady(callback: (webview: vscode.Webview) => (webview: vscode.Webview) => void) {
+    if (this.webview) {
+      this.destroyCallback = callback(this.webview);
+    } else {
+      this.webviewCallback = callback;
+    };
+  }
+
+  public onDestroy(callback: (webview: vscode.Webview) => void) {
+    if (this.webview) {
+      callback(this.webview);
+    } else {
+      this.destroyCallback = callback;
+    };
+  }
+
+  protected setWebview(webview: vscode.Webview, onDidDispose: vscode.Event<void>) {
+    this.webview = webview;
+    this.destroyCallback = this.webviewCallback?.(webview);
+    onDidDispose(() => this.destroyCallback?.(webview));
   }
 
   private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {
-    const asset = await this._resolver(path);
-    const uri = vscode.Uri.file(join(this._assetsPath, asset));
-    const url = this._webview?.asWebviewUri(uri).toString() || '';
+    const asset = await this.getAsset(path);
+    const uri = vscode.Uri.file(join(this.assetsPath, asset));
+    const url = this.webview?.asWebviewUri(uri).toString() || '';
     return { url, ...meta };
   }
 
@@ -53,8 +72,8 @@ export default class WebviewLoader {
     });
   }
   public async getWebviewContent() {
-    const WebView = await this._resolver('index.html');
+    const WebView = await this.getAsset('index.html');
     const html = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
-    if (this._webview) { this._webview.html = html; }
+    if (this.webview) { this.webview.html = html; }
   }
 }

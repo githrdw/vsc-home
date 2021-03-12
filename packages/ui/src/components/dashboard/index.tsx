@@ -14,14 +14,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isInitialized.current) return;
-    Bus.emit('vsch.setLayout', {
+    Bus.emit('vsch.ui.setLayout', {
       name: 'default',
       layout: widgets,
     });
   }, [widgets]);
 
   useEffect(() => {
-    Bus.emit('vsch.getLayout', {}).then(({ layout }: any) => {
+    Bus.emit('vsch.ui.getLayout', {}).then(({ layout }: any) => {
       if (layout) setWidgets(layout);
       isInitialized.current = true;
     });

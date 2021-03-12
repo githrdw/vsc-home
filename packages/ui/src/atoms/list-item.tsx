@@ -13,7 +13,7 @@ const ListItem = ({ Icon, path }: any) => {
   }, [path]);
 
   const openFolder = () => {
-    Bus.openFolder(path)
+    Bus.emit('vscode.openFolder', { path })
       .then(() => console.warn('Open'))
       .catch(() => console.error('Something went wrong'));
   };

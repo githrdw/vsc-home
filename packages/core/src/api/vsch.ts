@@ -1,14 +1,18 @@
-import { Uri, workspace } from "vscode";
+import { Uri, workspace, commands } from "vscode";
 import { TextDecoder, TextEncoder } from "util";
 import { join } from 'path';
 import { ExecuteCore, Run } from './d';
 
-export default function (core: ExecuteCore, command: string, payload: object) {
-  run[command](core, payload);
+export default function (core: ExecuteCore, instructions: string[], payload: object) {
+  run[instructions.join('.')](core, payload);
 }
 
 const run: Run = {
-  'setLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default', layout }) => {
+  'ui.open': async ({ respond }) => {
+    await commands.executeCommand('vsch.openMainView');
+    respond();
+  },
+  'ui.setLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default', layout }) => {
     const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
     const uri = Uri.file(file);
     try {
@@ -20,7 +24,7 @@ const run: Run = {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
-  'getLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default' }) => {
+  'ui.getLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default' }) => {
     const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
     const uri = Uri.file(file);
     try {
@@ -32,7 +36,7 @@ const run: Run = {
       respond({ error: e.toString() + ' while reading ' + file });
     }
   },
-  'getCustomWidgets': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT } }) => {
+  'core.getCustomWidgets': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT } }) => {
     const dir = join(USR_APP_DIR, WIDGETS_ROOT);
     const uri = Uri.file(dir);
     try {
@@ -42,7 +46,7 @@ const run: Run = {
       respond({ error: e.toString() + ' while reading ' + dir });
     }
   },
-  'loadCustomWidget': ({ respond, webview, vars: { USR_APP_DIR, WIDGETS_ROOT } }, { lib }) => {
+  'core.loadCustomWidget': ({ respond, webview, vars: { USR_APP_DIR, WIDGETS_ROOT } }, { lib }) => {
     const file = `vsch_${lib}/dist/remoteEntry.js`;
     const uri = Uri.file(join(USR_APP_DIR, WIDGETS_ROOT, file));
     const url = webview.asWebviewUri(uri).toString();

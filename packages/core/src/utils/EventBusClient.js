@@ -79,11 +79,6 @@ class EventBus {
       else { return jsonData || false; }
     } else { return false; }
   }
-
-  openFolder(path) {
-    console.warn('EB: OpenFolder');
-    return this.emit('vscode.openFolder', { path });
-  }
 }
 
 export default EventBus;
