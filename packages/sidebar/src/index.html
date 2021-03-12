@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,22 @@
   <title>TypeScript Web Component</title>
   <link rel="stylesheet" href="sidebar-main.css">
 </head>
+
 <body>
-  <vsch-dropdown trigger-content="Select an item">
-    <bx-dropdown-item value="all">Option 1</bx-dropdown-item>
-    <bx-dropdown-item value="cloudFoundry">Option 2</bx-dropdown-item>
-    <bx-dropdown-item value="staging">Option 3</bx-dropdown-item>
-    <bx-dropdown-item value="dea">Option 4</bx-dropdown-item>
-    <bx-dropdown-item value="router">Option 5</bx-dropdown-item>
-  </vsch-dropdown>
-  <vsch-drag-tile draggable="true">
-    <h4>Recent projects</h4>
-    <p>List of recent opened folders and workspaces</p>
-  </vsch-drag-tile>
-  <vsch-btn>Test</vsch-btn>
+
+  <script id="component-tmpl" type="x-tmpl-mustache">
+    {{#components}}
+      <article class="component" draggable="true">
+        <h4>{{title}}</h4>
+        <p>{{subtitle}}</p>
+      </article>
+    {{/components}}
+  </script>
+  <section id="actions">
+    <button class="full-width" data-action="vsch.ui.open">Open dashboard</button>
+  </section>
+  <section id="components">
+  </section>
 </body>
+
 </html>

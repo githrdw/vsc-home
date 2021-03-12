@@ -1,0 +1,72 @@
+$background: var(--vscode-menu-background, #252526);
+$ui-hover: var(--vscode-list-hoverBackground, #2a2d2e);
+$text: var(--vscode-foreground, #cccccc);
+$text-size: var(--vscode-font-size, 13px);
+
+$control: var(--vscode-button-background, #0e639c);
+$control-text: var(--vscode-button-foreground, #fff);
+$control-hover: var(--vscode-button-hoverBackground, #1177bb);
+$control-selected: var(--vscode-list-activeSelectionBackground, #1f466e);
+
+html {
+  box-sizing: border-box;
+  font-size: $text-size;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  font-weight: 400;
+  background-color: $background;
+  color: $text;
+  font-family: var(--vscode-font-family, "Segoe WPC", "Segoe UI", sans-serif);
+  line-height: 1;
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+input[type="submit"],
+button {
+  padding: 0.5rem 1.5rem;
+  color: $control-text;
+  border-radius: 1px;
+  border: none;
+  background: $control;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background: $control-hover;
+  }
+
+  &.full-width {
+    width: 100%
+  }
+}
+
+section {
+  padding: 1rem 1rem 0 1rem;
+}
+
+article {
+  &.component {
+    cursor: pointer;
+    padding: 1rem;
+    margin: 0 -1rem;
+
+    &:hover {
+      background: $ui-hover;
+    }
+  }
+}
