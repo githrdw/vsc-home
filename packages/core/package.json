@@ -2,7 +2,7 @@
 	"name": "core",
 	"displayName": "Home",
 	"description": "Homecoming dashboard for VSCode",
-	"version": "0.0.1-alpha.1",
+	"version": "0.0.1-alpha.2",
 	"publisher": "vsch",
 	"engines": {
 		"vscode": "^1.51.1"
@@ -46,20 +46,20 @@
 			]
 		},
 		"configuration": {
-      "title": "Home",
-      "properties": {
-        "home.openOnStartup": {
-          "type": "boolean",
-          "default": false,
-          "description": "Opens dashboard when VS Code is started."
-        },
-        "home.configDirectory": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "Specifies the folder path containing the Home configuration files to use. `%APPDATA%/vsch-home` when empty."
-        }
-      }
-    }
+			"title": "Home",
+			"properties": {
+				"home.openOnStartup": {
+					"type": "boolean",
+					"default": false,
+					"description": "Opens dashboard when VS Code is started."
+				},
+				"home.configDirectory": {
+					"type": "string",
+					"default": "",
+					"markdownDescription": "Specifies the folder path containing the Home configuration files to use. `%APPDATA%/vsch-home` when empty."
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run package",
@@ -73,8 +73,8 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"@vsch/sidebar": "^0.0.1-alpha.1",
-		"@vsch/ui": "^0.0.1-alpha.1"
+		"@vsch/sidebar": "^0.0.1-alpha.2",
+		"@vsch/ui": "^0.0.1-alpha.2"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
