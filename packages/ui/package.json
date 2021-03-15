@@ -70,7 +70,6 @@
     "nodemon": "^2.0.7",
     "prettier": "2.2.1",
     "pretty-quick": "3.1.0",
-    "react-snap": "^1.23.0",
     "sass": "1.32.8",
     "sass-loader": "11.0.1",
     "style-loader": "2.0.0",

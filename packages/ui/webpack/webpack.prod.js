@@ -65,19 +65,5 @@ module.exports = {
       filename: `ui-[name].css`,
       chunkFilename: `ui-[name].css`,
     }),
-    {
-      apply: compiler => {
-        compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
-          exec(
-            'npm run snap',
-            { cwd: commonPaths.outputPath },
-            (err, stdout, stderr) => {
-              if (stdout) process.stdout.write(stdout);
-              if (stderr) process.stderr.write(stderr);
-            }
-          );
-        });
-      },
-    },
   ],
 };
