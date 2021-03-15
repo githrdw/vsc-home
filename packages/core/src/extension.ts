@@ -7,6 +7,7 @@ import SidebarWebview from './views/SidebarWebview';
 import InitialAppdata from './utils/InitAppdata';
 
 const EventBus = new Api();
+const userConfig = vscode.workspace.getConfiguration('home');
 
 const openMainView = ({ extensionPath }: vscode.ExtensionContext) => {
 	const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
@@ -37,7 +38,11 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		openMainView(context);
 	});
-	openMainView(context);
+
+	const openOnStartup = userConfig.get('openOnStartup');
+	if (openOnStartup) {
+		openMainView(context);
+	}
 	context.subscriptions.push(mainViewCommand);
 
 	const sidebarView = vscode.window.registerWebviewViewProvider("vsch.openSidebarView", openSidebarView(context));

@@ -11,7 +11,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"*",
+		"onStartupFinished",
 		"onCommand:vsch.openMainView"
 	],
 	"main": "./dist/extension.js",
@@ -44,7 +44,22 @@
 					"contextualTitle": "Home"
 				}
 			]
-		}
+		},
+		"configuration": {
+      "title": "Home",
+      "properties": {
+        "home.openOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Opens dashboard when VS Code is started."
+        },
+        "home.configDirectory": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Specifies the folder path containing the Home configuration files to use. `%APPDATA%/vsch-home` when empty."
+        }
+      }
+    }
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run package",
