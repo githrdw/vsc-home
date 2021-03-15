@@ -8,18 +8,31 @@ import InitialAppdata from './utils/InitAppdata';
 
 const EventBus = new Api();
 const userConfig = vscode.workspace.getConfiguration('home');
+let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-const openMainView = ({ extensionPath }: vscode.ExtensionContext) => {
-	const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
-	const view = new MainWebview(extensionPath, assets);
-	view.onReady(webview => EventBus.register(webview));
 
-	view.getWebviewContent();
+const openMainView = (context: vscode.ExtensionContext) => {
+	const columnToShowIn = vscode.window.activeTextEditor
+		? vscode.window.activeTextEditor.viewColumn
+		: undefined;
+	if (currentPanel) {
+		currentPanel.reveal(columnToShowIn);
+	} else {
+		const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
+		const view = new MainWebview(context, assets);
+		view.onReady(webview => {
+			currentPanel = view.panel;
+			EventBus.register(webview);
+		});
+		view.onDestroy(() => currentPanel = undefined);
+
+		view.getWebviewContent();
+	}
 };
 
-const openSidebarView = ({ extensionPath }: vscode.ExtensionContext) => {
+const openSidebarView = (context: vscode.ExtensionContext) => {
 	const assets = (file: string) => import(`@vsch/sidebar/dist/${file}`);
-	const view = new SidebarWebview(extensionPath, assets);
+	const view = new SidebarWebview(context, assets);
 	view.onReady(webview => EventBus.register(webview));
 
 	return view;

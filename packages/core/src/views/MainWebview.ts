@@ -4,8 +4,8 @@ import vars from '../vars';
 import WebviewLoader from "../utils/WebviewLoader";
 
 export default class MainWebview extends WebviewLoader {
-  constructor(extensionPath: string, resolver: (path: string) => Promise<any>) {
-    super(extensionPath, resolver);
+  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>) {
+    super(context, resolver);
     const webviewPanel = vscode.window.createWebviewPanel(
       "home",
       "Home",
@@ -17,7 +17,6 @@ export default class MainWebview extends WebviewLoader {
     );
     webviewPanel.iconPath = vscode.Uri.file('');
 
-    const { webview, onDidDispose } = webviewPanel;
-    this.setWebview(webview, onDidDispose);
+    this.setPanel(webviewPanel);
   }
 }

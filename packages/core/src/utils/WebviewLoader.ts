@@ -4,19 +4,23 @@ import { join } from 'path';
 
 export default class WebviewLoader {
   protected readonly assetsPath: string;
-  protected webviewCallback: ((webview: vscode.Webview) => (webview: vscode.Webview) => void) | undefined;
+  protected webviewCallback: ((webview: vscode.Webview) => any) | undefined;
   protected destroyCallback: ((webview: vscode.Webview) => void) | undefined;
+  protected externalDestroyCallback: ((webview: vscode.Webview) => void) | undefined;
   private readonly getAsset;
+  private subscriptions;
   public webview: vscode.Webview | undefined;
+  public panel: vscode.WebviewPanel | undefined;
 
-  constructor(extensionPath: string, resolver: (path: string) => Promise<any>) {
+  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>) {
     this.webviewCallback = undefined;
-    this.assetsPath = join(extensionPath, vars.APP_DIR);
+    this.subscriptions = context.subscriptions;
+    this.assetsPath = join(context.extensionPath, vars.APP_DIR);
     this.getAsset = resolver;
   }
 
   // Callback when Webview is set, returns destroyCallback that is fired when webview destroys
-  public onReady(callback: (webview: vscode.Webview) => (webview: vscode.Webview) => void) {
+  public onReady(callback: (webview: vscode.Webview) => any) {
     if (this.webview) {
       this.destroyCallback = callback(this.webview);
     } else {
@@ -25,17 +29,28 @@ export default class WebviewLoader {
   }
 
   public onDestroy(callback: (webview: vscode.Webview) => void) {
-    if (this.webview) {
-      callback(this.webview);
-    } else {
-      this.destroyCallback = callback;
-    };
+    this.externalDestroyCallback = callback;
+  }
+
+  protected setPanel(panel: vscode.WebviewPanel) {
+    const { webview, onDidDispose } = panel;
+    this.panel = panel;
+    this.webview = webview;
+
+    this.destroyCallback = this.webviewCallback?.(webview);
+    onDidDispose(() => {
+      this.externalDestroyCallback?.(webview);
+      this.destroyCallback?.(webview);
+    }, null, this.subscriptions);
   }
 
   protected setWebview(webview: vscode.Webview, onDidDispose: vscode.Event<void>) {
     this.webview = webview;
     this.destroyCallback = this.webviewCallback?.(webview);
-    onDidDispose(() => this.destroyCallback?.(webview));
+    onDidDispose(() => {
+      this.externalDestroyCallback?.(webview);
+      this.destroyCallback?.(webview);
+    }, null, this.subscriptions);
   }
 
   private async resolveAsset(path: string, meta: AssetMeta): Promise<AssetContainer> {

@@ -12,7 +12,7 @@ class EventBus {
   }
 
   listener({ data }) {
-    console.group(`EB: Receive ${data.id}`);
+    console.log(`EB: Receive ${data.id}`, {data});
     const { id, payload } = data;
 
     if (id) {
@@ -25,7 +25,6 @@ class EventBus {
           console.log('EB: Set cache');
           this.setState(task.action, { ...payload, _task: task });
         }
-        console.groupEnd();
         this.queue.splice(taskIndex, 1);
         task.resolve?.({ ...payload, _task: task });
       }
@@ -40,17 +39,15 @@ class EventBus {
       cache,
     };
 
-    console.group(`EB: Emit ${task.id}`);
+    console.log(`EB: Emit ${task.id}`);
     console.log('EB: Action', task.action);
     console.log('EB: Payload', task.payload);
 
     if (cache) {
       console.log('EB: Get cache');
       const state = this.getState(action);
-      console.groupEnd();
       if (state) { return new Promise(resolve => resolve(state)); }
     }
-    console.groupEnd();
 
     this.queue.push(task);
     this.vscode?.postMessage(task);
