@@ -36,6 +36,10 @@ const styles = {
       color: 'var(--vscode-foreground, #cccccc)',
       outline: 'none',
     },
+    pre: {
+      fontFamily: 'var(--vscode-editor-font-family, Monaco)',
+      margin: 0,
+    },
   },
 };
 

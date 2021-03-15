@@ -4,7 +4,9 @@ import { join } from 'path';
 import { ExecuteCore, Run } from './d';
 
 export default function (core: ExecuteCore, instructions: string[], payload: object) {
-  run[instructions.join('.')](core, payload);
+  const command = run[instructions.join('.')];
+  if (command) { command(core, payload); }
+  else { core.respond({ ...payload, action: instructions.join('.') }); };
 }
 
 const run: Run = {

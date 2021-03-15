@@ -10,6 +10,9 @@ const EventBus = new Api();
 const userConfig = vscode.workspace.getConfiguration('home');
 let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
+const EmitViewChange = (active: boolean) => {
+	EventBus.emitAll({ payload: { action: 'ui.isActive', active } });
+};
 
 const openMainView = (context: vscode.ExtensionContext) => {
 	const columnToShowIn = vscode.window.activeTextEditor
@@ -22,9 +25,15 @@ const openMainView = (context: vscode.ExtensionContext) => {
 		const view = new MainWebview(context, assets);
 		view.onReady(webview => {
 			currentPanel = view.panel;
+			EmitViewChange(true);
 			EventBus.register(webview);
 		});
-		view.onDestroy(() => currentPanel = undefined);
+		view.panel?.onDidChangeViewState(({ webviewPanel: { active } }) => EmitViewChange(active));
+		view.onDestroy((webview) => {
+			currentPanel = undefined;
+			EventBus.unregister(webview);
+			EmitViewChange(false);
+		});
 
 		view.getWebviewContent();
 	}

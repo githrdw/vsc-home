@@ -1,5 +1,5 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 
 import { $ui } from '../../state';
@@ -28,6 +28,7 @@ const DefaultDropItem = {
 export const Grid = () => {
   const [widgets, setWidgets] = useRecoilState($ui.widgets);
   const [layout, setLayout] = useRecoilState($ui.layout);
+  const editMode = useRecoilValue($ui.editMode);
   const [droppingItem, setDroppingItem] = useState(DefaultDropItem);
   const preventLayoutChange = useRef(true);
 
@@ -46,7 +47,6 @@ export const Grid = () => {
       delete props.y;
     }
     newWidgets.push({ ...props, id });
-    console.warn('ADD', { props, widgets, newWidgets });
     setWidgets(newWidgets);
   };
 
@@ -54,7 +54,6 @@ export const Grid = () => {
     const widgetIndex = widgets.findIndex(({ id }) => id === props.id);
     const newWidgets: any = [...widgets];
     newWidgets[widgetIndex] = props;
-    console.warn(widgets, newWidgets, props, setWidgets);
     setWidgets(newWidgets);
   };
 
@@ -71,16 +70,19 @@ export const Grid = () => {
       );
     }
     return Children;
-  }, [widgets]);
+  }, [widgets, editMode]);
 
   return (
     <GridLayout
       {...grid}
+      isDraggable={editMode}
+      isResizable={editMode}
       layouts={layout}
       droppingItem={droppingItem}
       onLayoutChange={(l, layouts: any) => {
-        if (preventLayoutChange.current)
+        if (preventLayoutChange.current) {
           return (preventLayoutChange.current = false);
+        }
         setLayout(layouts);
       }}
       measureBeforeMount

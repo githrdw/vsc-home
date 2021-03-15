@@ -59,3 +59,21 @@ button {
 .chakra-button__icon {
   height: 16px;
 }
+
+pre.public-DraftStyleDefault-pre {
+  padding: 0.2em;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.DraftEditor-root {
+  height: 100%;
+
+  .DraftEditor-editorContainer {
+    height: 100%;
+  }
+
+  .public-DraftEditor-content {
+    height: 100%;
+  }
+}

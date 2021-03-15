@@ -6,15 +6,6 @@ import { BUILTIN_WIDGETS, WIDGET_META } from './constants'
 
 const Client = new EventBus()
 
-// Action button events
-const buttons = document.querySelectorAll("button[data-action]")
-for (button of buttons) {
-  button.addEventListener("click", () => {
-    const action = button.getAttribute("data-action")
-    Client.emit(action)
-  })
-}
-
 const loadCustomWidgets = async () => {
   const widgetsMeta = {}
   const template = document.getElementById('component-tmpl').innerText;
@@ -42,5 +33,35 @@ const loadCustomWidgets = async () => {
     component.addEventListener('dragstart', onDrag)
   }
 }
-// List and template render
+
+const actionDashboard = document.getElementById("action-dashboard")
+const openDashboard = () => Client.emit('vsch.ui.open')
+const enableEditmode = () => Client.emit('vsch.ui.enableEditmode')
+const disableEditmode = () => Client.emit('vsch.ui.disableEditmode')
+const initialActionDashboard = () => {
+  actionDashboard.innerText = "Open dashboard"
+  actionDashboard.onclick = openDashboard
+}
+
+Client.on('ui.editmodeState', ({ payload: { active } }) => {
+  if (active) {
+    actionDashboard.innerText = "Stop editing dashboard"
+    actionDashboard.onclick = disableEditmode
+  } else {
+    actionDashboard.innerText = "Edit dashboard"
+    actionDashboard.onclick = enableEditmode
+  }
+})
+
+Client.on('ui.isActive', ({ payload: { active } }) => {
+  if (active) {
+    Client.emit('vsch.ui.getEditmodeState')
+  } else {
+    initialActionDashboard()
+  }
+})
+
+initialActionDashboard()
 loadCustomWidgets()
+
+Client.emit('vsch.ui.getEditmodeState')

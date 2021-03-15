@@ -101,7 +101,14 @@ const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
         </Menu>
       </Flex>
       <Divider m={0} mt="-1px" />
-      <Box className="selection-allowed" px={2} py={3} borderRadius="sm">
+      <Box
+        className="selection-allowed"
+        px={2}
+        py={3}
+        borderRadius="sm"
+        overflow="auto"
+        height="calc(100% - 34px)"
+      >
         {content}
         {/* <Input /> */}
       </Box>

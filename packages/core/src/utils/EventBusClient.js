@@ -1,6 +1,7 @@
 class EventBus {
   constructor() {
     console.log('EB: Initialize listener');
+    this.callbacks = [];
     this.queue = [];
     this.vscode = window.acquireVsCodeApi?.();
     window.addEventListener('message', msg => this.listener(msg));
@@ -12,15 +13,14 @@ class EventBus {
   }
 
   listener({ data }) {
-    console.log(`EB: Receive ${data.id}`, {data});
     const { id, payload } = data;
 
     if (id) {
       const taskIndex = this.queue.findIndex(({ id: _id }) => id === _id);
       const task = this.queue[taskIndex];
+
       if (task) {
-        console.log('EB: Action', task.action);
-        console.log('EB: Payload', payload);
+        console.log(`EB: Receive ${task.action}`, { task, payload });
         if (task.cache) {
           console.log('EB: Set cache');
           this.setState(task.action, { ...payload, _task: task });
@@ -29,6 +29,16 @@ class EventBus {
         task.resolve?.({ ...payload, _task: task });
       }
     }
+    if (payload?.action) {
+      const callbacks = this.callbacks.filter(({ action }) => action === payload.action);
+      if (callbacks.length) {
+        for (const { callback } of callbacks) { callback?.(data); };
+      }
+    }
+  }
+
+  on(action, callback) {
+    this.callbacks.push({ action, callback });
   }
 
   emit(action, payload, cache = false) {
@@ -39,13 +49,11 @@ class EventBus {
       cache,
     };
 
-    console.log(`EB: Emit ${task.id}`);
-    console.log('EB: Action', task.action);
-    console.log('EB: Payload', task.payload);
+    console.log(`EB: Emit ${action}`, { task });
 
     if (cache) {
-      console.log('EB: Get cache');
       const state = this.getState(action);
+      console.log('EB: Get cache', { state });
       if (state) { return new Promise(resolve => resolve(state)); }
     }
 

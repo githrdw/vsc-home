@@ -45,5 +45,11 @@ const $widgets = atom({
   default: defaultLayout,
 });
 
+const $editMode = atom({
+  key: 'ui.editMode',
+  default: false,
+});
+
 export const layout = $layout;
 export const widgets = $widgets;
+export const editMode = $editMode;
