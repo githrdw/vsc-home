@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useMemo, FocusEvent } from 'react';
+import React, { Suspense, lazy, useMemo, FocusEvent, useRef } from 'react';
 
 import {
   Box,
@@ -14,21 +14,20 @@ import {
   Progress,
   Spacer,
 } from '@chakra-ui/react';
-import {
-  HamburgerIcon,
-  AddIcon,
-  ExternalLinkIcon,
-  RepeatIcon,
-  EditIcon,
-  StarIcon,
-} from '@chakra-ui/icons';
+import { HamburgerIcon, DeleteIcon, StarIcon } from '@chakra-ui/icons';
 
 import IconPlaceholder from './icon-placeholder';
 import { WidgetProps } from './types';
+import Confirm from '@atoms/confirm';
 
-const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
+const Widget = ({
+  onWidgetUpdate,
+  onWidgetDelete,
+  ...widgetMeta
+}: WidgetProps) => {
   const { appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
+  const confirm = useRef<() => Promise<() => void>>();
 
   const updateName = ({ target: { innerText } }: FocusEvent<HTMLElement>) => {
     if (innerText !== title)
@@ -36,6 +35,12 @@ const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
         ...widgetMeta,
         appearance: { title: innerText, color },
       });
+  };
+
+  const deleteWidget = async () => {
+    if (await confirm.current?.()) {
+      onWidgetDelete?.();
+    }
   };
 
   const content = useMemo(() => {
@@ -53,6 +58,7 @@ const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
 
   return (
     <Box bg={color} height="100%">
+      <Confirm ref={confirm} />
       <Flex p={2} fontSize="lg" align="center">
         <IconPlaceholder bg={color}>
           <StarIcon w={5} h={4} />
@@ -84,17 +90,8 @@ const Widget = ({ onWidgetUpdate, ...widgetMeta }: WidgetProps) => {
           />
           <Portal>
             <MenuList>
-              <MenuItem icon={<AddIcon />} command="⌘T">
-                New Tab
-              </MenuItem>
-              <MenuItem icon={<ExternalLinkIcon />} command="⌘N">
-                New Window
-              </MenuItem>
-              <MenuItem icon={<RepeatIcon />} command="⌘⇧N">
-                Open Closed Tab
-              </MenuItem>
-              <MenuItem icon={<EditIcon />} command="⌘O">
-                Open File...
+              <MenuItem onClick={deleteWidget} icon={<DeleteIcon />}>
+                Delete
               </MenuItem>
             </MenuList>
           </Portal>

@@ -12,4 +12,5 @@ export interface WidgetProps {
   x?: number;
   y?: number;
   onWidgetUpdate?: (data: WidgetProps) => void;
+  onWidgetDelete?: () => void;
 }

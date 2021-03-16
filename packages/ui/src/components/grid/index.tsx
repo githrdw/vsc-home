@@ -50,6 +50,12 @@ export const Grid = () => {
     setWidgets(newWidgets);
   };
 
+  const deleteWidget = (id: string) => {
+    const widgetIndex = widgets.findIndex(({ id: _id }) => _id === id);
+    const newWidgets: any = [...widgets];
+    newWidgets.splice(widgetIndex, 1);
+    setWidgets(newWidgets);
+  };
   const updateWidget = (props: WidgetProps) => {
     const widgetIndex = widgets.findIndex(({ id }) => id === props.id);
     const newWidgets: any = [...widgets];
@@ -65,6 +71,7 @@ export const Grid = () => {
           <Widget
             {...props}
             onWidgetUpdate={data => updateWidget({ id, ...data })}
+            onWidgetDelete={() => deleteWidget(id)}
           />
         </div>
       );
