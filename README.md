@@ -26,8 +26,8 @@ The following features are available:
 
 ## Installation
 This extension is not available in the VS Code extension store yet.
-You can go to the [https://github.com/githrdw/vsc-home/releases](releases) to download and install the `.vsix` by yourself.
-For PowerShell there is [https://gist.github.com/githrdw/75eae6fa33a3fbfa11f485ea5d0a826b](this) script available.
+You can go to the [releases](https://github.com/githrdw/vsc-home/releases) to download and install the `.vsix` by yourself.
+For PowerShell there is [this](https://gist.github.com/githrdw/75eae6fa33a3fbfa11f485ea5d0a826b) script available.
 
 ## How to add your widget
 For the time-being the following steps must be taken
