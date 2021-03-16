@@ -11,7 +11,7 @@ An homecoming dashboard extension for Visual Studio Code
 <br/>
 <br/>
 
-## Introdcution
+## Introduction
 `Home` is an extension for Visual Studio Code that allows you to design your own **dashboard** with built-in or custom **React components**.
 The following features are available:
 
