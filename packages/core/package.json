@@ -49,9 +49,15 @@
 			"title": "Home",
 			"properties": {
 				"home.openOnStartup": {
-					"type": "boolean",
-					"default": false,
-					"description": "Opens dashboard when VS Code is started."
+					"type": "string",
+					"default": "whenBlank",
+					"enum": ["always", "whenBlank", "never"],
+					"enumDescriptions": [
+						"Opens dashboard always when opening a new VS Code window",
+						"Opens dashboard when opening a new blank VS Code window",
+						"Only opens dashboard by hand from the sidebar or command prompt"
+					],
+					"description": "Defines when the dashboard should automatically open."
 				},
 				"home.configDirectory": {
 					"type": "string",

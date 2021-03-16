@@ -7,8 +7,8 @@ export default function (core: ExecuteCore, instructions: string[], payload: obj
 }
 
 const run: Run = {
-  'openFolder': ({ respond }, { path, newWindow = true }) => {
-    commands.executeCommand('vscode.openFolder', Uri.file(path), newWindow)
-      .then(() => respond());
+  'openFolder': async ({ respond }, { path, newWindow = true }) => {
+    await commands.executeCommand('vscode.openFolder', Uri.file(path), newWindow);
+    respond();
   }
 };

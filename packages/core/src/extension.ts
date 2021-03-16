@@ -62,9 +62,14 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const openOnStartup = userConfig.get('openOnStartup');
-	if (openOnStartup) {
+	if (openOnStartup === "always") {
 		openMainView(context);
+	} else if (openOnStartup === "whenBlank") {
+		if (!vscode.workspace.workspaceFolders?.length) {
+			openMainView(context);
+		}
 	}
+	
 	context.subscriptions.push(mainViewCommand);
 
 	const sidebarView = vscode.window.registerWebviewViewProvider("vsch.openSidebarView", openSidebarView(context));
