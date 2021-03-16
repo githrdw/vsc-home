@@ -45,7 +45,7 @@ yarn build
 # or npm build
 ```
 4. Drag your new widget into the grid
-5. 
+
 All configurations are stored in AppData, feel free to have a look and customize!
 
 ## Technical details
