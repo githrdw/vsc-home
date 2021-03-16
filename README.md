@@ -24,6 +24,11 @@ The following features are available:
 
 > Note that this project is in very early stage and much needs to be done
 
+## Installation
+This extension is not available in the VS Code extension store yet.
+You can go to the [https://github.com/githrdw/vsc-home/releases](releases) to download and install the `.vsix` by yourself.
+For PowerShell there is [https://gist.github.com/githrdw/75eae6fa33a3fbfa11f485ea5d0a826b](this) script available.
+
 ## How to add your widget
 For the time-being the following steps must be taken
 1. Ensure that there is at least one widget placed on your dashboard
