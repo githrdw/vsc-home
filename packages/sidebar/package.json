@@ -1,6 +1,6 @@
 {
   "name": "@vsch/sidebar",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "Sidebar",
   "main": "index.js",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "core": "^0.0.1-alpha.2",
+    "core": "^0.0.1-alpha.3",
     "mustache": "^4.1.0"
   },
   "scripts": {
