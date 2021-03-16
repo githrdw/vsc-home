@@ -30,19 +30,22 @@ You can go to the [releases](https://github.com/githrdw/vsc-home/releases) to do
 For PowerShell there is [this](https://gist.github.com/githrdw/75eae6fa33a3fbfa11f485ea5d0a826b) script available.
 
 ## How to add your widget
-For the time-being the following steps must be taken
-1. Ensure that there is at least one widget placed on your dashboard
-2. Open the appdata folder on your machine
-<br/>**Windows**<br/> `%appdata%/vsc-home`
-<br/>**Mac**<br/> (not yet verified where this directory is)
-<br/>**Linux**<br/> (not yet verified where this directory is)
-3. Create or go to the directory `widgets`
-4. Clone the widget template here
-<br/>*Make sure that this directory starts with `vsch_`*
-5. Build the widget (resulting in a `dist` folder)
-6. Re-open the sidebar
-7. Drag your widget into the grid
-
+You can start using the [vsch-template](https://github.com/githrdw/vsch-template):
+1. Go to `%appdata%/vsc-home/widgets` or similar
+2. Clone the template and name the directory `vsch_Demo`:
+```
+git clone git@github.com:githrdw/vsch-template.git vsch_Demo
+```
+3. Build and install the widget
+```
+cd vsch_Demo
+yarn install
+# or npm install
+yarn build
+# or npm build
+```
+4. Drag your new widget into the grid
+5. 
 All configurations are stored in AppData, feel free to have a look and customize!
 
 ## Technical details
