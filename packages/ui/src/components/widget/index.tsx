@@ -26,7 +26,7 @@ const Widget = ({
   onWidgetDelete,
   ...widgetMeta
 }: WidgetProps) => {
-  const { appearance, data, type } = widgetMeta;
+  const { id, appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
   const [baseColor, alpha] = color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
@@ -55,7 +55,7 @@ const Widget = ({
 
     return (
       <Suspense fallback={<Progress size="xs" isIndeterminate />}>
-        <Component {...data} />
+        <Component {...{ id, ...data }} />
       </Suspense>
     );
   }, [type, data]);

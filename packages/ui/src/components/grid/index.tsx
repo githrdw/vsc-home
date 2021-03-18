@@ -65,13 +65,13 @@ export const Grid = () => {
 
   const RenderedWidgets = useMemo(() => {
     const Children = [];
-    for (const { id, ...props } of widgets) {
+    for (const props of widgets) {
       Children.push(
-        <div key={id}>
+        <div key={props.id}>
           <Widget
             {...props}
-            onWidgetUpdate={data => updateWidget({ id, ...data })}
-            onWidgetDelete={() => deleteWidget(id)}
+            onWidgetUpdate={data => updateWidget({ id: props.id, ...data })}
+            onWidgetDelete={() => deleteWidget(props.id)}
           />
         </div>
       );

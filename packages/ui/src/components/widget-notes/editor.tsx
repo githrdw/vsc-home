@@ -1,10 +1,48 @@
-import React, { useState, useRef } from 'react';
-import { Editor, EditorState, Modifier, RichUtils } from 'draft-js';
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import {
+  Editor,
+  EditorState,
+  Modifier,
+  RichUtils,
+  convertFromHTML,
+  ContentState,
+} from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
 import { Box } from '@chakra-ui/layout';
+import EventBus from '@hooks/event-bus';
 
-const Component = () => {
-  const [state, setState] = useState(EditorState.createEmpty());
+const Component = ({ id }: { id: string }) => {
+  const [state, _setState] = useState(EditorState.createEmpty());
+  const Bus = useContext(EventBus);
   const editorRef: any = useRef();
+
+  useEffect(() => {
+    Bus.emit('vsch.ui.getData', {
+      module: 'notes',
+      fileName: id + '.html',
+    }).then(({ data }: { data: string }) => {
+      if (data) {
+        const html = convertFromHTML(data);
+        const content = ContentState.createFromBlockArray(
+          html.contentBlocks,
+          html.entityMap
+        );
+        setState(EditorState.createWithContent(content));
+      }
+    });
+  }, []);
+
+  const setState = (newState: EditorState) => {
+    _setState(newState);
+    const content = newState.getCurrentContent();
+    const html = stateToHTML(content);
+
+    Bus.emit('vsch.ui.setData', {
+      module: 'notes',
+      fileName: id + '.html',
+      data: html,
+    });
+  };
 
   const handleKeyCommand = (command: string, editorState: EditorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -38,6 +76,7 @@ const Component = () => {
       cursor="text"
       onKeyDown={keyDown}
     >
+      ID: {id}
       <Editor
         ref={editorRef}
         editorState={state}

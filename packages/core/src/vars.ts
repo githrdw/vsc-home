@@ -9,11 +9,13 @@ const USR_ROOT = configDirectory || process.env.APPDATA || (process.platform ===
 const USR_APP_DIR = join(USR_ROOT, 'vsc-home');
 const WIDGETS_ROOT = 'widgets';
 const LAYOUTS_ROOT = 'layouts';
+const DATA_ROOT = 'data';
 
 export default {
   APP_DIR,
   USR_ROOT,
   USR_APP_DIR,
   WIDGETS_ROOT,
-  LAYOUTS_ROOT
+  LAYOUTS_ROOT,
+  DATA_ROOT
 };

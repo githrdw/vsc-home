@@ -14,6 +14,43 @@ const run: Run = {
     await commands.executeCommand('vsch.openMainView');
     respond();
   },
+  'ui.setData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName, data }) => {
+    const file = join(USR_APP_DIR, DATA_ROOT, module, fileName);
+    const uri = Uri.file(file);
+
+    try {
+      const text = new TextEncoder().encode(data);
+      await workspace.fs.writeFile(uri, text);
+      respond();
+    } catch (e) {
+      respond({ error: e.toString() + ' while writing ' + file });
+    }
+  },
+  'ui.getData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName }) => {
+    const file = join(USR_APP_DIR, DATA_ROOT, module, fileName);
+    const uri = Uri.file(file);
+    let notExisting;
+    try {
+      const data = await workspace.fs.readFile(uri);
+      const text = new TextDecoder("utf-8").decode(data);
+      respond({ data: text });
+    } catch (e) {
+      if (e.code === "FileNotFound") {
+        notExisting = true;
+      } else {
+        respond({ error: e.toString() + ' while reading ' + file });
+      }
+    }
+
+    if (notExisting) {
+      try {
+        await workspace.fs.writeFile(uri, new Uint8Array());
+        respond({ data: undefined });
+      } catch (e) {
+        respond({ error: e.toString() + ' while creating ' + file });
+      }
+    }
+  },
   'ui.setLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default', layout }) => {
     const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
     const uri = Uri.file(file);
