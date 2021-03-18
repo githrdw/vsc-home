@@ -13,6 +13,7 @@ import {
   Portal,
   Progress,
   Spacer,
+  useToken,
 } from '@chakra-ui/react';
 import { HamburgerIcon, DeleteIcon, StarIcon } from '@chakra-ui/icons';
 
@@ -27,7 +28,10 @@ const Widget = ({
 }: WidgetProps) => {
   const { appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
+  const [baseColor, alpha] = color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
+
+  const [chakraColor] = useToken('colors', [baseColor]);
 
   const updateName = ({ target: { innerText } }: FocusEvent<HTMLElement>) => {
     if (innerText !== title)
@@ -56,11 +60,25 @@ const Widget = ({
     );
   }, [type, data]);
 
+  const alphaColor = useMemo(() => {
+    const hexAlpha = Math.round((Number(alpha) / 10) * 255)
+      .toString(16)
+      .padStart(2, '0');
+
+    if (typeof chakraColor !== 'string') {
+      return chakraColor[500] + hexAlpha;
+    } else if (chakraColor.includes('#')) {
+      return chakraColor + hexAlpha;
+    } else {
+      return chakraColor;
+    }
+  }, [color]);
+
   return (
-    <Box bg={color} height="100%">
+    <Box bg={alphaColor} height="100%">
       <Confirm ref={confirm} />
       <Flex p={2} fontSize="lg" align="center">
-        <IconPlaceholder bg={color}>
+        <IconPlaceholder bg={alphaColor}>
           <StarIcon w={5} h={4} />
         </IconPlaceholder>
         <Heading
