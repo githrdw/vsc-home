@@ -1,4 +1,11 @@
-import React, { Suspense, lazy, useMemo, FocusEvent, useRef } from 'react';
+import React, {
+  Suspense,
+  lazy,
+  useMemo,
+  FocusEvent,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   Box,
@@ -28,6 +35,7 @@ const Widget = ({
 }: WidgetProps) => {
   const { id, appearance, data, type } = widgetMeta;
   const { title, color } = appearance;
+  const [callbacks, setCallbacks] = useState<{ delete: any }>();
   const [baseColor, alpha] = color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
 
@@ -43,6 +51,7 @@ const Widget = ({
 
   const deleteWidget = async () => {
     if (await confirm.current?.()) {
+      callbacks?.delete();
       onWidgetDelete?.();
     }
   };
@@ -55,7 +64,7 @@ const Widget = ({
 
     return (
       <Suspense fallback={<Progress size="xs" isIndeterminate />}>
-        <Component {...{ id, ...data }} />
+        <Component {...{ id, setCallbacks, ...data }} />
       </Suspense>
     );
   }, [type, data]);

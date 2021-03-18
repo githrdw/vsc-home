@@ -26,6 +26,17 @@ const run: Run = {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
+  'ui.deleteData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName }) => {
+    const file = join(USR_APP_DIR, DATA_ROOT, module, fileName);
+    const uri = Uri.file(file);
+
+    try {
+      await workspace.fs.delete(uri);
+      respond();
+    } catch (e) {
+      respond({ error: e.toString() + ' while deleting ' + file });
+    }
+  },
   'ui.getData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName }) => {
     const file = join(USR_APP_DIR, DATA_ROOT, module, fileName);
     const uri = Uri.file(file);

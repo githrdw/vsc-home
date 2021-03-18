@@ -11,7 +11,13 @@ import { stateToHTML } from 'draft-js-export-html';
 import { Box } from '@chakra-ui/layout';
 import EventBus from '@hooks/event-bus';
 
-const Component = ({ id }: { id: string }) => {
+const Component = ({
+  id,
+  setCallbacks,
+}: {
+  id: string;
+  setCallbacks: (callbacks: any) => void;
+}) => {
   const [state, _setState] = useState(EditorState.createEmpty());
   const Bus = useContext(EventBus);
   const editorRef: any = useRef();
@@ -30,17 +36,25 @@ const Component = ({ id }: { id: string }) => {
         setState(EditorState.createWithContent(content));
       }
     });
+    setCallbacks({
+      delete: () => {
+        Bus.emit('vsch.ui.deleteData', {
+          module: 'notes',
+          fileName: id + '.html',
+        });
+      },
+    });
   }, []);
 
   const setState = (newState: EditorState) => {
     _setState(newState);
     const content = newState.getCurrentContent();
-    const html = stateToHTML(content);
+    const data = stateToHTML(content);
 
     Bus.emit('vsch.ui.setData', {
       module: 'notes',
       fileName: id + '.html',
-      data: html,
+      data,
     });
   };
 
@@ -76,7 +90,6 @@ const Component = ({ id }: { id: string }) => {
       cursor="text"
       onKeyDown={keyDown}
     >
-      ID: {id}
       <Editor
         ref={editorRef}
         editorState={state}
