@@ -7,7 +7,7 @@
 An homecoming dashboard extension for Visual Studio Code
 </p></i>
 <br/>
-<img src="assets/Demo - Dashboard.png" alt="Screenshot of usage" />
+<img src="assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
 <br/>
 <br/>
 
