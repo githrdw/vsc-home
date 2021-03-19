@@ -7,26 +7,13 @@ import React, {
   useState,
 } from 'react';
 
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Portal,
-  Progress,
-  Spacer,
-  useToken,
-} from '@chakra-ui/react';
-import { HamburgerIcon, DeleteIcon, StarIcon } from '@chakra-ui/icons';
+import { Box, Progress, useToken } from '@chakra-ui/react';
 
-import IconPlaceholder from './icon-placeholder';
+import Header from './header';
 import { WidgetProps } from './types';
 import Confirm from '@atoms/confirm';
+import { useRecoilValue } from 'recoil';
+import { $ui } from '@state';
 
 const Widget = ({
   onWidgetUpdate,
@@ -34,8 +21,9 @@ const Widget = ({
   ...widgetMeta
 }: WidgetProps) => {
   const { id, appearance, data, type } = widgetMeta;
-  const { title, color } = appearance;
+  const { title, color, hideTitlebar } = appearance;
   const [callbacks, setCallbacks] = useState<{ delete: any }>();
+  const editMode = useRecoilValue($ui.editMode);
   const [baseColor, alpha] = color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
 
@@ -84,57 +72,20 @@ const Widget = ({
   }, [color]);
 
   return (
-    <Box bg={alphaColor} height="100%">
+    <Box bg={alphaColor} height="100%" display="flex" flexDir="column">
       <Confirm ref={confirm} />
-      <Flex p={2} fontSize="lg" align="center">
-        <IconPlaceholder bg={alphaColor}>
-          <StarIcon w={5} h={4} />
-        </IconPlaceholder>
-        <Heading
-          size="sm"
-          w="calc(100% - 3.7rem)"
-          m={0}
-          ml="3.5rem"
-          p=".6rem"
-          position="absolute"
-          left={0}
-          whiteSpace="nowrap"
-          overflow="hidden"
-          suppressContentEditableWarning={true}
-          onBlur={updateName}
-          contentEditable
-        >
-          {title}
-        </Heading>
-        <Spacer />
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<HamburgerIcon />}
-            size="xs"
-            variant="outline"
-          />
-          <Portal>
-            <MenuList>
-              <MenuItem onClick={deleteWidget} icon={<DeleteIcon />}>
-                Delete
-              </MenuItem>
-            </MenuList>
-          </Portal>
-        </Menu>
-      </Flex>
-      <Divider m={0} mt="-1px" />
+      {(!hideTitlebar || editMode) && (
+        <Header {...{ title, alphaColor, updateName, deleteWidget }} />
+      )}
       <Box
         className="selection-allowed"
         px={2}
-        py={3}
+        py={2}
         borderRadius="sm"
         overflow="auto"
-        height="calc(100% - 34px)"
+        flex="1"
       >
         {content}
-        {/* <Input /> */}
       </Box>
     </Box>
   );

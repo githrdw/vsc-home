@@ -89,6 +89,9 @@ const Component = ({
       onClick={() => editorRef.current.focus()}
       cursor="text"
       onKeyDown={keyDown}
+      display="flex"
+      flex="1"
+      flexDir="column"
     >
       <Editor
         ref={editorRef}

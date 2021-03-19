@@ -1,0 +1,71 @@
+import React from 'react';
+
+import {
+  Divider,
+  Flex,
+  Heading,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Portal,
+  Spacer,
+} from '@chakra-ui/react';
+import { HamburgerIcon, DeleteIcon, StarIcon } from '@chakra-ui/icons';
+
+import IconPlaceholder from './icon-placeholder';
+import { HeaderProps } from './types';
+
+const Header = ({
+  title,
+  alphaColor,
+  updateName,
+  deleteWidget,
+}: HeaderProps) => {
+  return (
+    <>
+      <Flex p={2} fontSize="lg" align="center">
+        <IconPlaceholder bg={alphaColor}>
+          <StarIcon w={5} h={4} />
+        </IconPlaceholder>
+        <Heading
+          size="sm"
+          w="calc(100% - 3.7rem)"
+          m={0}
+          ml="3.5rem"
+          p=".6rem"
+          position="absolute"
+          left={0}
+          whiteSpace="nowrap"
+          overflow="hidden"
+          suppressContentEditableWarning={true}
+          onBlur={updateName}
+          contentEditable
+        >
+          {title}
+        </Heading>
+        <Spacer />
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            aria-label="Options"
+            icon={<HamburgerIcon />}
+            size="xs"
+            variant="outline"
+          />
+          <Portal>
+            <MenuList>
+              <MenuItem onClick={deleteWidget} icon={<DeleteIcon />}>
+                Delete
+              </MenuItem>
+            </MenuList>
+          </Portal>
+        </Menu>
+      </Flex>
+      <Divider m={0} mt="-1px" />
+    </>
+  );
+};
+
+export default Header;

@@ -67,13 +67,17 @@ pre.public-DraftStyleDefault-pre {
 }
 
 .DraftEditor-root {
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
   .DraftEditor-editorContainer {
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
 
   .public-DraftEditor-content {
-    height: 100%;
+    flex: 1;
   }
 }
