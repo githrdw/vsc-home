@@ -18,7 +18,9 @@ declare class EventBus {
 
   emit(action: string, payload: object, cache?: boolean): any
 
-  on(action: string, callback: TaskResolve): void
+  on(action: string, callback: TaskResolve): { action: string, callback: TaskResolve }
+
+  off(parameters: { action: string, callback: TaskResolve }[] | { action: string, callback: TaskResolve }): void
 
   setState(name: string, data: object): void
 

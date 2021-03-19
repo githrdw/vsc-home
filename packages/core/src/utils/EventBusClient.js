@@ -39,6 +39,24 @@ class EventBus {
 
   on(action, callback) {
     this.callbacks.push({ action, callback });
+    return () => { action, callback; };
+  }
+
+  off(parameters, isCallback = true) {
+    const remove = (_action, _callback) => {
+      const callbackIndex = this.callbacks.findIndex(({ action, callback }) => callback === _callback && _action === action);
+      if (~callbackIndex) { this.callbacks.splice(callbackIndex, 1); };
+    };
+    if (Array.isArray(parameters)) {
+      for (const { callback, action } of parameters) {
+        if (isCallback) { return () => remove(callback, action); }
+        else { remove(callback, action); };
+      }
+    } else {
+      const { callback, action } = parameters;
+      if (isCallback) { return () => remove(callback, action); }
+      else { remove(callback, action); };
+    }
   }
 
   emit(action, payload, cache = false) {
