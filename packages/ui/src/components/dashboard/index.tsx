@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useSetRecoilState, useRecoilState } from 'recoil';
 
 import EventBus from '@hooks/event-bus';
@@ -21,8 +21,13 @@ const Dashboard = () => {
     });
   }, [widgets]);
 
-  const emitEditmode = useCallback(() => {
+  useEffect(() => {
     Bus.emit('vsch.ui.editmodeState', { active: editMode });
+    return Bus.off(
+      Bus.on('ui.getEditmodeState', () => {
+        Bus.emit('vsch.ui.editmodeState', { active: editMode });
+      })
+    );
   }, [editMode]);
 
   useEffect(() => {
@@ -35,13 +40,12 @@ const Dashboard = () => {
         if (recent) setFirstRecent(recent.workspaces);
       }
     );
+
+    return Bus.off([
+      Bus.on('ui.enableEditmode', () => setEditmode(true)),
+      Bus.on('ui.disableEditmode', () => setEditmode(false)),
+    ]);
   }, []);
-
-  Bus.on('ui.enableEditmode', () => setEditmode(true));
-  Bus.on('ui.disableEditmode', () => setEditmode(false));
-  Bus.on('ui.getEditmodeState', emitEditmode);
-
-  useEffect(emitEditmode, [editMode]);
 
   return <Grid />;
 };
