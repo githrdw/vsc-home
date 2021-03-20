@@ -7,8 +7,8 @@ const ListItem = ({ Icon, path }: any) => {
   const Bus = useContext(EventBus);
 
   const name = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_fullPath, _name] = path.match(/.*[\\|/](.*)$/);
+    if (!path) return null;
+    const [, _name] = path.match(/.*[\\|/](.*)$/);
     return _name;
   }, [path]);
 

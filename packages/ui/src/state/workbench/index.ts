@@ -1,6 +1,7 @@
+import { RecentItem } from '@components/widget-collection/interfaces';
 import { atom } from 'recoil';
 
-const $recentlyOpened = atom({
+const $recentlyOpened = atom<RecentItem[]>({
   key: 'workbench.recentlyOpened',
   default: [],
 });

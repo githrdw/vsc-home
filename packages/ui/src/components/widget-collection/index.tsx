@@ -5,7 +5,7 @@ import { VscFileSubmodule, VscFile, VscFolder } from 'react-icons/vsc';
 import { FsTypes, WidgetCollectionProps } from './interfaces';
 import ListItem from '@atoms/list-item';
 
-const getIcon = (type: number) => {
+const getIcon = (type: FsTypes) => {
   const Icon = () => {
     const Component =
       type === FsTypes.Workspace
@@ -22,18 +22,10 @@ const WidgetCollection = ({ size = 5, items }: WidgetCollectionProps) => {
   const ItemList = useMemo(() => {
     const Children = [];
     if (items) {
-      for (const item of items.slice(0, size)) {
-        const type = item.workspace
-          ? FsTypes.Workspace
-          : item.folderUri
-          ? FsTypes.Folder
-          : FsTypes.File;
-        const path = item.workspace
-          ? item.workspace.configPath.path
-          : item.folderUri?.path;
+      for (const { path, name, type } of items.slice(0, size)) {
         Children.push(
           <div key={path}>
-            <ListItem {...{ Icon: getIcon(type), path }} />
+            <ListItem {...{ Icon: getIcon(type), name, path }} />
           </div>
         );
       }

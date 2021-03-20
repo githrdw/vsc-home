@@ -1,19 +1,26 @@
 export const enum FsTypes {
-  Workspace,
-  Folder,
-  File,
+  Workspace = 'workspace',
+  Folder = 'folder',
+  File = 'file',
+}
+export interface RecentItem {
+  folderUri?: {
+    path: string;
+  };
+  workspace?: {
+    configPath: {
+      path: string;
+    };
+  };
+}
+
+export interface CollectionItem {
+  type: FsTypes;
+  path: string;
+  name: string;
 }
 
 export interface WidgetCollectionProps {
-  items: {
-    folderUri?: {
-      path: string;
-    };
-    workspace?: {
-      configPath: {
-        path: string;
-      };
-    };
-  }[];
+  items: CollectionItem[];
   size: number;
 }
