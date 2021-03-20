@@ -75,6 +75,33 @@ Also contains a list of components to use that can be dragged to the grid
 
 Used techniques: HTML, Sass, ES6, Rollup
 
+## Add file paths to the collection widget
+Until the context menu option for adding paths to the collection widget are done, you can modify the collection widget with the following configuration:
+
+```
+"type": "collection"
+"data": {
+  "items": [
+    {
+      "type": "workspace",
+      "path": "C:/Laragon/wordpress-template-1"
+    },
+    {
+      "type": "folder",
+      "path": "C:/Laragon/wordpress-template-2"
+    },
+    {
+      "type": "file",
+      "path": "C:/Laragon/django-drf/test.txt"
+    },
+    {
+      "type": "folder",
+      "path": "C:/Laragon/graphene-graphql"
+    }
+  ]
+},
+```
+
 ## Todo
 - Add more widget controls
   - Delete
