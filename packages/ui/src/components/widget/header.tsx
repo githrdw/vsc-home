@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Divider,
@@ -12,17 +12,30 @@ import {
   Portal,
   Spacer,
 } from '@chakra-ui/react';
-import { HamburgerIcon, DeleteIcon, StarIcon } from '@chakra-ui/icons';
+import {
+  HamburgerIcon,
+  DeleteIcon,
+  StarIcon,
+  SunIcon,
+  ViewIcon,
+  ViewOffIcon,
+} from '@chakra-ui/icons';
 
+import ColorPopover from '@atoms/color-popover';
 import IconPlaceholder from './icon-placeholder';
 import { HeaderProps } from './types';
 
 const Header = ({
   title,
   alphaColor,
+  hideTitlebar,
   updateName,
   deleteWidget,
+  updateColor,
+  toggleTitlebar,
 }: HeaderProps) => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
   return (
     <>
       <Flex p={2} fontSize="lg" align="center">
@@ -46,16 +59,31 @@ const Header = ({
           {title}
         </Heading>
         <Spacer />
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            aria-label="Options"
-            icon={<HamburgerIcon />}
-            size="xs"
-            variant="outline"
-          />
+        <Menu placement="bottom">
+          <ColorPopover
+            open={popoverOpen}
+            close={() => setPopoverOpen(false)}
+            onColor={updateColor}
+          >
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<HamburgerIcon />}
+              size="xs"
+              variant="outline"
+            />
+          </ColorPopover>
           <Portal>
             <MenuList>
+              <MenuItem onClick={() => setPopoverOpen(true)} icon={<SunIcon />}>
+                Change color
+              </MenuItem>
+              <MenuItem
+                onClick={toggleTitlebar}
+                icon={hideTitlebar ? <ViewIcon /> : <ViewOffIcon />}
+              >
+                {hideTitlebar ? 'Show' : 'Hide'} titlebar
+              </MenuItem>
               <MenuItem onClick={deleteWidget} icon={<DeleteIcon />}>
                 Delete
               </MenuItem>

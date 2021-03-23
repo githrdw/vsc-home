@@ -25,9 +25,16 @@ const styles = {
   },
 };
 
+const colors = {
+  gray: {
+    700: 'var(--vscode-editor-background, #1e1e1e)',
+  },
+};
+
 export default extendTheme({
   config: {
     initialColorMode: 'dark',
   },
   styles,
+  colors,
 });

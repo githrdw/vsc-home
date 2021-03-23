@@ -21,6 +21,9 @@ export interface WidgetProps {
 export interface HeaderProps {
   title: string;
   alphaColor: string;
+  hideTitlebar?: boolean;
   updateName: (element: FocusEvent<HTMLElement>) => void;
+  updateColor: (color: string) => void;
+  toggleTitlebar: () => void;
   deleteWidget: () => void;
 }

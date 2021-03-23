@@ -33,8 +33,24 @@ const Widget = ({
     if (innerText !== title)
       onWidgetUpdate?.({
         ...widgetMeta,
-        appearance: { title: innerText, color },
+        appearance: { title: innerText, color, hideTitlebar },
       });
+  };
+
+  const updateColor = (newColor: string) => {
+    if (newColor !== color) {
+      onWidgetUpdate?.({
+        ...widgetMeta,
+        appearance: { title, color: newColor, hideTitlebar },
+      });
+    }
+  };
+
+  const toggleTitlebar = () => {
+    onWidgetUpdate?.({
+      ...widgetMeta,
+      appearance: { title, color, hideTitlebar: !hideTitlebar },
+    });
   };
 
   const deleteWidget = async () => {
@@ -64,7 +80,7 @@ const Widget = ({
 
     if (typeof chakraColor !== 'string') {
       return chakraColor[500] + hexAlpha;
-    } else if (chakraColor.includes('#')) {
+    } else if (chakraColor.includes('#') && alpha) {
       return chakraColor + hexAlpha;
     } else {
       return chakraColor;
@@ -75,7 +91,17 @@ const Widget = ({
     <Box bg={alphaColor} height="100%" display="flex" flexDir="column">
       <Confirm ref={confirm} />
       {(!hideTitlebar || editMode) && (
-        <Header {...{ title, alphaColor, updateName, deleteWidget }} />
+        <Header
+          {...{
+            title,
+            alphaColor,
+            hideTitlebar,
+            updateName,
+            updateColor,
+            deleteWidget,
+            toggleTitlebar,
+          }}
+        />
       )}
       <Box
         className="selection-allowed"
