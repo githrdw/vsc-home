@@ -2,7 +2,7 @@
 	"name": "core",
 	"displayName": "Home",
 	"description": "Homecoming dashboard for VSCode",
-	"version": "0.0.1-alpha.7",
+	"version": "0.0.1-alpha.8",
 	"publisher": "vsch",
 	"engines": {
 		"vscode": "^1.51.1"
@@ -84,7 +84,7 @@
 	},
 	"dependencies": {
 		"@vsch/sidebar": "^0.0.1-alpha.6",
-		"@vsch/ui": "^0.0.1-alpha.7"
+		"@vsch/ui": "^0.0.1-alpha.8"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
