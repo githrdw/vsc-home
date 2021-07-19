@@ -1,5 +1,5 @@
 import "./style.scss"
-import "mustache"
+import Mustache from "mustache"
 import EventBus from 'core/src/utils/EventBusClient'
 import { ComponentOnDrag } from './component'
 import { BUILTIN_WIDGETS, WIDGET_META } from './constants'
