@@ -1,6 +1,6 @@
 {
   "name": "@vsch/ui",
-  "version": "0.0.1-alpha.8",
+  "version": "0.0.1-alpha.9",
   "description": "Frontend for VSC Home",
   "main": "index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "@chakra-ui/react": "1.6.5",
     "@emotion/react": "11.4.0",
     "@emotion/styled": "11.3.0",
-    "core": "^0.0.1-alpha.8",
+    "core": "^0.0.1-alpha.9",
     "core-js": "3.15.2",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
