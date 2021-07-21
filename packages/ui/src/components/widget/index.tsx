@@ -56,7 +56,7 @@ const Widget = ({
 
   const deleteWidget = async () => {
     if (await confirm.current?.()) {
-      callbacks?.delete();
+      callbacks?.delete?.();
       onWidgetDelete?.();
     }
   };

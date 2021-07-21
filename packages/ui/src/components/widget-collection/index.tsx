@@ -35,14 +35,18 @@ const CollectionMenu = createElement((meta: { id?: string }) => {
       }
     );
     const widget = widgets.find(({ id }) => id === meta.id);
-    const items = widget?.data?.items;
+    const widgetData = widget?.data;
 
-    if (widget && items && data) {
-      for (const entry of data) {
-        items.push({ type: 'workspace', path: entry.path });
+    if (widget && widgetData) {
+      const items = widgetData.items || [];
+
+      if (items && data) {
+        for (const entry of data) {
+          items.push({ type: 'workspace', path: entry.path });
+        }
+        widget.data = { ...widget.data, items };
+        setWidgets([...widgets]);
       }
-      widget.data = { ...widget.data, items };
-      setWidgets([...widgets]);
     }
   };
   return (
