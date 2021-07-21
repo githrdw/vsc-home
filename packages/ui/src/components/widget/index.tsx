@@ -22,7 +22,8 @@ const Widget = ({
 }: WidgetProps) => {
   const { id, appearance, data, type } = widgetMeta;
   const { title, color, hideTitlebar } = appearance;
-  const [callbacks, setCallbacks] = useState<{ delete: any }>();
+  const [callbacks, setCallbacks] = useState<{ delete: any; menu: any }>();
+
   const editMode = useRecoilValue($ui.editMode);
   const [baseColor, alpha] = color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
@@ -71,7 +72,7 @@ const Widget = ({
         <Component {...{ id, setCallbacks, ...data }} />
       </Suspense>
     );
-  }, [type, data]);
+  }, [id, appearance, data, type]);
 
   const alphaColor = useMemo(() => {
     const hexAlpha = Math.round((Number(alpha) / 10) * 255)
@@ -93,6 +94,7 @@ const Widget = ({
       {(!hideTitlebar || editMode) && (
         <Header
           {...{
+            id,
             title,
             alphaColor,
             hideTitlebar,
@@ -100,6 +102,7 @@ const Widget = ({
             updateColor,
             deleteWidget,
             toggleTitlebar,
+            callbacks,
           }}
         />
       )}

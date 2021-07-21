@@ -23,4 +23,7 @@ export interface CollectionItem {
 export interface WidgetCollectionProps {
   items: CollectionItem[];
   size: number;
+  setCallbacks?: (callbacks: any) => void;
 }
+
+export type FileList = Array<{ path: string }>;

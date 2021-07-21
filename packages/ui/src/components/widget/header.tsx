@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, cloneElement } from 'react';
 
 import {
   Divider,
@@ -23,9 +23,10 @@ import {
 
 import ColorPopover from '@atoms/color-popover';
 import IconPlaceholder from './icon-placeholder';
-import { HeaderProps } from './types';
+import { HeaderProps, MenuType } from './types';
 
 const Header = ({
+  id,
   title,
   alphaColor,
   hideTitlebar,
@@ -33,8 +34,24 @@ const Header = ({
   deleteWidget,
   updateColor,
   toggleTitlebar,
+  callbacks,
 }: HeaderProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [CustomMenu, setMenu] = useState<MenuType>({
+    prepend: null,
+    append: null,
+  });
+
+  const renderCustomItems = () => {
+    setMenu({
+      prepend: callbacks?.menu?.prepend
+        ? cloneElement(callbacks?.menu?.prepend, { id })
+        : null,
+      append: callbacks?.menu?.append
+        ? cloneElement(callbacks?.menu?.append, { id })
+        : null,
+    });
+  };
 
   return (
     <>
@@ -59,7 +76,7 @@ const Header = ({
           {title}
         </Heading>
         <Spacer />
-        <Menu placement="bottom">
+        <Menu placement="bottom" onOpen={renderCustomItems}>
           <ColorPopover
             open={popoverOpen}
             close={() => setPopoverOpen(false)}
@@ -75,6 +92,8 @@ const Header = ({
           </ColorPopover>
           <Portal>
             <MenuList>
+              {CustomMenu.prepend}
+              {CustomMenu.prepend && <Divider />}
               <MenuItem onClick={() => setPopoverOpen(true)} icon={<SunIcon />}>
                 Change color
               </MenuItem>
@@ -87,6 +106,8 @@ const Header = ({
               <MenuItem onClick={deleteWidget} icon={<DeleteIcon />}>
                 Delete
               </MenuItem>
+              {CustomMenu.append && <Divider />}
+              {CustomMenu.append}
             </MenuList>
           </Portal>
         </Menu>

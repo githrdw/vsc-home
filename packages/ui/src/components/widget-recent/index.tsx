@@ -25,7 +25,6 @@ const WidgetRecent = ({ size = 5 }) => {
         name: path,
       };
     });
-    console.warn({ recent });
     return recent;
   }, [recentItems]);
 
