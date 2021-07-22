@@ -8,29 +8,32 @@ import InitialAppdata from './utils/InitAppdata';
 
 const EventBus = new Api();
 const userConfig = vscode.workspace.getConfiguration('home');
-let currentPanel: vscode.WebviewPanel | undefined = undefined;
+const openPanels = new Map<string, vscode.WebviewPanel | undefined>();
+
+const DEFAULT_META = { name: 'default', title: 'Home' };
 
 const EmitViewChange = (active: boolean) => {
 	EventBus.emitAll({ payload: { action: 'ui.isActive', active } });
 };
 
-const openMainView = (context: vscode.ExtensionContext) => {
+const openMainView = (context: vscode.ExtensionContext, meta?: any) => {
 	const columnToShowIn = vscode.window.activeTextEditor
 		? vscode.window.activeTextEditor.viewColumn
 		: undefined;
-	if (currentPanel) {
-		currentPanel.reveal(columnToShowIn);
+	if (openPanels.has(meta.name)) {
+		const panel = openPanels.get(meta.name);
+		if (panel) { panel.reveal(columnToShowIn); }
 	} else {
 		const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
-		const view = new MainWebview(context, assets);
+		const view = new MainWebview(context, assets, meta?.name, meta?.title);
 		view.onReady(webview => {
-			currentPanel = view.panel;
+			openPanels.set(meta.name, view.panel);
 			EmitViewChange(true);
 			EventBus.register(webview);
 		});
 		view.panel?.onDidChangeViewState(({ webviewPanel: { active } }) => EmitViewChange(active));
 		view.onDestroy((webview) => {
-			currentPanel = undefined;
+			openPanels.delete(meta.name);
 			EventBus.unregister(webview);
 			EmitViewChange(false);
 		});
@@ -41,7 +44,7 @@ const openMainView = (context: vscode.ExtensionContext) => {
 
 const openSidebarView = (context: vscode.ExtensionContext) => {
 	const assets = (file: string) => import(`@vsch/sidebar/dist/${file}`);
-	const view = new SidebarWebview(context, assets);
+	const view = new SidebarWebview(context, assets, 'sidebar');
 	view.onReady(webview => EventBus.register(webview));
 
 	return view;
@@ -56,20 +59,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 	InitialAppdata();
 
-	const mainViewCommand = vscode.commands.registerCommand('vsch.openMainView', async () => {
+	const mainViewCommand = vscode.commands.registerCommand('vsch.openMainView', async (meta = DEFAULT_META) => {
 		// The code you place here will be executed every time your command is executed
-		openMainView(context);
+		openMainView(context, meta);
 	});
 
 	const openOnStartup = userConfig.get('openOnStartup');
 	if (openOnStartup === "always") {
-		openMainView(context);
+		openMainView(context, DEFAULT_META);
 	} else if (openOnStartup === "whenBlank") {
 		if (!vscode.workspace.workspaceFolders?.length) {
-			openMainView(context);
+			openMainView(context, DEFAULT_META);
 		}
 	}
-	
+
 	context.subscriptions.push(mainViewCommand);
 
 	const sidebarView = vscode.window.registerWebviewViewProvider("vsch.openSidebarView", openSidebarView(context));

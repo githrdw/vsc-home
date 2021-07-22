@@ -16,7 +16,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!isInitialized.current) return;
     Bus.emit('vsch.ui.setLayout', {
-      name: 'default',
+      name: (window as any).VSCH_UID || 'default',
       layout: widgets,
     });
   }, [widgets]);
@@ -31,7 +31,9 @@ const Dashboard = () => {
   }, [editMode]);
 
   useEffect(() => {
-    Bus.emit('vsch.ui.getLayout', {}).then(({ layout }: any) => {
+    Bus.emit('vsch.ui.getLayout', {
+      name: (window as any).VSCH_UID || 'default',
+    }).then(({ layout }: any) => {
       if (layout) setWidgets(layout);
       isInitialized.current = true;
     });

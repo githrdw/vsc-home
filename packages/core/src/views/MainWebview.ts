@@ -4,11 +4,11 @@ import vars from '../vars';
 import WebviewLoader from "../utils/WebviewLoader";
 
 export default class MainWebview extends WebviewLoader {
-  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>) {
-    super(context, resolver);
+  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>, uid: string, title: string) {
+    super(context, resolver, uid);
     const webviewPanel = vscode.window.createWebviewPanel(
-      "home",
-      "Home",
+      uid,
+      title,
       vscode.ViewColumn.One,
       {
         enableScripts: true,

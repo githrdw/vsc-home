@@ -11,12 +11,14 @@ export default class WebviewLoader {
   private subscriptions;
   public webview: vscode.Webview | undefined;
   public panel: vscode.WebviewPanel | undefined;
+  public vsch_uid: string;
 
-  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>) {
+  constructor(context: vscode.ExtensionContext, resolver: (path: string) => Promise<any>, uid: string) {
     this.webviewCallback = undefined;
     this.subscriptions = context.subscriptions;
     this.assetsPath = join(context.extensionPath, vars.APP_DIR);
     this.getAsset = resolver;
+    this.vsch_uid = uid;
   }
 
   // Callback when Webview is set, returns destroyCallback that is fired when webview destroys
@@ -88,7 +90,9 @@ export default class WebviewLoader {
   }
   public async getWebviewContent() {
     const WebView = await this.getAsset('index.html');
-    const html = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
+    const resolved = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
+    const html = resolved.replace(/VSCH_UID = 'default'/, `VSCH_UID = '${this.vsch_uid}'`);
+
     if (this.webview) { this.webview.html = html; }
   }
 }

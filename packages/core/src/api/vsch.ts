@@ -10,8 +10,21 @@ export default function (core: ExecuteCore, instructions: string[], payload: obj
 }
 
 const run: Run = {
-  'ui.open': async ({ respond }) => {
-    await commands.executeCommand('vsch.openMainView');
+  'ui.open': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name }) => {
+    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
+    const uri = Uri.file(file);
+    let title = 'Home';
+
+    try {
+      const data = await workspace.fs.readFile(uri);
+      const text = new TextDecoder("utf-8").decode(data);
+      const json = text ? JSON.parse(text) : null;
+      if (json.title) { title = json.title; };
+    } catch (e) {
+      console.log(e);
+    }
+
+    await commands.executeCommand('vsch.openMainView', { name, title });
     respond();
   },
   'ui.setData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName, data }) => {
@@ -66,9 +79,13 @@ const run: Run = {
     const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
     const uri = Uri.file(file);
     try {
-      const data = JSON.stringify(layout, null, 2);
-      const content = new TextEncoder().encode(data);
-      await workspace.fs.writeFile(uri, content);
+      const currentFile = await workspace.fs.readFile(uri);
+      const currentData = new TextDecoder("utf-8").decode(currentFile);
+      const currentJSON = currentData ? JSON.parse(currentData) : {};
+      const content = JSON.stringify({ ...currentJSON, layout }, null, 2);
+      const data = new TextEncoder().encode(content);
+
+      await workspace.fs.writeFile(uri, data);
       respond();
     } catch (e) {
       respond({ error: e.toString() + ' while writing ' + file });
@@ -82,7 +99,7 @@ const run: Run = {
       const data = await workspace.fs.readFile(uri);
       const text = new TextDecoder("utf-8").decode(data);
       const json = text ? JSON.parse(text) : null;
-      respond({ layout: json });
+      respond(json);
     } catch (e) {
       if (e.code === "FileNotFound") {
         notExisting = true;
