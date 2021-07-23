@@ -8,6 +8,11 @@ $control-text: var(--vscode-button-foreground, #fff);
 $control-hover: var(--vscode-button-hoverBackground, #1177bb);
 $control-selected: var(--vscode-list-activeSelectionBackground, #1f466e);
 
+$button-icon-hover: var(
+  --vscode-toolbar-hoverBackground,
+  rgba(90, 93, 94, 0.31)
+);
+
 html {
   box-sizing: border-box;
   font-size: $text-size;
@@ -35,7 +40,19 @@ p {
   margin: 0;
   line-height: 1.2;
 }
-
+.row {
+  display: flex;
+}
+.self-end {
+  margin-left: auto;
+  margin-right: 1rem;
+}
+.align-self-center {
+  align-self: center;
+}
+.link {
+  cursor: pointer;
+}
 input[type="submit"],
 button {
   padding: 0.5rem 1.5rem;
@@ -51,7 +68,19 @@ button {
   }
 
   &.full-width {
-    width: 100%
+    width: 100%;
+  }
+  &.icon {
+    background: transparent;
+    height: 21px;
+    width: 21px;
+    padding: 0;
+    border-radius: 4px;
+    font-size: 18px;
+
+    &:hover {
+      background: $button-icon-hover;
+    }
   }
 }
 
@@ -59,8 +88,22 @@ section {
   padding: 1rem 1rem 0 1rem;
 }
 
+h1 {
+  padding: 0 1rem;
+}
+
+section#layouts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  button[data-uid="default"] {
+    grid-column: 1 / span 2;
+  }
+}
+
 article {
-  &.component {
+  &.widget {
     cursor: pointer;
     padding: 1rem;
     margin: 0 -1rem;

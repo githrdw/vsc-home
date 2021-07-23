@@ -6,9 +6,23 @@ import { BUILTIN_WIDGETS, WIDGET_META } from "./constants";
 
 const Client = new EventBus();
 
+const getLayout = (uid) =>
+  document.getElementById("layouts").querySelector(`[data-uid="${uid}"]`);
+const getDefaultState = (el) => {
+  const uid = el.getAttribute("data-uid");
+  const name = el.getAttribute("data-name");
+
+  return () => {
+    el.innerText = name;
+    el.onclick = () => {
+      Client.emit("vsch.ui.open", { uid });
+    };
+  };
+};
+
 const loadCustomWidgets = async () => {
   const widgetsMeta = {};
-  const template = document.getElementById("component-tmpl").innerText;
+  const template = document.getElementById("widget-tmpl").innerText;
   const { widgets } = (await Client.emit("vsch.core.getCustomWidgets")) || [];
   for (const widgetIndex in widgets) {
     const widget = widgets[widgetIndex];
@@ -23,12 +37,12 @@ const loadCustomWidgets = async () => {
     widget["id"] = id;
   }
   const rendered = Mustache.render(template, {
-    components: [...widgets, ...BUILTIN_WIDGETS],
+    widgets: [...widgets, ...BUILTIN_WIDGETS],
   });
-  document.getElementById("components").innerHTML = rendered;
+  document.getElementById("widgets").innerHTML = rendered;
 
   // Drag events
-  const components = document.querySelectorAll("article.component");
+  const components = document.querySelectorAll("article.widget");
   const onDrag = (e) => ComponentOnDrag(e, widgetsMeta);
   for (component of components) {
     component.removeEventListener("dragstart", onDrag);
@@ -36,50 +50,59 @@ const loadCustomWidgets = async () => {
   }
 };
 
-const dashboards = document.getElementsByClassName("open-dashboard");
-for (const dashboard of dashboards) {
-  const uid = dashboard.getAttribute("data-uid");
-  const name = dashboard.getAttribute("data-name");
+const loadLayouts = async () => {
+  const template = document.getElementById("layout-tmpl").innerText;
+  const { layouts } = await Client.emit("vsch.ui.getLayouts");
+  if (layouts && layouts.length) {
+    const rendered = Mustache.render(template, {
+      layouts,
+    });
+    document.getElementById("layouts").innerHTML = rendered;
 
-  console.log(dashboard);
+    const layoutElements = document.getElementsByClassName("open-layout");
 
-  const defaultState = () => {
-    dashboard.innerText = `Open ${name}`;
-    dashboard.onclick = () => {
-      Client.emit("vsch.ui.open", { name: uid });
-    };
-  };
-  defaultState();
-}
+    for (const layout of layoutElements) {
+      getDefaultState(layout)();
+    }
+  }
+  Client.emit("vsch.ui.getEditmodeState");
+};
 
-// const actionDashboard = document.getElementById("action-dashboard")
-// const openDashboard = () => Client.emit('vsch.ui.open')
-// const enableEditmode = () => Client.emit('vsch.ui.enableEditmode')
-// const disableEditmode = () => Client.emit('vsch.ui.disableEditmode')
-// const initialActionDashboard = () => {
-//   actionDashboard.innerText = "Open dashboard"
-//   actionDashboard.onclick = openDashboard
-// }
+Client.on("ui.editmodeState", ({ payload: { active, uid } }) => {
+  const layout = getLayout(uid);
+  if (layout) {
+    const name = layout.getAttribute("data-name");
+    if (active) {
+      layout.innerText = `Freeze ${name}`;
+      layout.onclick = () => Client.emit("vsch.ui.disableEditmode", { uid });
+    } else {
+      layout.innerText = `Edit ${name}`;
+      layout.onclick = () => Client.emit("vsch.ui.enableEditmode", { uid });
+    }
+  }
+});
 
-// Client.on('ui.editmodeState', ({ payload: { active } }) => {
-//   if (active) {
-//     actionDashboard.innerText = "Stop editing dashboard"
-//     actionDashboard.onclick = disableEditmode
-//   } else {
-//     actionDashboard.innerText = "Edit dashboard"
-//     actionDashboard.onclick = enableEditmode
-//   }
-// })
+Client.on("ui.isActive", ({ payload: { active, uid } }) => {
+  const layout = getLayout(uid);
+  if (layout) {
+    if (active) {
+      Client.emit("vsch.ui.getEditmodeState");
+    } else {
+      getDefaultState(layout, uid)();
+    }
+  }
+});
 
-// Client.on('ui.isActive', ({ payload: { active } }) => {
-//   if (active) {
-//     Client.emit('vsch.ui.getEditmodeState')
-//   } else {
-//     initialActionDashboard()
-//   }
-// })
+const addLayoutBtn = document.getElementById("action-add-layout");
+addLayoutBtn.onclick = () => Client.emit("vsch.ui.addLayout").then(loadLayouts);
 
-// initialActionDashboard()
+const headingLayouts = document.getElementById("heading-layouts");
+headingLayouts.onclick = () =>
+  Client.emit("vscode.openFolder", { newWindow: true, path: "LAYOUTS_ROOT" });
+
+const headingWidgets = document.getElementById("heading-widgets");
+headingWidgets.onclick = () =>
+  Client.emit("vscode.openFolder", { newWindow: true, path: "WIDGETS_ROOT" });
+
+loadLayouts();
 loadCustomWidgets();
-
-// Client.emit('vsch.ui.getEditmodeState')

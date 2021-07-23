@@ -20,7 +20,7 @@ export default class Api {
   }
 
   // Destroy callback
-  public unregister (webview: Webview) {
+  public unregister(webview: Webview) {
     const nodeIndex = this.nodes.indexOf(webview);
     this.nodes.splice(nodeIndex, 1);
   };

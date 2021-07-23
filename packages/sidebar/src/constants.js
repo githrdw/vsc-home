@@ -36,7 +36,7 @@ const BUILTIN_WIDGETS = [
   {
     id: "collection",
     title: "Collection",
-    subtitle: "Editable list of recent folders and workspaces"
+    subtitle: "Editable list of folders (and workspaces)"
   },
   {
     id: "notes",

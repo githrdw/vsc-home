@@ -1,4 +1,4 @@
-import { Uri, workspace, commands, FileType } from "vscode";
+import { Uri, workspace, commands, FileType, window } from "vscode";
 import { TextDecoder, TextEncoder } from "util";
 import { join } from 'path';
 import { ExecuteCore, Run } from './d';
@@ -10,8 +10,8 @@ export default function (core: ExecuteCore, instructions: string[], payload: obj
 }
 
 const run: Run = {
-  'ui.open': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name }) => {
-    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
+  'ui.open': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { uid }) => {
+    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${uid}.json`);
     const uri = Uri.file(file);
     let title = 'Home';
 
@@ -24,7 +24,7 @@ const run: Run = {
       console.log(e);
     }
 
-    await commands.executeCommand('vsch.openMainView', { name, title });
+    await commands.executeCommand('vsch.openMainView', { uid, title });
     respond();
   },
   'ui.setData': async ({ respond, vars: { USR_APP_DIR, DATA_ROOT } }, { module, fileName, data }) => {
@@ -75,8 +75,38 @@ const run: Run = {
       }
     }
   },
-  'ui.setLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default', layout }) => {
-    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
+  'ui.addLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }) => {
+    const title = await window.showInputBox({ prompt: 'New layout name' });
+    if (!title) { return; };
+
+    const uid = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    let file = join(USR_APP_DIR, LAYOUTS_ROOT, `${uid}.json`);
+    let uri = Uri.file(file);
+
+    let exists;
+    try {
+      await workspace.fs.readFile(uri);
+    } catch (e) { if (e.code === "FileNotFound") { exists = false; }; }
+
+    if (exists !== false) {
+      const hash = Math.random().toString(36).substr(2, 5);
+      file = join(USR_APP_DIR, LAYOUTS_ROOT, `${uid}_${hash}.json`);
+      uri = Uri.file(file);
+    }
+
+    try {
+      const content = JSON.stringify({ title, layout: [] }, null, 2);
+      const data = new TextEncoder().encode(content);
+
+      await workspace.fs.writeFile(uri, data);
+      await commands.executeCommand('vsch.openMainView', { uid, title });
+      respond();
+    } catch (e) {
+      respond({ error: e.toString() + ' while writing ' + file });
+    }
+  },
+  'ui.setLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { uid = 'default', layout }) => {
+    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${uid}.json`);
     const uri = Uri.file(file);
     try {
       const currentFile = await workspace.fs.readFile(uri);
@@ -91,8 +121,8 @@ const run: Run = {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
-  'ui.getLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { name = 'default' }) => {
-    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${name}.json`);
+  'ui.getLayout': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }, { uid = 'default' }) => {
+    const file = join(USR_APP_DIR, LAYOUTS_ROOT, `${uid}.json`);
     const uri = Uri.file(file);
     let notExisting;
     try {
@@ -117,10 +147,39 @@ const run: Run = {
       }
     }
   },
+  'ui.getLayouts': async ({ respond, vars: { USR_APP_DIR, LAYOUTS_ROOT } }) => {
+    const dir = join(USR_APP_DIR, LAYOUTS_ROOT);
+    const uri = Uri.file(dir);
+    const layoutsDetails = [];
+    let layouts: [string, FileType][] = [];
+    try {
+      layouts = await workspace.fs.readDirectory(uri);
+    } catch (e) {
+      return respond({ error: e.toString() + ' while reading ' + dir });
+    }
+    for (const layout of layouts) {
+      const [path] = layout;
+      if (path === 'default.json') { continue; }
+      const layoutFile = join(dir, path);
+      const layoutUri = Uri.file(layoutFile);
+      try {
+        const data = await workspace.fs.readFile(layoutUri);
+        const text = new TextDecoder("utf-8").decode(data);
+        const json = text ? JSON.parse(text) : null;
+        const uid = path.replace(/.json$/, '');
+        if (json) {
+          layoutsDetails.push({ title: json.title || 'Home', uid });
+        }
+      } catch (e) {
+        console.error({ error: e.toString() + ' while reading ' + dir });
+      }
+    }
+    respond({ layouts: [{ title: 'Home', uid: 'default' }, ...layoutsDetails] });
+  },
   'core.getCustomWidgets': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT } }) => {
     const dir = join(USR_APP_DIR, WIDGETS_ROOT);
     const uri = Uri.file(dir);
-    let widgetsDetails = [];
+    const widgetsDetails = [];
     let widgets: [string, FileType][] = [];
     try {
       widgets = await workspace.fs.readDirectory(uri);

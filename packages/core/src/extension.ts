@@ -10,32 +10,35 @@ const EventBus = new Api();
 const userConfig = vscode.workspace.getConfiguration('home');
 const openPanels = new Map<string, vscode.WebviewPanel | undefined>();
 
-const DEFAULT_META = { name: 'default', title: 'Home' };
+const DEFAULT_META = { uid: 'default', title: 'Home' };
 
-const EmitViewChange = (active: boolean) => {
-	EventBus.emitAll({ payload: { action: 'ui.isActive', active } });
+const EmitViewChange = (active: boolean, uid: string) => {
+	EventBus.emitAll({ payload: { action: 'ui.isActive', active, uid } });
 };
 
 const openMainView = (context: vscode.ExtensionContext, meta?: any) => {
 	const columnToShowIn = vscode.window.activeTextEditor
 		? vscode.window.activeTextEditor.viewColumn
 		: undefined;
-	if (openPanels.has(meta.name)) {
-		const panel = openPanels.get(meta.name);
+	if (openPanels.has(meta.uid)) {
+		const panel = openPanels.get(meta.uid);
 		if (panel) { panel.reveal(columnToShowIn); }
 	} else {
 		const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
-		const view = new MainWebview(context, assets, meta?.name, meta?.title);
+		const view = new MainWebview(context, assets, meta?.uid, meta?.title);
 		view.onReady(webview => {
-			openPanels.set(meta.name, view.panel);
-			EmitViewChange(true);
+			openPanels.set(meta.uid, view.panel);
+			EmitViewChange(true, meta?.uid);
 			EventBus.register(webview);
 		});
-		view.panel?.onDidChangeViewState(({ webviewPanel: { active } }) => EmitViewChange(active));
+		view.panel?.onDidChangeViewState(({ webviewPanel: { active } }) => {
+			// Wait until nextTick so onDestroy is called before onDidChangeViewState
+			setTimeout(() => EmitViewChange(active, meta?.uid), 0);
+		});
 		view.onDestroy((webview) => {
-			openPanels.delete(meta.name);
 			EventBus.unregister(webview);
-			EmitViewChange(false);
+			EmitViewChange(false, meta?.uid);
+			openPanels.delete(meta.uid);
 		});
 
 		view.getWebviewContent();

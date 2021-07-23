@@ -5,26 +5,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>TypeScript Web Component</title>
+  <title>Sidebar</title>
   <link rel="stylesheet" href="sidebar-main.css">
 </head>
 
 <body>
 
-  <script id="component-tmpl" type="x-tmpl-mustache">
+  <script id="widget-tmpl" type="x-tmpl-mustache">
     <div id="helpText">Draggable components:</div>
-    {{#components}}
-      <article data-id="{{id}}" class="component" draggable="true">
+    {{#widgets}}
+      <article data-id="{{id}}" class="widget" draggable="true">
         <h4>{{title}}</h4>
         <p>{{subtitle}}</p>
       </article>
-    {{/components}}
+    {{/widgets}}
   </script>
-  <section id="actions">
-    <button class="full-width open-dashboard" data-name="Home" data-uid="default">Open Home dashboard</button>
-    <button class="full-width open-dashboard" data-name="Work" data-uid="work">Open Work dashboard</button>
+  <script id="layout-tmpl" type="x-tmpl-mustache">
+    {{#layouts}}
+      <button class="open-layout" data-name="{{title}}" data-uid="{{uid}}">Open {{title}}</button>
+    {{/layouts}}
+  </script>
+  <div class="row">
+    <h1 id="heading-layouts" class="link">Layouts</h1>
+    <button class="icon self-end align-self-center" id="action-add-layout">+</button>
+  </div>
+  <section id="layouts">
   </section>
-  <section id="components">
+  <h1 id="heading-widgets" class="link">Widgets</h1>
+  <section id="widgets">
   </section>
 </body>
 

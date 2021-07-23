@@ -13,26 +13,28 @@ const Dashboard = () => {
   const isInitialized = useRef(false);
   const Bus = useContext(EventBus);
 
+  const uid = (window as any).VSCH_UID || 'default';
+
   useEffect(() => {
     if (!isInitialized.current) return;
     Bus.emit('vsch.ui.setLayout', {
-      name: (window as any).VSCH_UID || 'default',
+      uid,
       layout: widgets,
     });
   }, [widgets]);
 
   useEffect(() => {
-    Bus.emit('vsch.ui.editmodeState', { active: editMode });
+    Bus.emit('vsch.ui.editmodeState', { active: editMode, uid });
     return Bus.off(
       Bus.on('ui.getEditmodeState', () => {
-        Bus.emit('vsch.ui.editmodeState', { active: editMode });
+        Bus.emit('vsch.ui.editmodeState', { active: editMode, uid });
       })
     );
   }, [editMode]);
 
   useEffect(() => {
     Bus.emit('vsch.ui.getLayout', {
-      name: (window as any).VSCH_UID || 'default',
+      uid,
     }).then(({ layout }: any) => {
       if (layout) setWidgets(layout);
       isInitialized.current = true;
@@ -44,8 +46,12 @@ const Dashboard = () => {
     );
 
     return Bus.off([
-      Bus.on('ui.enableEditmode', () => setEditmode(true)),
-      Bus.on('ui.disableEditmode', () => setEditmode(false)),
+      Bus.on('ui.enableEditmode', ({ payload: { uid: _uid } }: any) => {
+        if (_uid === uid) setEditmode(true);
+      }),
+      Bus.on('ui.disableEditmode', ({ payload: { uid: _uid } }: any) => {
+        if (_uid === uid) setEditmode(false);
+      }),
     ]);
   }, []);
 
