@@ -1,22 +1,12 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo } from 'react';
 import { Button } from '@chakra-ui/react';
 
-import EventBus from '@hooks/event-bus';
-
-const ListItem = ({ Icon, path }: any) => {
-  const Bus = useContext(EventBus);
-
+const ListItem = ({ Icon, path, onClick }: any) => {
   const name = useMemo(() => {
     if (!path) return null;
     const [, _name] = path.match(/.*[\\|/](.*)$/);
     return _name;
   }, [path]);
-
-  const openFolder = () => {
-    Bus.emit('vscode.openFolder', { path })
-      .then(() => console.warn('Open'))
-      .catch(() => console.error('Something went wrong'));
-  };
 
   return (
     <Button
@@ -26,7 +16,7 @@ const ListItem = ({ Icon, path }: any) => {
       fontWeight="normal"
       px={2}
       color="inherit"
-      onClick={openFolder}
+      onClick={onClick}
     >
       {name}
     </Button>

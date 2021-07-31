@@ -21,6 +21,7 @@ export interface CollectionItem {
 }
 
 export interface WidgetCollectionProps {
+  id: string;
   items: CollectionItem[];
   size: number;
   setCallbacks?: (callbacks: any) => void;
