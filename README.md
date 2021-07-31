@@ -104,15 +104,15 @@ Until the context menu option for adding paths to the collection widget are done
 
 ## Todo
 - Add more widget controls
-  - Delete
-  - Change color
+  ✔ Delete
+  ✔ Change color
   - Change icon
 - Add more built-in widgets
-  - WYSIWYG notes editor
+  ~ WYSIWYG notes editor
 - Collection widget
-  - Add context menu for modifying the list of folders
+  ✔ Add context menu for modifying the list of folders
 - Recent projects widget
-  - Option to limit projects count
+  ✔ Option to limit projects count
   - Option to duplicate / transform to static collection widget
 - Access to VS Code API from external widget
 - Automate the custom React component creation flow

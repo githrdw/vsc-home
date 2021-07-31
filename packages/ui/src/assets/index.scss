@@ -4,7 +4,7 @@ body {
   padding: 0;
   user-select: none;
   font-size: 0.875rem;
-  font-family: var(--vscode-font-family, "Segoe WPC", "Segoe UI", sans-serif);
+  font-family: var(--vscode-font-family, 'Segoe WPC', 'Segoe UI', sans-serif);
   line-height: 1.5;
 }
 html,
@@ -80,4 +80,10 @@ pre.public-DraftStyleDefault-pre {
   .public-DraftEditor-content {
     flex: 1;
   }
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
 }

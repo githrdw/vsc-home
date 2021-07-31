@@ -47,6 +47,17 @@ const Widget = ({
     }
   };
 
+  const updateData = (
+    callback: (update: (data: any) => void, data: any) => void
+  ) => {
+    const update = (data: any) =>
+      onWidgetUpdate?.({
+        ...widgetMeta,
+        data,
+      });
+    if (callback) callback(update, data);
+  };
+
   const toggleTitlebar = () => {
     onWidgetUpdate?.({
       ...widgetMeta,
@@ -69,7 +80,7 @@ const Widget = ({
 
     return (
       <Suspense fallback={<Progress size="xs" isIndeterminate />}>
-        <Component {...{ id, setCallbacks, ...data }} />
+        <Component {...{ id, setCallbacks, updateData, ...data }} />
       </Suspense>
     );
   }, [id, appearance, data, type]);
