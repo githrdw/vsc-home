@@ -9,6 +9,7 @@ export default class WebviewLoader {
   protected externalDestroyCallback: ((webview: vscode.Webview) => void) | undefined;
   private readonly getAsset;
   private subscriptions;
+  private generateNonce: () => string;
   public webview: vscode.Webview | undefined;
   public panel: vscode.WebviewPanel | undefined;
   public vsch_uid: string;
@@ -19,6 +20,10 @@ export default class WebviewLoader {
     this.assetsPath = join(context.extensionPath, vars.APP_DIR);
     this.getAsset = resolver;
     this.vsch_uid = uid;
+    this.generateNonce = () => {
+      let t = ""; const n = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (let o = 0; o < 32; o++) { t += n.charAt(Math.floor(Math.random() * n.length)); } return t;
+    };
   }
 
   // Callback when Webview is set, returns destroyCallback that is fired when webview destroys
@@ -89,9 +94,15 @@ export default class WebviewLoader {
     });
   }
   public async getWebviewContent() {
+    const nonce = this.generateNonce();
     const WebView = await this.getAsset('index.html');
     const resolved = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
-    const html = resolved.replace(/VSCH_UID = 'default'/, `VSCH_UID = '${this.vsch_uid}'`);
+    const html = resolved
+      .replace(/VSCH_UID = 'default'/, `VSCH_UID = '${this.vsch_uid}'`)
+      .replace(/CSP_SOURCE/gm, this.webview?.cspSource || '')
+      .replace(/CSP_NONCE/gm, nonce)
+      .replace(/<script/gm, `<script nonce="${nonce}"`)
+      .replace(/rel="stylesheet"/gm, `rel="stylesheet" nonce="${nonce}"`);
 
     if (this.webview) { this.webview.html = html; }
   }

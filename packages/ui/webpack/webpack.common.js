@@ -4,6 +4,7 @@ const {
 } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const CspHtmlWebpackPlugin = require('csp-html-webpack-plugin');
 const commonPaths = require('./paths');
 
 module.exports = {
@@ -71,6 +72,21 @@ module.exports = {
       fix: true,
       emitWarning: process.env.NODE_ENV !== 'production',
     }),
+    new CspHtmlWebpackPlugin(
+      {
+        'script-src': `'nonce-CSP_NONCE' 'strict-dynamic'`,
+        'style-src': `CSP_SOURCE 'nonce-CSP_NONCE'`,
+      },
+      {
+        nonceEnabled: {
+          'script-src': false,
+          'style-src': false,
+        },
+        hashEnabled: {
+          'style-src': false,
+        },
+      }
+    ),
   ],
   performance: {
     hints: false,

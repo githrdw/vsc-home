@@ -116,4 +116,4 @@ Until the context menu option for adding paths to the collection widget are done
   - Option to duplicate / transform to static collection widget
 - Access to VS Code API from external widget
 - Automate the custom React component creation flow
-- CORS
+✔ CORS / CSP
