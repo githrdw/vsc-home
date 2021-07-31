@@ -15,8 +15,8 @@ const run: Run = {
     await commands.executeCommand('vscode.openFolder', Uri.file(path), newWindow);
     respond();
   },
-  'selectFolder': async ({ respond }, { canSelectFolders, canSelectMany }) => {
-    const data = await window.showOpenDialog({ canSelectFolders, canSelectMany });
+  'selectResource': async ({ respond }, { canSelectFolders, canSelectMany, filters }) => {
+    const data = await window.showOpenDialog({ canSelectFolders, canSelectMany, filters });
     respond({ data });
   }
 };

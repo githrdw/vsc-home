@@ -6,7 +6,7 @@ import { $ui } from '../../state';
 
 import { FsTypes, WidgetCollectionProps, FileList } from './interfaces';
 import ListItem from '@atoms/list-item';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons';
+import { MinusIcon } from '@chakra-ui/icons';
 import EventBus from '@hooks/event-bus';
 
 const getIcon = (type: FsTypes) => {
@@ -23,13 +23,19 @@ const getIcon = (type: FsTypes) => {
 };
 
 let deleteModeKey: (() => void) | undefined;
-let addFolderKey: (() => void) | undefined;
+let addItemKey: ((isWorkspace?: boolean) => void) | undefined;
 
 const CollectionMenu = createElement(() => {
   return (
     <>
-      <MenuItem icon={<AddIcon />} onClick={addFolderKey || void 0}>
+      <MenuItem icon={<VscFolder />} onClick={() => addItemKey?.() || void 0}>
         Add folder
+      </MenuItem>
+      <MenuItem
+        icon={<VscFileSubmodule />}
+        onClick={() => addItemKey?.(true) || void 0}
+      >
+        Add workspace
       </MenuItem>
 
       <MenuItem icon={<MinusIcon />} onClick={deleteModeKey || void 0}>
@@ -52,12 +58,16 @@ const WidgetCollection = ({
   const widget = widgets.find(({ id: _id }) => _id === id);
 
   deleteModeKey = () => setRemoveMode(!removeMode);
-  addFolderKey = async () => {
+  addItemKey = async (isWorkspace = false) => {
+    const filters = {
+      Workspace: ['code-workspace'],
+    };
     const { data }: { data?: FileList } = await Bus.emit(
-      'vscode.selectFolder',
+      'vscode.selectResource',
       {
-        canSelectFolders: true,
+        canSelectFolders: !isWorkspace,
         canSelectMany: true,
+        filters: isWorkspace && filters,
       }
     );
 
@@ -66,7 +76,10 @@ const WidgetCollection = ({
 
       if (items && data) {
         for (const entry of data) {
-          items.push({ type: 'workspace', path: entry.path });
+          items.push({
+            type: isWorkspace ? 'workspace' : 'folder',
+            path: entry.path,
+          });
         }
         widget.data = { ...widget.data, items };
         setWidgets([...widgets]);
