@@ -1,6 +1,6 @@
 {
   "name": "@vsch/ui",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Frontend for VSC Home",
   "main": "index.js",
   "scripts": {
@@ -43,7 +43,7 @@
     "react-grid-layout": "^1.2.0",
     "react-icons": "^4.2.0",
     "recoil": "0.4.0",
-    "vsch-core": "^0.0.1"
+    "vsch-core": "^0.0.2"
   },
   "devDependencies": {
     "@types/draft-js": "^0.11.4",
