@@ -34,7 +34,6 @@
     "@chakra-ui/react": "1.6.5",
     "@emotion/react": "11.4.0",
     "@emotion/styled": "11.3.0",
-    "vsch-core": "^0.0.1",
     "core-js": "^3.16.0",
     "draft-js": "^0.11.7",
     "draft-js-export-html": "^1.4.1",
@@ -43,7 +42,8 @@
     "react-dom": "17.0.2",
     "react-grid-layout": "^1.2.0",
     "react-icons": "^4.2.0",
-    "recoil": "0.4.0"
+    "recoil": "0.4.0",
+    "vsch-core": "^0.0.1"
   },
   "devDependencies": {
     "@types/draft-js": "^0.11.4",

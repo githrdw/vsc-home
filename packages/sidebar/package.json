@@ -14,8 +14,8 @@
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
-    "vsch-core": "^0.0.1",
-    "mustache": "^4.1.0"
+    "mustache": "^4.1.0",
+    "vsch-core": "^0.0.1"
   },
   "scripts": {
     "build": "rollup -c",
