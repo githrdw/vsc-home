@@ -1,6 +1,6 @@
 import "./style.scss";
 import Mustache from "mustache";
-import EventBus from "core/src/utils/EventBusClient";
+import EventBus from "vsch-core/src/utils/EventBusClient";
 import { ComponentOnDrag } from "./component";
 import { BUILTIN_WIDGETS, WIDGET_META } from "./constants";
 
