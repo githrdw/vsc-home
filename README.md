@@ -4,10 +4,10 @@
 </p>
 <h1 align="center">VSC-Home</h1>
 <i><p align="center">
-An homecoming dashboard extension for Visual Studio Code
+A homecoming dashboard extension for Visual Studio Code
 </p></i>
 <br/>
-<img src="assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
+<img src="packages/core/assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
 <br/>
 <br/>
 
@@ -15,12 +15,19 @@ An homecoming dashboard extension for Visual Studio Code
 `Home` is an extension for Visual Studio Code that allows you to design your own **dashboard** with built-in or custom **React components**.
 The following features are available:
 
-* Drag-n-drop grid
-* Colorable
-* Default widgets
+* ➕ Create and name multiple layouts
+* 🐲 Drag-n-drop grid
+* 🎨 Colorable
+* 🌟 Default widgets
   * List of **recent opened** folders/worspaces
   * **Custom list** of folders/workspaces
-* Your own React widgets
+* 🎉 Your own React widgets
+<br/>
+<br/>
+
+<img src="packages/core/assets/Demo - Dashboard 3.png" alt="Screenshot of usage" />
+<br/>
+<br/>
 
 > Note that this project is in very early stage and much needs to be done
 
@@ -75,45 +82,12 @@ Also contains a list of components to use that can be dragged to the grid
 
 Used techniques: HTML, Sass, ES6, Rollup
 
-## Add file paths to the collection widget
-Until the context menu option for adding paths to the collection widget are done, you can modify the collection widget with the following configuration:
-
-```
-"type": "collection"
-"data": {
-  "items": [
-    {
-      "type": "workspace",
-      "path": "C:/Laragon/wordpress-template-1"
-    },
-    {
-      "type": "folder",
-      "path": "C:/Laragon/wordpress-template-2"
-    },
-    {
-      "type": "file",
-      "path": "C:/Laragon/django-drf/test.txt"
-    },
-    {
-      "type": "folder",
-      "path": "C:/Laragon/graphene-graphql"
-    }
-  ]
-},
-```
-
 ## Todo
 - Add more widget controls
-  ✔ Delete
-  ✔ Change color
-  - Change icon
+  - Change star icon
 - Add more built-in widgets
-  ~ WYSIWYG notes editor
-- Collection widget
-  ✔ Add context menu for modifying the list of folders
+  - ~ WYSIWYG notes editor
 - Recent projects widget
-  ✔ Option to limit projects count
   - Option to duplicate / transform to static collection widget
 - Access to VS Code API from external widget
 - Automate the custom React component creation flow
-✔ CORS / CSP
