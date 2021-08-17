@@ -3,7 +3,8 @@
 	"displayName": "Home",
 	"description": "Homecoming dashboard for VSCode",
 	"version": "0.0.1",
-	"publisher": "vsch",
+	"publisher": "rubendew",
+	"icon": "./assets/logo_vschome.white.min.png",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
@@ -102,5 +103,6 @@
 		"vscode-test": "^1.4.1",
 		"webpack": "^5.47.1",
 		"webpack-cli": "^4.2.0"
-	}
+	},
+	"gitHead": "1a58433298ec7ca1e13bf2a426004673bd1bf8af"
 }

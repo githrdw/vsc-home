@@ -1,13 +1,13 @@
 
 <p align="center">
-  <img src="assets/logo_vschome.white.min.png" height="56" alt="VSCH Logo" />
+  <img src="https://github.com/githrdw/vsc-home/raw/main/packages/core/assets/logo_vschome.white.min.png" height="56" alt="VSCH Logo" />
 </p>
 <h1 align="center">VSC-Home</h1>
 <i><p align="center">
 A homecoming dashboard extension for Visual Studio Code
 </p></i>
 <br/>
-<img src="assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
+<img src="https://github.com/githrdw/vsc-home/raw/main/packages/core/assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
 <br/>
 <br/>
 
@@ -26,7 +26,7 @@ The following features are available:
 <br/>
 <br/>
 
-<img src="assets/Demo - Dashboard 3.png" alt="Screenshot of usage" />
+<img src="https://github.com/githrdw/vsc-home/raw/main/packages/core/assets/Demo - Dashboard 3.png" alt="Screenshot of usage" />
 <br/>
 <br/>
 
