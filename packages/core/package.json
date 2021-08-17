@@ -1,10 +1,10 @@
 {
-	"name": "core",
+	"name": "vsch-core",
 	"displayName": "Home",
 	"description": "Homecoming dashboard for VSCode",
 	"version": "0.0.1",
 	"publisher": "rubendew",
-	"icon": "./assets/logo_vschome.white.min.png",
+	"icon": "assets/logo_vschome.white.min.png",
 	"engines": {
 		"vscode": "^1.51.1"
 	},
