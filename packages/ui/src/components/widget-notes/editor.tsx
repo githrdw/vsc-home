@@ -21,11 +21,12 @@ const Component = ({
   const [state, _setState] = useState(EditorState.createEmpty());
   const Bus = useContext(EventBus);
   const editorRef: any = useRef();
+  const fileName = `${(window as any).VSCH_UID || 'default'}_${id}.html`;
 
   useEffect(() => {
     Bus.emit('vsch.ui.getData', {
       module: 'notes',
-      fileName: id + '.html',
+      fileName,
     }).then(({ data }: { data: string }) => {
       if (data) {
         const html = convertFromHTML(data);
@@ -40,7 +41,7 @@ const Component = ({
       delete: () => {
         Bus.emit('vsch.ui.deleteData', {
           module: 'notes',
-          fileName: id + '.html',
+          fileName,
         });
       },
     });
@@ -53,7 +54,7 @@ const Component = ({
 
     Bus.emit('vsch.ui.setData', {
       module: 'notes',
-      fileName: id + '.html',
+      fileName,
       data,
     });
   };
