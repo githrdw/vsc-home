@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "mustache": "^4.1.0",
-    "vsch-core": "^0.0.2"
+    "vsch-core": "^0.0.4"
   },
   "scripts": {
     "build": "rollup -c",
