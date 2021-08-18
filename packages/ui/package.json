@@ -1,5 +1,5 @@
 {
-  "name": "@vsch/ui",
+  "name": "@rubendew/vsch-ui",
   "version": "0.0.3",
   "description": "Frontend for VSC Home",
   "main": "index.js",
@@ -24,7 +24,7 @@
   },
   "author": "Ruben",
   "license": "mpl-2.0",
-  "private": true,
+  "private": false,
   "engines": {
     "node": ">=8",
     "npm": ">=3"

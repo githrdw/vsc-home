@@ -24,7 +24,7 @@ const openMainView = (context: vscode.ExtensionContext, meta?: any) => {
 		const panel = openPanels.get(meta.uid);
 		if (panel) { panel.reveal(columnToShowIn); }
 	} else {
-		const assets = (file: string) => import(`@vsch/ui/dist/${file}`);
+		const assets = (file: string) => import(`@rubendew/vsch-ui/dist/${file}`);
 		const view = new MainWebview(context, assets, meta?.uid, meta?.title);
 		view.onReady(webview => {
 			openPanels.set(meta.uid, view.panel);
@@ -46,7 +46,7 @@ const openMainView = (context: vscode.ExtensionContext, meta?: any) => {
 };
 
 const openSidebarView = (context: vscode.ExtensionContext) => {
-	const assets = (file: string) => import(`@vsch/sidebar/dist/${file}`);
+	const assets = (file: string) => import(`@rubendew/vsch-sidebar/dist/${file}`);
 	const view = new SidebarWebview(context, assets, 'sidebar');
 	view.onReady(webview => EventBus.register(webview));
 

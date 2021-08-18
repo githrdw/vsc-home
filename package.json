@@ -1,5 +1,5 @@
 {
-  "name": "@vsch/root",
+  "name": "@rubendew/vsch-root",
   "private": true,
   "publishConfig": {
     "access": "restricted"
