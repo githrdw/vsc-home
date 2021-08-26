@@ -1,11 +1,4 @@
-import React, {
-  Suspense,
-  lazy,
-  useMemo,
-  FocusEvent,
-  useRef,
-  useState,
-} from 'react';
+import React, { Suspense, lazy, useMemo, useRef, useState } from 'react';
 
 import { Box, Progress, useToken } from '@chakra-ui/react';
 
@@ -21,7 +14,7 @@ const Widget = ({
   ...widgetMeta
 }: WidgetProps) => {
   const { id, appearance, data, type } = widgetMeta;
-  const { title, color, hideTitlebar } = appearance;
+  const { title, color, hideTitlebar, icon } = appearance;
   const [callbacks, setCallbacks] = useState<{ delete: any; menu: any }>();
 
   const editMode = useRecoilValue($ui.editMode);
@@ -30,19 +23,11 @@ const Widget = ({
 
   const [chakraColor] = useToken('colors', [baseColor]);
 
-  const updateName = ({ target: { innerText } }: FocusEvent<HTMLElement>) => {
-    if (innerText !== title)
+  const updateAppearance = (key: keyof typeof appearance, value: any) => {
+    if (appearance[key] !== value) {
       onWidgetUpdate?.({
         ...widgetMeta,
-        appearance: { title: innerText, color, hideTitlebar },
-      });
-  };
-
-  const updateColor = (newColor: string) => {
-    if (newColor !== color) {
-      onWidgetUpdate?.({
-        ...widgetMeta,
-        appearance: { title, color: newColor, hideTitlebar },
+        appearance: { ...appearance, [key]: value },
       });
     }
   };
@@ -58,13 +43,6 @@ const Widget = ({
     if (callback) callback(update, data);
   };
 
-  const toggleTitlebar = () => {
-    onWidgetUpdate?.({
-      ...widgetMeta,
-      appearance: { title, color, hideTitlebar: !hideTitlebar },
-    });
-  };
-
   const deleteWidget = async () => {
     if (await confirm.current?.()) {
       callbacks?.delete?.();
@@ -75,8 +53,7 @@ const Widget = ({
   const content = useMemo(() => {
     const getter = async () =>
       await import(/* webpackPreload: true */ `../widget-${type}`);
-    const widgetContent = getter();
-    const Component = lazy(() => widgetContent);
+    const Component = lazy(() => getter());
 
     return (
       <Suspense fallback={<Progress size="xs" isIndeterminate />}>
@@ -109,10 +86,14 @@ const Widget = ({
             title,
             alphaColor,
             hideTitlebar,
-            updateName,
-            updateColor,
+            icon,
+            updateIcon: icon => updateAppearance('icon', icon),
+            updateColor: color => updateAppearance('color', color),
+            toggleTitlebar: () =>
+              updateAppearance('hideTitlebar', !appearance.hideTitlebar),
+            updateName: ({ target: { innerText } }) =>
+              updateAppearance('title', innerText),
             deleteWidget,
-            toggleTitlebar,
             callbacks,
           }}
         />

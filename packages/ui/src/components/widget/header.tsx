@@ -15,13 +15,14 @@ import {
 import {
   HamburgerIcon,
   DeleteIcon,
-  StarIcon,
   SunIcon,
   ViewIcon,
   ViewOffIcon,
+  DragHandleIcon,
 } from '@chakra-ui/icons';
 
-import ColorPopover from '@atoms/color-popover';
+import ColorPopover from '@atoms/popover-color';
+import IconPopover from '@atoms/popover-icon';
 import IconPlaceholder from './icon-placeholder';
 import { HeaderProps, MenuType } from './types';
 
@@ -30,13 +31,16 @@ const Header = ({
   title,
   alphaColor,
   hideTitlebar,
+  icon,
+  updateIcon,
   updateName,
-  deleteWidget,
   updateColor,
   toggleTitlebar,
+  deleteWidget,
   callbacks,
 }: HeaderProps) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [colorPopoverOpen, setColorPopoverOpen] = useState(false);
+  const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
   const [CustomMenu, setMenu] = useState<MenuType>({
     prepend: null,
     append: null,
@@ -56,9 +60,24 @@ const Header = ({
   return (
     <>
       <Flex p={2} fontSize="lg" align="center">
-        <IconPlaceholder bg={alphaColor}>
-          <StarIcon w={5} h={4} />
-        </IconPlaceholder>
+        <Menu placement="bottom">
+          <IconPopover
+            open={iconPopoverOpen}
+            onIcon={icon => {
+              setIconPopoverOpen(false);
+              updateIcon(icon);
+            }}
+          >
+            <MenuButton
+              aria-label="Icon"
+              as="span"
+              style={{ width: 28 }}
+              onClick={() => setIconPopoverOpen(false)}
+            >
+              <IconPlaceholder icon={icon || 'StarIcon'} bg={alphaColor} />
+            </MenuButton>
+          </IconPopover>
+        </Menu>
         <Heading
           size="sm"
           w="calc(100% - 3.7rem)"
@@ -78,9 +97,12 @@ const Header = ({
         <Spacer />
         <Menu placement="bottom" onOpen={renderCustomItems}>
           <ColorPopover
-            open={popoverOpen}
-            close={() => setPopoverOpen(false)}
-            onColor={updateColor}
+            open={colorPopoverOpen}
+            close={() => setColorPopoverOpen(false)}
+            onColor={(color: string) => {
+              updateColor(color);
+              setColorPopoverOpen(false);
+            }}
           >
             <MenuButton
               as={IconButton}
@@ -94,8 +116,17 @@ const Header = ({
             <MenuList>
               {CustomMenu.prepend}
               {CustomMenu.prepend && <Divider />}
-              <MenuItem onClick={() => setPopoverOpen(true)} icon={<SunIcon />}>
+              <MenuItem
+                onClick={() => setColorPopoverOpen(true)}
+                icon={<SunIcon />}
+              >
                 Change color
+              </MenuItem>
+              <MenuItem
+                onClick={() => setIconPopoverOpen(true)}
+                icon={<DragHandleIcon />}
+              >
+                Change icon
               </MenuItem>
               <MenuItem
                 onClick={toggleTitlebar}
