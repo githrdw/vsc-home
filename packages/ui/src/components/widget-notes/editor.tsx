@@ -10,6 +10,7 @@ import {
 import { stateToHTML } from 'draft-js-export-html';
 import { Box } from '@chakra-ui/layout';
 import EventBus from '@hooks/event-bus';
+import FloatingActions from './floating-actions';
 
 const Component = ({
   id,
@@ -19,8 +20,9 @@ const Component = ({
   setCallbacks: (callbacks: any) => void;
 }) => {
   const [state, _setState] = useState(EditorState.createEmpty());
+  const [styleBarActive, setStyleBarActive] = useState(false);
   const Bus = useContext(EventBus);
-  const editorRef: any = useRef();
+  const editorRef = useRef<Editor>(null);
   const fileName = `${(window as any).VSCH_UID || 'default'}_${id}.html`;
 
   useEffect(() => {
@@ -50,13 +52,15 @@ const Component = ({
   const setState = (newState: EditorState) => {
     _setState(newState);
     const content = newState.getCurrentContent();
-    const data = stateToHTML(content);
+    if (state.getCurrentContent() !== content) {
+      const data = stateToHTML(content);
 
-    Bus.emit('vsch.ui.setData', {
-      module: 'notes',
-      fileName,
-      data,
-    });
+      Bus.emit('vsch.ui.setData', {
+        module: 'notes',
+        fileName,
+        data,
+      });
+    }
   };
 
   const handleKeyCommand = (command: string, editorState: EditorState) => {
@@ -84,31 +88,51 @@ const Component = ({
     }
   };
 
+  const toggleBlock = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    style: string
+  ) => {
+    e.preventDefault();
+    setState(RichUtils.toggleBlockType(state, style));
+  };
+
+  const applyStyle = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    style: string
+  ) => {
+    e.preventDefault();
+    setState(RichUtils.toggleInlineStyle(state, style));
+  };
+
   return (
-    <Box
-      height="100%"
-      onClick={() => editorRef.current.focus()}
-      cursor="text"
-      onKeyDown={keyDown}
-      display="flex"
-      flex="1"
-      flexDir="column"
-    >
-      <Editor
-        ref={editorRef}
-        editorState={state}
-        onChange={setState}
-        handleKeyCommand={handleKeyCommand}
-        customStyleMap={{
-          CODE: {
-            fontFamily: 'var(--vscode-editor-font-family, Monaco)',
-            paddingInline: '.2em',
-            borderRadius: '2px',
-            background: 'rgba(0, 0, 0, 0.16)',
-          },
-        }}
-      />
-    </Box>
+    <FloatingActions open={styleBarActive} {...{ toggleBlock, applyStyle }}>
+      <Box
+        height="100%"
+        cursor="text"
+        onKeyDown={keyDown}
+        display="flex"
+        flex="1"
+        flexDir="column"
+        position="relative"
+      >
+        <Editor
+          ref={editorRef}
+          editorState={state}
+          onChange={setState}
+          onFocus={() => setStyleBarActive(true)}
+          onBlur={() => setStyleBarActive(false)}
+          handleKeyCommand={handleKeyCommand}
+          customStyleMap={{
+            CODE: {
+              fontFamily: 'var(--vscode-editor-font-family, Monaco)',
+              paddingInline: '.2em',
+              borderRadius: '2px',
+              background: 'rgba(0, 0, 0, 0.16)',
+            },
+          }}
+        />
+      </Box>
+    </FloatingActions>
   );
 };
 

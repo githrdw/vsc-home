@@ -64,6 +64,12 @@ pre.public-DraftStyleDefault-pre {
   padding: 0.2em;
   border-radius: 2px;
   background: rgba(0, 0, 0, 0.16);
+  
+  .public-DraftStyleDefault-block {
+    span {
+      background: transparent !important;
+    }
+  }
 }
 
 .DraftEditor-root {
