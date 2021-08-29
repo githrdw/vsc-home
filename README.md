@@ -83,10 +83,6 @@ Also contains a list of components to use that can be dragged to the grid
 Used techniques: HTML, Sass, ES6, Rollup
 
 ## Todo
-- Add more widget controls
-  - Change star icon
-- Add more built-in widgets
-  - ~ WYSIWYG notes editor
 - Recent projects widget
   - Option to duplicate / transform to static collection widget
 - Access to VS Code API from external widget
