@@ -1,4 +1,4 @@
-import { Webview } from "vscode";
+import { Webview, ExtensionContext } from "vscode";
 
 export interface ExecuteParams {
   id: string,
@@ -18,6 +18,7 @@ export interface ExecuteCore {
   respond: RespondPayload,
   vars: any,
   webview: Webview
+  ctx: ExtensionContext
 }
 
 export interface Run {

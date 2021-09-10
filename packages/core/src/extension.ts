@@ -6,7 +6,7 @@ import MainWebview from './views/MainWebview';
 import SidebarWebview from './views/SidebarWebview';
 import InitialAppdata from './utils/InitAppdata';
 
-const EventBus = new Api();
+let EventBus: Api;
 const userConfig = vscode.workspace.getConfiguration('home');
 const openPanels = new Map<string, vscode.WebviewPanel | undefined>();
 
@@ -61,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 
 	InitialAppdata();
+	EventBus = new Api(context);
 
 	const mainViewCommand = vscode.commands.registerCommand('vsch.openMainView', async (meta = DEFAULT_META) => {
 		// The code you place here will be executed every time your command is executed

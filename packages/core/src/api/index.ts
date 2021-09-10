@@ -1,4 +1,4 @@
-import { Webview, window } from 'vscode';
+import { Webview, window, ExtensionContext } from 'vscode';
 import { ExecuteParams, Payload } from './d';
 
 import vars from '../vars';
@@ -9,8 +9,10 @@ import workbench from './workbench';
 
 export default class Api {
   nodes: Webview[];
-  constructor() {
+  context: ExtensionContext;
+  constructor(context: ExtensionContext) {
     this.nodes = [];
+    this.context = context;
   }
 
   // Keep track of API Listeners to be able to emit messages to them
@@ -29,7 +31,7 @@ export default class Api {
   private execute({ id, action, payload }: ExecuteParams, webview: Webview) {
     const [module, ...instructions] = action.split('.');
     const respond = this.respondAll(id);
-    const core = { respond, vars, webview };
+    const core = { respond, vars, webview, ctx: this.context };
 
     if (!module) { console.error('API Module not found'); }
     else if (module === 'vsch') { vsch(core, instructions, payload); }
@@ -38,7 +40,7 @@ export default class Api {
   }
 
   private respondAll(id: string) {
-    return (payload: Payload = {}) => {
+    return (payload: Payload = { }) => {
       if (payload.error) { window.showErrorMessage(payload.error); };
       this.emitAll({ id, payload });
     };
