@@ -22,28 +22,31 @@ const getIcon = (type: FsTypes) => {
   return Icon;
 };
 
-let deleteModeKey: (() => void) | undefined;
-let addItemKey: ((isWorkspace?: boolean) => void) | undefined;
+const deleteModeRefs = new Map<string, (() => void) | undefined>();
+const addItemRefs = new Map<
+  string,
+  ((isWorkspace?: boolean) => void) | undefined
+>();
 
-const CollectionMenu = createElement(() => {
-  return (
-    <>
-      <MenuItem icon={<VscFolder />} onClick={() => addItemKey?.() || void 0}>
-        Add folder
-      </MenuItem>
-      <MenuItem
-        icon={<VscFileSubmodule />}
-        onClick={() => addItemKey?.(true) || void 0}
-      >
-        Add workspace
-      </MenuItem>
+const CollectionMenu = (id: string) =>
+  createElement(() => {
+    const deleteMode = deleteModeRefs.get(id) || void 0;
+    const addItem = addItemRefs.get(id) || void 0;
+    return (
+      <>
+        <MenuItem icon={<VscFolder />} onClick={() => addItem?.()}>
+          Add folder
+        </MenuItem>
+        <MenuItem icon={<VscFileSubmodule />} onClick={() => addItem?.(true)}>
+          Add workspace
+        </MenuItem>
 
-      <MenuItem icon={<MinusIcon />} onClick={deleteModeKey || void 0}>
-        Remove folder
-      </MenuItem>
-    </>
-  );
-});
+        <MenuItem icon={<MinusIcon />} onClick={deleteMode}>
+          Remove folder
+        </MenuItem>
+      </>
+    );
+  });
 
 const WidgetCollection = ({
   id,
@@ -57,8 +60,8 @@ const WidgetCollection = ({
 
   const widget = widgets.find(({ id: _id }) => _id === id);
 
-  deleteModeKey = () => setRemoveMode(!removeMode);
-  addItemKey = async (isWorkspace = false) => {
+  deleteModeRefs.set(id, () => setRemoveMode(!removeMode));
+  addItemRefs.set(id, async (isWorkspace = false) => {
     const filters = {
       Workspace: ['code-workspace'],
     };
@@ -85,12 +88,12 @@ const WidgetCollection = ({
         setWidgets([...widgets]);
       }
     }
-  };
+  });
 
   if (setCallbacks) {
     setCallbacks({
       menu: {
-        prepend: CollectionMenu,
+        prepend: CollectionMenu(id),
       },
     });
   }
