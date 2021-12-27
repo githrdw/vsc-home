@@ -23,15 +23,15 @@
     }
   },
   "author": "Ruben",
-  "license": "mpl-2.0",
+  "license": "MPL-2.0",
   "private": false,
   "engines": {
-    "node": ">=8",
+    "node": ">=14.17.0",
     "npm": ">=3"
   },
   "dependencies": {
-    "@chakra-ui/icons": "1.0.14",
-    "@chakra-ui/react": "1.6.5",
+    "@chakra-ui/icons": "^1.1.1",
+    "@chakra-ui/react": "^1.7.3",
     "@emotion/react": "11.4.0",
     "@emotion/styled": "11.3.0",
     "core-js": "^3.16.0",
@@ -42,7 +42,7 @@
     "react-dom": "17.0.2",
     "react-grid-layout": "^1.2.0",
     "react-icons": "^4.2.0",
-    "recoil": "0.4.0",
+    "recoil": "^0.5.2",
     "vsch-core": "^0.0.7"
   },
   "devDependencies": {
@@ -53,11 +53,11 @@
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "browserslist": "4.16.6",
-    "clean-webpack-plugin": "4.0.0-alpha.0",
+    "clean-webpack-plugin": "^4.0.0",
     "cross-env": "7.0.3",
     "csp-html-webpack-plugin": "^5.1.0",
     "css-loader": "^6.2.0",
-    "eslint": "^7.31.0",
+    "eslint": "^8.5.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.23.4",
     "eslint-plugin-prettier": "3.4.0",
@@ -79,11 +79,7 @@
     "terser-webpack-plugin": "5.1.4",
     "ts-loader": "^9.2.4",
     "webpack": "^5.47.1",
-    "webpack-cli": "4.7.2",
-    "webpack-dev-server": "3.11.2",
+    "webpack-cli": "^4.9.1",
     "webpack-merge": "5.8.0"
-  },
-  "reactSnap": {
-    "source": "dist"
   }
 }

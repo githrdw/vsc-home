@@ -67,31 +67,29 @@ export default class WebviewLoader {
     return { url, ...meta };
   }
 
-  private resolveAssetByMatch(string: string, match: RegExp): Promise<string> {
-    return new Promise((resolve) => {
-      const assetBuffer: AssetBuffer = [];
-      const matchFactory = string.matchAll(match);
+  private async resolveAssetByMatch(string: string, match: RegExp): Promise<string> {
+    const assetBuffer: AssetBuffer = [];
+    const matchFactory = string.matchAll(match);
 
-      for (const { 0: { length }, 0: asset, index } of matchFactory) {
-        // Create resolvable buffer with asset-urls and position meta
-        assetBuffer.push(this.resolveAsset(asset, {
-          length,
-          index
-        }));
-      }
+    for (const { 0: { length }, 0: asset, index } of matchFactory) {
+      // Create resolvable buffer with asset-urls and position meta
+      assetBuffer.push(this.resolveAsset(asset, {
+        length,
+        index
+      }));
+    }
 
-      let newString = string;
+    let newString = string;
 
-      // Loop through each assets[].url
-      Promise.all(assetBuffer).then((assets: AssetContainer[]) => {
-        for (const { length, index, url } of assets) {
-          const position = newString.length - string.length + (index || 0);
-          // Replace match with resolved assets[].url
-          newString = newString.substr(0, position) + url + newString.substr(position + length);
-        }
-        resolve(newString);
-      });
-    });
+    // Loop through each assets[].url
+    const assets = await Promise.all<AssetContainer>(assetBuffer);
+    for (const { length, index, url } of assets) {
+      const position = newString.length - string.length + (index || 0);
+      // Replace match with resolved assets[].url
+      newString = newString.substring(0, position) + url + newString.substring(position + length);
+    }
+    
+    return newString
   }
   public async getWebviewContent() {
     const nonce = this.generateNonce();

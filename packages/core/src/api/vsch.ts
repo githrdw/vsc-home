@@ -20,7 +20,7 @@ const run: Run = {
       const text = new TextDecoder("utf-8").decode(data);
       const json = text ? JSON.parse(text) : null;
       if (json.title) { title = json.title; };
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
     }
 
@@ -35,7 +35,7 @@ const run: Run = {
       const text = new TextEncoder().encode(data);
       await workspace.fs.writeFile(uri, text);
       respond();
-    } catch (e) {
+    } catch (e: any) {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
@@ -46,7 +46,7 @@ const run: Run = {
     try {
       await workspace.fs.delete(uri);
       respond();
-    } catch (e) {
+    } catch (e: any) {
       respond({ error: e.toString() + ' while deleting ' + file });
     }
   },
@@ -58,7 +58,7 @@ const run: Run = {
       const data = await workspace.fs.readFile(uri);
       const text = new TextDecoder("utf-8").decode(data);
       respond({ data: text });
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === "FileNotFound") {
         notExisting = true;
       } else {
@@ -70,7 +70,7 @@ const run: Run = {
       try {
         await workspace.fs.writeFile(uri, new Uint8Array());
         respond({ data: undefined });
-      } catch (e) {
+      } catch (e: any) {
         respond({ error: e.toString() + ' while creating ' + file });
       }
     }
@@ -86,7 +86,7 @@ const run: Run = {
     let exists;
     try {
       await workspace.fs.readFile(uri);
-    } catch (e) { if (e.code === "FileNotFound") { exists = false; }; }
+    } catch (e: any) { if (e.code === "FileNotFound") { exists = false; }; }
 
     if (exists !== false) {
       const hash = Math.random().toString(36).substr(2, 5);
@@ -101,7 +101,7 @@ const run: Run = {
       await workspace.fs.writeFile(uri, data);
       await commands.executeCommand('vsch.openMainView', { uid, title });
       respond();
-    } catch (e) {
+    } catch (e: any) {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
@@ -117,7 +117,7 @@ const run: Run = {
 
       await workspace.fs.writeFile(uri, data);
       respond();
-    } catch (e) {
+    } catch (e: any) {
       respond({ error: e.toString() + ' while writing ' + file });
     }
   },
@@ -130,7 +130,7 @@ const run: Run = {
       const text = new TextDecoder("utf-8").decode(data);
       const json = text ? JSON.parse(text) : null;
       respond(json);
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === "FileNotFound") {
         notExisting = true;
       } else {
@@ -142,7 +142,7 @@ const run: Run = {
       try {
         await workspace.fs.writeFile(uri, new Uint8Array());
         respond({ layout: undefined });
-      } catch (e) {
+      } catch (e: any) {
         respond({ error: e.toString() + ' while creating ' + file });
       }
     }
@@ -154,7 +154,7 @@ const run: Run = {
     let layouts: [string, FileType][] = [];
     try {
       layouts = await workspace.fs.readDirectory(uri);
-    } catch (e) {
+    } catch (e: any) {
       return respond({ error: e.toString() + ' while reading ' + dir });
     }
     for (const layout of layouts) {
@@ -170,7 +170,7 @@ const run: Run = {
         if (json) {
           layoutsDetails.push({ title: json.title || 'Home', uid });
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error({ error: e.toString() + ' while reading ' + dir });
       }
     }
@@ -183,7 +183,7 @@ const run: Run = {
     let widgets: [string, FileType][] = [];
     try {
       widgets = await workspace.fs.readDirectory(uri);
-    } catch (e) {
+    } catch (e: any) {
       return respond({ error: e.toString() + ' while reading ' + dir });
     }
     for (const widget of widgets) {
@@ -198,7 +198,7 @@ const run: Run = {
         if (json) {
           widgetsDetails.push({ lib, ...json.vsch });
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error({ error: e.toString() + ' while reading ' + dir });
       }
     }
