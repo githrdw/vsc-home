@@ -42,7 +42,7 @@ const CollectionMenu = (id: string) =>
         </MenuItem>
 
         <MenuItem icon={<MinusIcon />} onClick={deleteMode}>
-          Remove folder
+          Remove item
         </MenuItem>
       </>
     );
@@ -128,11 +128,9 @@ const WidgetCollection = ({
   }, [items, removeMode]);
 
   return (
-    <>
-      <ButtonGroup display="block" spacing={0} variant="ghost">
-        {ItemList}
-      </ButtonGroup>
-    </>
+    <ButtonGroup display="block" spacing={0} variant="ghost">
+      {ItemList}
+    </ButtonGroup>
   );
 };
 

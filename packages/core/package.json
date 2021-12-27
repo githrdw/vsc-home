@@ -55,11 +55,13 @@
 					"enum": [
 						"always",
 						"whenBlank",
+						"whenNoWorkspace",
 						"never"
 					],
 					"enumDescriptions": [
 						"Opens dashboard always when opening a new VS Code window",
-						"Opens dashboard when opening a new blank VS Code window",
+						"Opens dashboard when opening a VS Code window where no files are open",
+						"Opens dashboard when opening a VS Code window where no workspace is configured",
 						"Only opens dashboard by hand from the sidebar or command prompt"
 					],
 					"description": "Defines when the dashboard should automatically open."

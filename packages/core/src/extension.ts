@@ -72,6 +72,10 @@ export function activate(context: vscode.ExtensionContext) {
 	if (openOnStartup === "always") {
 		openMainView(context, DEFAULT_META);
 	} else if (openOnStartup === "whenBlank") {
+		if (!vscode.window.visibleTextEditors.length) {
+			openMainView(context, DEFAULT_META);
+		}
+	} else if (openOnStartup === "whenNoWorkspace") {
 		if (!vscode.workspace.workspaceFolders?.length) {
 			openMainView(context, DEFAULT_META);
 		}
