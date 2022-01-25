@@ -8,11 +8,12 @@ export default function (core: ExecuteCore, instructions: string[], payload: obj
 }
 
 const run: Run = {
-  'openFolder': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT, LAYOUTS_ROOT } }, { path, newWindow = true }) => {
+  'openFolder': async ({ respond, vars: { USR_APP_DIR, WIDGETS_ROOT, LAYOUTS_ROOT } }, { path, type, newWindow = true }) => {
     if (path === "LAYOUTS_ROOT") { path = join(USR_APP_DIR, LAYOUTS_ROOT); };
     if (path === "WIDGETS_ROOT") { path = join(USR_APP_DIR, WIDGETS_ROOT); };
-    
-    await commands.executeCommand('vscode.openFolder', Uri.file(path), newWindow);
+
+    const uri = Uri[type === "uri" ? "parse" : "file"](path)
+    await commands.executeCommand('vscode.openFolder', uri, newWindow);
     respond();
   },
   'selectResource': async ({ respond }, { canSelectFolders, canSelectMany, filters }) => {

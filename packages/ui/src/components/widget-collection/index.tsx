@@ -1,7 +1,12 @@
 import React, { useMemo, useContext, createElement, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { ButtonGroup, MenuItem } from '@chakra-ui/react';
-import { VscFileSubmodule, VscFile, VscFolder } from 'react-icons/vsc';
+import {
+  VscFileSubmodule,
+  VscFile,
+  VscFolder,
+  VscRemote,
+} from 'react-icons/vsc';
 import { $ui } from '../../state';
 
 import { FsTypes, WidgetCollectionProps, FileList } from './interfaces';
@@ -16,6 +21,8 @@ const getIcon = (type: FsTypes) => {
         ? VscFileSubmodule
         : type === FsTypes.Folder
         ? VscFolder
+        : type === FsTypes.Uri
+        ? VscRemote
         : VscFile;
     return <Component height="14px" />;
   };
@@ -113,9 +120,9 @@ const WidgetCollection = ({
               }
             }
           : () => {
-              Bus.emit('vscode.openFolder', { path })
-                .then(() => console.warn('Open'))
-                .catch(() => console.error('Something went wrong'));
+              Bus.emit('vscode.openFolder', { path, type }).catch(() =>
+                console.error('Something went wrong')
+              );
             };
         Children.push(
           <div key={path}>

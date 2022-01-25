@@ -2,10 +2,12 @@ export const enum FsTypes {
   Workspace = 'workspace',
   Folder = 'folder',
   File = 'file',
+  Uri = 'uri',
 }
 export interface RecentItem {
   folderUri?: {
     path: string;
+    external?: string;
   };
   workspace?: {
     configPath: {

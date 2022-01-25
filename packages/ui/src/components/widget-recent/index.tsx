@@ -64,11 +64,15 @@ const WidgetRecent = ({
       const type = item.workspace
         ? FsTypes.Workspace
         : item.folderUri
-        ? FsTypes.Folder
+        ? item.folderUri.external
+          ? FsTypes.Uri
+          : FsTypes.File
         : FsTypes.File;
       const path =
-        (item.workspace
-          ? item.workspace.configPath.path
+        (type === FsTypes.Workspace
+          ? item.workspace?.configPath.path
+          : type === FsTypes.Uri
+          ? item.folderUri?.external
           : item.folderUri?.path) || '';
       return {
         type,
