@@ -1,0 +1,95 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  font-size: 0.875rem;
+  font-family: var(--vscode-font-family, 'Segoe WPC', 'Segoe UI', sans-serif);
+  line-height: 1.5;
+}
+html,
+body,
+div#app {
+  height: 100%;
+}
+button {
+  background: transparent;
+  padding: 0;
+
+  svg.chakra-icon {
+    color: var(--vscode-foreground, #cccccc);
+  }
+}
+
+*,
+*::before,
+::after {
+  border-color: rgba(255, 255, 255, 0.16);
+  word-wrap: break-word;
+
+  border-width: 0;
+  border-style: solid;
+  box-sizing: border-box;
+
+  .vscode-light & {
+    border-color: rgba(0, 0, 0, 0.16);
+  }
+}
+
+.selection-allowed {
+  user-select: text;
+}
+.react-grid-layout {
+  .react-grid-item {
+    &.react-grid-placeholder {
+      border: 2px dotted rgba(255, 255, 255, 0.5);
+      background: none;
+      border-radius: 0.125rem;
+
+      .vscode-light & {
+        border: 2px dotted rgba(0, 0, 0, 0.5);
+      }
+    }
+    .react-resizable-handle::after {
+      border-right: inherit;
+      border-bottom: inherit;
+    }
+  }
+}
+.chakra-button__icon {
+  height: 16px;
+}
+
+pre.public-DraftStyleDefault-pre {
+  padding: 0.2em;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.16);
+  
+  .public-DraftStyleDefault-block {
+    span {
+      background: transparent !important;
+    }
+  }
+}
+
+.DraftEditor-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .DraftEditor-editorContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .public-DraftEditor-content {
+    flex: 1;
+  }
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}

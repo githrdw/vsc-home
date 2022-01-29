@@ -7,7 +7,7 @@ declare global {
   interface __webpack_share_scopes__ {
     default: object;
   }
-  interface Window extends Window {
+  interface Window {
     _bus: any;
     acquireVsCodeApi(): {
       postMessage(data: object): void;

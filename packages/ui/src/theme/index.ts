@@ -1,7 +1,7 @@
 import { extendTheme } from '@chakra-ui/react';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import '../assets/index.scss';
+import '../assets/scss/index.scss';
 
 const styles = {
   global: {
