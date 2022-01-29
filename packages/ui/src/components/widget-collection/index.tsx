@@ -108,7 +108,7 @@ const WidgetCollection = ({
     const Children = [];
     if (items) {
       for (const item of items.slice(0, size)) {
-        const { path, name, type } = item;
+        const { path, name, label, type } = item;
         const Icon = removeMode ? MinusIcon : getIcon(type);
         const onClick = removeMode
           ? () => {
@@ -126,7 +126,7 @@ const WidgetCollection = ({
             };
         Children.push(
           <div key={path}>
-            <ListItem {...{ Icon, name, path, onClick }} />
+            <ListItem {...{ Icon, name, label, path, onClick }} />
           </div>
         );
       }

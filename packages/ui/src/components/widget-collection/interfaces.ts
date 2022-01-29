@@ -8,18 +8,21 @@ export interface RecentItem {
   folderUri?: {
     path: string;
     external?: string;
+    authority?: string;
   };
   workspace?: {
     configPath: {
       path: string;
     };
   };
+  label?: string;
 }
 
 export interface CollectionItem {
   type: FsTypes;
   path: string;
   name: string;
+  label?: string | boolean;
 }
 
 export interface WidgetCollectionProps {

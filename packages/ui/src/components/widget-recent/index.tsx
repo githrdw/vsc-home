@@ -64,7 +64,7 @@ const WidgetRecent = ({
       const type = item.workspace
         ? FsTypes.Workspace
         : item.folderUri
-        ? item.folderUri.external
+        ? item.folderUri.authority
           ? FsTypes.Uri
           : FsTypes.Folder
         : FsTypes.File;
@@ -78,6 +78,7 @@ const WidgetRecent = ({
         type,
         path,
         name: path,
+        label: type !== FsTypes.Workspace && item.label,
       };
     });
     return recent;
