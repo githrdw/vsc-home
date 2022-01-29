@@ -61,7 +61,7 @@ const DynamicComponent = ({ lib, entry }: DynamicComponentProps) => {
   );
   return (
     <Suspense fallback="Loading widget">
-      <Widget />
+      <Widget eventBus={EventBus} />
     </Suspense>
   );
 };

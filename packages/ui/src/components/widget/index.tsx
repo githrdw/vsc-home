@@ -7,6 +7,7 @@ import { WidgetProps } from './types';
 import Confirm from '@atoms/confirm';
 import { useRecoilValue } from 'recoil';
 import { $ui } from '@state';
+import ErrorBoundary from '@atoms/error-boundary';
 
 const Widget = ({
   onWidgetUpdate,
@@ -106,7 +107,7 @@ const Widget = ({
         overflow="auto"
         flex="1"
       >
-        {content}
+        <ErrorBoundary>{content}</ErrorBoundary>
       </Box>
     </Box>
   );
