@@ -94,7 +94,7 @@ export default class WebviewLoader {
   public async getWebviewContent() {
     const nonce = this.generateNonce();
     const WebView = await this.getAsset('index.html');
-    const resolved = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css)/gm);
+    const resolved = await this.resolveAssetByMatch(WebView, /[\w|-]+\.(js|css|svg)/gm);
     const html = resolved
       .replace(/VSCH_UID = 'default'/, `VSCH_UID = '${this.vsch_uid}'`)
       .replace(/CSP_SOURCE/gm, this.webview?.cspSource || '')

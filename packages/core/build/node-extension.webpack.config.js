@@ -42,7 +42,7 @@ const config = {
         exclude: /node_modules(?!(\/|\\)@vsch\/[ui|sidebar])/
       },
       {
-        test: /\.(css|js)$/,
+        test: /\.(css|js|svg)$/,
         type: 'asset/resource',
         exclude: /node_modules(?!(\/|\\)@vsch\/[ui|sidebar])/
       }

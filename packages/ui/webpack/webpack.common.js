@@ -18,19 +18,14 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        use: [
-          {
-            loader: 'file-loader',
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'ui-[id][ext]',
+        },
       },
       {
         test: /\.(woff2|ttf|woff|eot)$/,
-        use: [
-          {
-            loader: 'file-loader',
-          },
-        ],
+        type: 'asset/resource',
       },
     ],
   },
