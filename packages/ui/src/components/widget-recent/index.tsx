@@ -66,7 +66,7 @@ const WidgetRecent = ({
         : item.folderUri
         ? item.folderUri.external
           ? FsTypes.Uri
-          : FsTypes.File
+          : FsTypes.Folder
         : FsTypes.File;
       const path =
         (type === FsTypes.Workspace
