@@ -1,0 +1,23 @@
+.error-boundary__bug {
+  filter: invert(0.1);
+}
+body.chakra-ui-dark {
+  .error-boundary__bug {
+    filter: invert(0.7);
+  }
+}
+
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100%;
+  h1 {
+    font-size: 1.5em;
+  }
+  button .chakra-button__icon {
+    align-items: center;
+  }
+}

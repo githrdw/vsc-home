@@ -10,5 +10,6 @@ module.exports = {
     '@components': resolve(__dirname, '../src/components'),
     '@state': resolve(__dirname, '../src/state'),
     '@hooks': resolve(__dirname, '../src/hooks'),
+    '@assets': resolve(__dirname, '../src/assets'),
   },
 };
