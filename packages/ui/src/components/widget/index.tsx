@@ -107,7 +107,7 @@ const Widget = ({
         overflow="auto"
         flex="1"
       >
-        <ErrorBoundary>{content}</ErrorBoundary>
+        <ErrorBoundary {...{ data, type }}>{content}</ErrorBoundary>
       </Box>
     </Box>
   );
