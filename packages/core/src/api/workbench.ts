@@ -12,5 +12,9 @@ const run: Run = {
       .then(recent => {
         respond({ recent });
       });
+  },
+  'openDevtools': ({ respond }) => {
+    commands.executeCommand('workbench.action.webview.openDeveloperTools')
+      .then(() => respond());
   }
 };
