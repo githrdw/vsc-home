@@ -1,4 +1,4 @@
-import { commands, Uri, window } from "vscode";
+import { commands, Uri, window, env } from "vscode";
 import { ExecuteCore, Run } from './d';
 import { join } from 'path';
 
@@ -14,6 +14,10 @@ const run: Run = {
 
     const uri = Uri[type === "uri" ? "parse" : "file"](path)
     await commands.executeCommand('vscode.openFolder', uri, newWindow);
+    respond();
+  },
+  'openExternal': async ({ respond }, {url}) => {
+    await env.openExternal(Uri.parse(url));
     respond();
   },
   'selectResource': async ({ respond }, { canSelectFolders, canSelectMany, filters }) => {
