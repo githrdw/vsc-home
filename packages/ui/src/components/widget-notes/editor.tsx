@@ -8,7 +8,7 @@ import {
   ContentState,
 } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
-import { Box } from '@chakra-ui/layout';
+import { Box } from '@chakra-ui/react';
 import EventBus from '@hooks/event-bus';
 import FloatingActions from './floating-actions';
 
