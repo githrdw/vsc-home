@@ -14,9 +14,11 @@ import FloatingActions from './floating-actions';
 
 const Component = ({
   id,
+  raw,
   setCallbacks,
 }: {
   id: string;
+  raw?: string;
   setCallbacks: (callbacks: any) => void;
 }) => {
   const [state, _setState] = useState(EditorState.createEmpty());
@@ -25,30 +27,14 @@ const Component = ({
   const editorRef = useRef<Editor>(null);
   const fileName = `${(window as any).VSCH_UID || 'default'}_${id}.html`;
 
-  useEffect(() => {
-    Bus.emit('vsch.ui.getData', {
-      module: 'notes',
-      fileName,
-    }).then(({ data }: { data: string }) => {
-      if (data) {
-        const html = convertFromHTML(data);
-        const content = ContentState.createFromBlockArray(
-          html.contentBlocks,
-          html.entityMap
-        );
-        setState(EditorState.createWithContent(content));
-      }
-    });
-    setCallbacks({
-      delete: () => {
-        Bus.emit('vsch.ui.deleteData', {
-          module: 'notes',
-          fileName,
-        });
-      },
-    });
-  }, []);
-
+  const convertContent = (data: string) => {
+    const html = convertFromHTML(data);
+    const content = ContentState.createFromBlockArray(
+      html.contentBlocks,
+      html.entityMap
+    );
+    setState(EditorState.createWithContent(content));
+  };
   const setState = (newState: EditorState) => {
     _setState(newState);
     const content = newState.getCurrentContent();
@@ -103,6 +89,26 @@ const Component = ({
     e.preventDefault();
     setState(RichUtils.toggleInlineStyle(state, style));
   };
+
+  useEffect(() => {
+    if (raw) convertContent(raw);
+    else {
+      Bus.emit('vsch.ui.getData', {
+        module: 'notes',
+        fileName,
+      }).then(({ data }: { data: string }) => {
+        if (data) convertContent(data);
+      });
+      setCallbacks({
+        delete: () => {
+          Bus.emit('vsch.ui.deleteData', {
+            module: 'notes',
+            fileName,
+          });
+        },
+      });
+    }
+  }, []);
 
   return (
     <FloatingActions open={styleBarActive} {...{ toggleBlock, applyStyle }}>
