@@ -2,6 +2,7 @@ import { Uri, workspace, commands, FileType, window } from "vscode";
 import { TextDecoder, TextEncoder } from "util";
 import { join } from 'path';
 import { ExecuteCore, Run } from './d';
+import DefaultTemplate from "../utils/DefaultTemplate"
 
 export default function (core: ExecuteCore, instructions: string[], payload: object) {
   const command = run[instructions.join('.')];
@@ -140,8 +141,10 @@ const run: Run = {
 
     if (notExisting) {
       try {
-        await workspace.fs.writeFile(uri, new Uint8Array());
-        respond({ layout: undefined });
+        const string = JSON.stringify(DefaultTemplate)
+        const text = new TextEncoder().encode(string);
+        await workspace.fs.writeFile(uri, text);
+        respond({ layout: DefaultTemplate.layout });
       } catch (e: any) {
         respond({ error: e.toString() + ' while creating ' + file });
       }

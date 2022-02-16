@@ -2249,6 +2249,14 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
+"@rubendew/vsch-sidebar@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@rubendew/vsch-sidebar/-/vsch-sidebar-0.0.5.tgz#3862a7ed6caac79cb4dbebebb662a75559cb749e"
+  integrity sha512-mQOxxlUJMyJLqxrtMNbVfu/yl2WYIniKemzjm4jA66AAoYJZxU1M6RePsFYZFTjxifUIKDs4Bjt7qUz+xbf9RQ==
+  dependencies:
+    mustache "^4.1.0"
+    vsch-core "^0.0.5"
+
 "@rubendew/vsch-ui@^0.0.5":
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/@rubendew/vsch-ui/-/vsch-ui-0.0.5.tgz#cd1ebebe1a3e25bf93d01d12ab8b94d945d538de"
