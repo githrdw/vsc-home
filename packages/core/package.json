@@ -49,6 +49,10 @@
 		"configuration": {
 			"title": "Home",
 			"properties": {
+				"home.oauthAgent": {
+					"type": "string",
+					"description": "To make accessing serveral online services possible, this OAuth agent can be used to authenticate."
+				},
 				"home.openOnStartup": {
 					"type": "string",
 					"default": "whenBlank",
@@ -87,7 +91,9 @@
 	},
 	"dependencies": {
 		"@rubendew/vsch-sidebar": "^0.0.6",
-		"@rubendew/vsch-ui": "^0.0.9"
+		"@rubendew/vsch-ui": "^0.0.9",
+		"@types/ws": "8.5.0",
+		"ws": "^8.5.0"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
@@ -96,12 +102,14 @@
 		"@types/vscode": "^1.51.0",
 		"@typescript-eslint/eslint-plugin": "^4.28.4",
 		"@typescript-eslint/parser": "^4.28.4",
+		"bufferutil": "^4.0.6",
 		"eslint": "^8.5.0",
 		"glob": "^7.1.6",
 		"mocha": "^9.0.2",
 		"raw-loader": "^4.0.2",
 		"ts-loader": "^9.2.3",
 		"typescript": "^4.1.2",
+		"utf-8-validate": "^5.0.9",
 		"vscode-test": "^1.4.1",
 		"webpack": "^5.47.1",
 		"webpack-cli": "^4.2.0"

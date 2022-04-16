@@ -53,18 +53,11 @@ const openSidebarView = (context: vscode.ExtensionContext) => {
 	return view;
 };
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-
-	InitialAppdata();
+export async function activate(context: vscode.ExtensionContext) {
+	await InitialAppdata();
 	EventBus = new Api(context);
 
 	const mainViewCommand = vscode.commands.registerCommand('vsch.openMainView', async (meta = DEFAULT_META) => {
-		// The code you place here will be executed every time your command is executed
 		openMainView(context, meta);
 	});
 
@@ -86,6 +79,3 @@ export function activate(context: vscode.ExtensionContext) {
 	const sidebarView = vscode.window.registerWebviewViewProvider("vsch.openSidebarView", openSidebarView(context));
 	context.subscriptions.push(sidebarView);
 }
-
-// this method is called when your extension is deactivated
-export function deactivate() { }
