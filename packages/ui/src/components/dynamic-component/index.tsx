@@ -7,6 +7,8 @@ import {
   UnpackWidgetFn,
   FetchWidgetArgs,
 } from './types';
+import { getNonce } from 'get-nonce';
+import theme from '../../theme';
 
 // Inspiration: https://github.com/module-federation/module-federation-examples
 const fetchWidget = ({ lib, path }: FetchWidgetArgs) => {
@@ -61,7 +63,7 @@ const DynamicComponent = ({ lib, entry }: DynamicComponentProps) => {
   );
   return (
     <Suspense fallback="Loading widget">
-      <Widget eventBus={EventBus} />
+      <Widget eventBus={EventBus} theme={theme} nonce={getNonce()} />
     </Suspense>
   );
 };
