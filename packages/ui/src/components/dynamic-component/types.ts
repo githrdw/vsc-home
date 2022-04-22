@@ -1,6 +1,7 @@
 import EventBus from 'vsch-core/src/utils/EventBusClient.js';
 import { ComponentType } from 'react';
 export interface DynamicComponentProps {
+  id: string;
   lib: string;
   entry: string;
 }
