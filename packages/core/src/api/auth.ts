@@ -40,25 +40,34 @@ const run: Run = {
       if (loginUrl) {
         env.openExternal(Uri.parse(loginUrl));
       }
-      await credentials.confirmProvider()
-      respond({ done: true });
+      const providerHash = await credentials.confirmProvider()
+      respond({ providerHash });
     } catch (e) {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
   },
-  'refreshProvider': async ({ respond, credentials }, { providerName }) => {
-    if (!providerName) return respond({ error: 'No providerName specified' })
+  'refreshProvider': async ({ respond, credentials }, { providerHash }) => {
+    if (!providerHash) return respond({ error: 'No providerHash specified' })
     try {
-      const { token, duration } = await credentials.refreshProvider(providerName)
+      const { token, duration } = await credentials.refreshProvider(providerHash)
       respond({ token, duration });
     } catch (e) {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
   },
-  'getProviderToken': async ({ respond, credentials }, { providerName }) => {
+  'getProviderAccounts': async ({ respond, credentials, ctx }, { providerName }) => {
     if (!providerName) return respond({ error: 'No providerName specified' })
     try {
-      const token = await credentials.getProviderToken(providerName)
+      const data = await credentials.getProviderAccounts(providerName)
+      respond(data);
+    } catch (e) {
+      if (e instanceof Error) respond({ error: e.message, stack: e.stack })
+    }
+  },
+  'getProviderToken': async ({ respond, credentials, ctx }, { providerHash }) => {
+    if (!providerHash) return respond({ error: 'No providerHash specified' })
+    try {
+      const token = await credentials.getProviderToken(providerHash)
       respond({ token });
     } catch (e) {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
