@@ -4,6 +4,7 @@ export interface DynamicComponentProps {
   id: string;
   lib: string;
   entry: string;
+  updateData: (data: any) => void;
 }
 
 interface UnpackWidgetArgs {

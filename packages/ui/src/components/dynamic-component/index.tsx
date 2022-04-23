@@ -52,7 +52,12 @@ const unpackWidget: UnpackWidgetFn = async ({ Bus, lib, entry }) => {
   }
 };
 
-const DynamicComponent = ({ id, lib, entry }: DynamicComponentProps) => {
+const DynamicComponent = ({
+  id,
+  lib,
+  entry,
+  updateData,
+}: DynamicComponentProps) => {
   const Bus = useContext(EventBus);
   const Widget = React.lazy(() =>
     unpackWidget({
@@ -63,7 +68,13 @@ const DynamicComponent = ({ id, lib, entry }: DynamicComponentProps) => {
   );
   return (
     <Suspense fallback="Loading widget">
-      <Widget id={id} eventBus={EventBus} theme={theme} nonce={getNonce()} />
+      <Widget
+        id={id}
+        updateData={updateData}
+        eventBus={EventBus}
+        theme={theme}
+        nonce={getNonce()}
+      />
     </Suspense>
   );
 };
