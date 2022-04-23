@@ -10,6 +10,18 @@ interface ProviderIndexes {
   }[]
 }
 
+interface ProviderToken {
+  providerHash: string,
+  token: string,
+  duration: number
+}
+
+interface ProviderAccount {
+  provider: string,
+  providerHash: string,
+  accountName: string
+}
+
 export default class CredentialManager {
   credentials: SecretStorage
   globalState: Memento
@@ -35,6 +47,7 @@ export default class CredentialManager {
       this.agent.socket = socket
       await new Promise<void>((resolve) => {
         socket.addEventListener('open', () => resolve(), { once: true })
+        socket.addEventListener('close', () => console.log('Socket closed'), { once: true })
       })
       return socket
     } catch (e) {
@@ -77,6 +90,9 @@ export default class CredentialManager {
       socket.send('LOGIN.' + secret)
       try {
         await new Promise<void>((resolve, reject) => {
+          socket.addEventListener('close', () => {
+            this.agent.loggedIn = false
+          }, { once: true })
           socket.addEventListener('message', (message: { data: string; }) => {
             const [response] = (message.data as string).split(/\.(.*)/s)
             switch (response) {
@@ -106,6 +122,27 @@ export default class CredentialManager {
     this.agent = { registered: false, loggedIn: false }
   }
 
+  async getProviderAccounts(providerName: string) {
+    const indexes: ProviderIndexes | undefined = await this.globalState.get('vsch-provider-indexes')
+    return (indexes || {})[providerName] || []
+  }
+
+  async updateProviderAccount({ provider, providerHash, accountName }: ProviderAccount) {
+    const providerIndexes = (await this.globalState.get('vsch-provider-indexes') || {}) as ProviderIndexes
+    const providerIndex = providerIndexes[provider] || []
+    const newProviderIndex = { ...providerIndexes, [provider]: [...providerIndex, { accountName, providerHash }] }
+    await this.globalState.update('vsch-provider-indexes', newProviderIndex)
+  }
+
+  async updateProviderToken({ providerHash, token, duration }: ProviderToken) {
+    const expire = new Date().setSeconds(new Date().getSeconds() + duration - 200)
+    const tokenObject = { token, duration, expire }
+    const cache = await this.credentials.get('vsch-provider-cache')
+    const cachedTokens = cache ? JSON.parse(cache) : {}
+    await this.credentials.store('vsch-provider-cache', JSON.stringify({ ...cachedTokens, [providerHash]: tokenObject }))
+    return tokenObject
+  }
+  
   async addProvider(providerName: string) {
     const { registered, loggedIn } = this.agent
 
@@ -138,7 +175,7 @@ export default class CredentialManager {
       const socket = this.agent.socket
       const providerString = await new Promise<string>((resolve) => {
         const timeout = setTimeout(() => { socket.close(); throw Error("OAuth provider authentication request expired") }, 5 * 60 * 1000)
-        socket.addEventListener('message', async (message: { data: string; }) => {
+        socket.addEventListener('message', (message: { data: string; }) => {
           const [response, payload] = (message.data as string).split(/\.(.*)/s)
           switch (response) {
             case "PROVIDER_ADDED": {
@@ -149,17 +186,13 @@ export default class CredentialManager {
           }
         })
       })
-      const { providerHash, accountName, provider } = JSON.parse(providerString)
-      const providerIndexes = (await this.globalState.get('vsch-provider-indexes') || {}) as ProviderIndexes
-      const providerIndex = providerIndexes[provider] || []
-      const newProviderIndex = { ...providerIndexes, [provider]: [...providerIndex, { accountName, providerHash }] }
-      await this.globalState.update('vsch-provider-indexes', newProviderIndex)
-    }
-  }
+      const { providerHash, accountName, provider, token, duration } = JSON.parse(providerString)
+      // Store public providerHash
+      this.updateProviderAccount({ provider, providerHash, accountName })
 
-  async getProviderAccounts(providerName: string) {
-    const indexes: ProviderIndexes | undefined = await this.globalState.get('vsch-provider-indexes')
-    return (indexes || {})[providerName] || []
+      // Store private token
+      await this.updateProviderToken({ providerHash, token, duration })
+    }
   }
 
   async refreshProvider(providerHash: string) {
@@ -175,15 +208,14 @@ export default class CredentialManager {
 
     socket.send('REFRESH_PROVIDER.' + providerHash)
     try {
-      const token = await new Promise<{ token: string, duration: number, expire: number }>((resolve) => {
+      const tokenObject = await new Promise<{ token: string, duration: number }>((resolve) => {
         socket.addEventListener('message', (message: { data: string; }) => {
           const [response, payload] = (message.data as string).split(/\.(.*)/s)
           switch (response) {
             case "SESSION": {
               try {
                 const { token, duration } = JSON.parse(payload)
-                const expire = new Date().setSeconds(new Date().getSeconds() + duration - 200)
-                return resolve({ token, duration, expire })
+                return resolve({ token, duration })
               } catch (e) {
                 throw new Error("OAuth invalid provider response")
               }
@@ -194,10 +226,7 @@ export default class CredentialManager {
           }
         })
       })
-      const cache = await this.credentials.get('vsch-provider-cache')
-      const cachedTokens = cache ? JSON.parse(cache) : {}
-      await this.credentials.store('vsch-provider-cache', JSON.stringify({ ...cachedTokens, [providerHash]: token }))
-      return token
+      return await this.updateProviderToken({ providerHash, ...tokenObject })
     } catch (e) {
       console.error(e)
       throw new Error("OAuth agent refresh failed with provider ")
