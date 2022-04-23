@@ -48,7 +48,7 @@ const WidgetRecent = ({
 }: WidgetRecentProps) => {
   const recentItems = useRecoilValue($workbench.recentlyOpened);
 
-  updateSizeKey = size => updateData?.((update: any) => update({ size }));
+  updateSizeKey = size => updateData?.({ size });
   sizeKey = size;
 
   if (setCallbacks) {

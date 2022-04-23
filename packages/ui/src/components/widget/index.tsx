@@ -33,15 +33,11 @@ const Widget = ({
     }
   };
 
-  const updateData = (
-    callback: (update: (data: any) => void, data: any) => void
-  ) => {
-    const update = (data: any) =>
-      onWidgetUpdate?.({
-        ...widgetMeta,
-        data,
-      });
-    if (callback) callback(update, data);
+  const updateData = (data: WidgetProps) => {
+    onWidgetUpdate?.({
+      ...widgetMeta,
+      data,
+    });
   };
 
   const deleteWidget = async () => {
