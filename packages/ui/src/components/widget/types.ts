@@ -19,9 +19,10 @@ export interface WidgetProps {
   onWidgetDelete?: () => void;
 }
 
-type ItemID = {
+export interface ItemID {
   id?: string;
-};
+  MenuItem?: any;
+}
 
 export interface HeaderCallbacks {
   menu: {
