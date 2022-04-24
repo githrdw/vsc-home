@@ -1,10 +1,10 @@
 import EventBus from 'vsch-core/src/utils/EventBusClient.js';
 import { ComponentType } from 'react';
 export interface DynamicComponentProps {
-  id: string;
+  title?: string;
   lib: string;
   entry: string;
-  updateData: (data: any) => void;
+  instance: any;
 }
 
 interface UnpackWidgetArgs {

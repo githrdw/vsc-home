@@ -33,11 +33,12 @@ const Widget = ({
     }
   };
 
-  const updateData = (data: WidgetProps) => {
+  const updateData = (newData: WidgetProps) => {
     onWidgetUpdate?.({
       ...widgetMeta,
-      data,
+      data: { ...data, ...newData },
     });
+    return { ...data, ...newData };
   };
 
   const deleteWidget = async () => {
@@ -57,7 +58,7 @@ const Widget = ({
         <Component {...{ id, setCallbacks, updateData, ...data }} />
       </Suspense>
     );
-  }, [id, appearance, data, type]);
+  }, [id, appearance, type === 'custom' ? undefined : data, type]);
 
   const alphaColor = useMemo(() => {
     const hexAlpha = Math.round((Number(alpha) / 10) * 255)

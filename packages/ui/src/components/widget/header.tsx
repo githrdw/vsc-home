@@ -49,10 +49,10 @@ const Header = ({
   const renderCustomItems = () => {
     setMenu({
       prepend: callbacks?.menu?.prepend
-        ? cloneElement(callbacks?.menu?.prepend, { id })
+        ? cloneElement(callbacks?.menu?.prepend, { id, MenuItem })
         : null,
       append: callbacks?.menu?.append
-        ? cloneElement(callbacks?.menu?.append, { id })
+        ? cloneElement(callbacks?.menu?.append, { id, MenuItem })
         : null,
     });
   };

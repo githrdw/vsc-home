@@ -53,10 +53,10 @@ const unpackWidget: UnpackWidgetFn = async ({ Bus, lib, entry }) => {
 };
 
 const DynamicComponent = ({
-  id,
+  title,
   lib,
   entry,
-  updateData,
+  instance,
 }: DynamicComponentProps) => {
   const Bus = useContext(EventBus);
   const Widget = React.lazy(() =>
@@ -69,9 +69,7 @@ const DynamicComponent = ({
   return (
     <Suspense fallback="Loading widget">
       <Widget
-        id={id}
-        updateData={updateData}
-        eventBus={EventBus}
+        instance={{ ...instance, Bus: Bus.exportPublic(title) }}
         theme={theme}
         nonce={getNonce()}
       />

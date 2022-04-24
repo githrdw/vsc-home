@@ -5,14 +5,23 @@ import { DynamicComponentProps } from '@components/dynamic-component/types';
 
 const WidgetCustom = ({
   widget,
-  id,
   updateData,
+  ...instance
 }: {
   widget: DynamicComponentProps;
-  id: string;
-  updateData: (data: any) => void;
+  updateData: (data: any) => any;
+  instance: any;
 }) => {
-  return <DynamicComponent {...widget} id={id} updateData={updateData} />;
+  let setInstance: any;
+  const _instance: any = {
+    ...instance,
+    setInstance: (callback: any) => (setInstance = callback),
+    updateData: (newData: any) => {
+      const data = updateData(newData);
+      setInstance?.({ ...instance, ...data });
+    },
+  };
+  return <DynamicComponent {...widget} instance={_instance} />;
 };
 
 export default WidgetCustom;
