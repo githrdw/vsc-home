@@ -118,6 +118,7 @@ class ErrorBoundary extends React.Component<
             src={IconBug}
             height="64px"
             width="64px"
+            alt="Bug"
           />
           <h1>You just met a bug</h1>
           <Button

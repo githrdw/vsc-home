@@ -7,7 +7,7 @@ import DefaultTemplate from "../utils/DefaultTemplate"
 export default function (core: ExecuteCore, instructions: string[], payload: object) {
   const command = run[instructions.join('.')];
   if (command) { command(core, payload); }
-  else { core.respond({ ...payload, action: instructions.join('.') }); };
+  else { core.respond({ _resolved: false, ...payload, action: instructions.join('.') }); };
 }
 
 const run: Run = {

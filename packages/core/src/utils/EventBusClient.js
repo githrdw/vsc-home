@@ -23,16 +23,32 @@ class EventBus {
         console.log(`EB: Receive ${task.action}`, { task, payload });
         if (task.cache) {
           console.log('EB: Set cache');
-          this.setState(task.action, { ...payload, _task: task });
+          this.setState(task.action, payload);
         }
-        this.queue.splice(taskIndex, 1);
-        task.resolve?.({ ...payload, _task: task });
+        if (payload?._resolved !== false) {
+          this.queue.splice(taskIndex, 1);
+          task.resolve?.(payload);
+        }
       }
     }
     if (payload?.action) {
       const callbacks = this.callbacks.filter(({ action }) => action === payload.action);
       if (callbacks.length) {
-        for (const { callback } of callbacks) { callback?.(data); };
+        const resolve = (data) => {
+          const taskIndex = this.queue.findIndex(({ id: _id }) => id === _id);
+          const task = this.queue[taskIndex];
+          if (payload?._resolved === false) this.vscode?.postMessage({
+            id,
+            action: task.action,
+            payload: {
+              _resolved: true,
+              ...data
+            }
+          })
+        }
+        for (const { callback } of callbacks) {
+          if (!payload?._resolved) callback?.({ ...data, resolve });
+        };
       }
     }
   }
@@ -82,6 +98,16 @@ class EventBus {
       task.resolve = resolve;
       task.reject = reject;
     });
+  }
+
+  exportPublic(_node) {
+    return {
+      emit: (action, payload, cache) => {
+        const [root] = action.split(".")
+        if (root === "auth") throw new Error("Not allowed")
+        else return this.emit(action, { ...payload, _node }, cache)
+      }
+    }
   }
 
   setState(name, data) {

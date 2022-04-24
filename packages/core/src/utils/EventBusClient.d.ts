@@ -16,7 +16,11 @@ declare class EventBus {
 
   listener({ data }: any): void
 
+  resolveById(action:string, id: string, payload: object): void
+
   emit(action: string, payload: object, cache?: boolean): any
+
+  exportPublic(node?: string): { emit: EventBus["emit"] }
 
   on(action: string, callback: TaskResolve): { action: string, callback: TaskResolve }
 
