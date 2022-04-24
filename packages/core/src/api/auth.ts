@@ -46,6 +46,15 @@ const run: Run = {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
   },
+  'removeProvider': async ({ respond, credentials }, { provider, providerHash }) => {
+    if (!providerHash) return respond({ error: 'No providerHash specified' })
+    try {
+      await credentials.removeProvider(provider, providerHash)
+      respond();
+    } catch (e) {
+      if (e instanceof Error) respond({ error: e.message, stack: e.stack })
+    }
+  },
   'refreshProvider': async ({ respond, credentials }, { providerHash }) => {
     if (!providerHash) return respond({ error: 'No providerHash specified' })
     try {

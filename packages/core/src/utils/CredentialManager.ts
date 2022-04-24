@@ -27,12 +27,14 @@ export default class CredentialManager {
   globalState: Memento
   endpoint: string;
   agent: { registered: boolean, id?: string, secret?: string, socket?: WebSocket, loggedIn?: boolean };
+  socket: WebSocket | null
 
   constructor(ctx: ExtensionContext) {
     this.credentials = ctx.secrets
     this.globalState = ctx.globalState
     this.endpoint = (userConfig.get('oauthAgent') as string).replace(/\/?$/, '/')
     this.agent = { registered: false }
+    this.socket = null
     ctx.secrets.get('vsch-agent-id')
       .then(id => {
         if (id) ctx.secrets.get('vsch-agent-secret').then(secret => {
@@ -44,10 +46,10 @@ export default class CredentialManager {
   async startAgent(endpoint = this.endpoint) {
     try {
       const socket = new WebSocket(endpoint)
-      this.agent.socket = socket
+      this.socket = socket
       await new Promise<void>((resolve) => {
-        socket.addEventListener('open', () => resolve(), { once: true })
-        socket.addEventListener('close', () => console.log('Socket closed'), { once: true })
+        socket.addEventListener('open', () => { resolve(); console.log('Socket open') }, { once: true })
+        socket.addEventListener('close', () => console.log('Socket closed'))
       })
       return socket
     } catch (e) {
@@ -92,7 +94,7 @@ export default class CredentialManager {
         await new Promise<void>((resolve, reject) => {
           socket.addEventListener('close', () => {
             this.agent.loggedIn = false
-          }, { once: true })
+          })
           socket.addEventListener('message', (message: { data: string; }) => {
             const [response] = (message.data as string).split(/\.(.*)/s)
             switch (response) {
@@ -130,28 +132,64 @@ export default class CredentialManager {
   async updateProviderAccount({ provider, providerHash, accountName }: ProviderAccount) {
     const providerIndexes = (await this.globalState.get('vsch-provider-indexes') || {}) as ProviderIndexes
     const providerIndex = providerIndexes[provider] || []
-    const newProviderIndex = { ...providerIndexes, [provider]: [...providerIndex, { accountName, providerHash }] }
-    await this.globalState.update('vsch-provider-indexes', newProviderIndex)
+    if (accountName) {
+      const newProviderIndex = { ...providerIndexes, [provider]: [...providerIndex, { accountName, providerHash }] }
+      await this.globalState.update('vsch-provider-indexes', newProviderIndex)
+    } else {
+      // Remove existing provider account if accountName is empty
+      const toRemove = providerIndex.findIndex(({ providerHash: _providerHash }) => providerHash === _providerHash)
+      providerIndex.splice(toRemove, 1)
+      const newProviderIndex = { ...providerIndexes, [provider]: providerIndex }
+      await this.globalState.update('vsch-provider-indexes', newProviderIndex)
+    }
   }
 
   async updateProviderToken({ providerHash, token, duration }: ProviderToken) {
     const expire = new Date().setSeconds(new Date().getSeconds() + duration - 200)
-    const tokenObject = { token, duration, expire }
+    const tokenObject = duration > 1 ? { token, duration, expire } : undefined
     const cache = await this.credentials.get('vsch-provider-cache')
     const cachedTokens = cache ? JSON.parse(cache) : {}
     await this.credentials.store('vsch-provider-cache', JSON.stringify({ ...cachedTokens, [providerHash]: tokenObject }))
-    return tokenObject
+    return tokenObject || { token: null, duration: -1 }
   }
-  
+
+  async removeProvider(provider: string, providerHash: string) {
+    const { registered, loggedIn } = this.agent
+
+    if (!registered) await this.register(true)
+    else if (!loggedIn) await this.login(true)
+
+    if (!this.socket) throw Error("OAuth agent not available")
+
+    const socket = this.socket
+
+    socket.send('REMOVE_PROVIDER.' + providerHash)
+    await new Promise<void>((resolve) => {
+      socket.addEventListener('message', (message: { data: string; }) => {
+        const [response, payload] = (message.data as string).split(/\.(.*)/s)
+        switch (response) {
+          case "REMOVED": {
+            return resolve()
+          }
+          default: {
+            throw Error("OAuth agent cannot remove provider")
+          }
+        }
+      }, { once: true })
+    })
+    this.updateProviderToken({ providerHash, token: '', duration: -1 })
+    this.updateProviderAccount({ provider, providerHash, accountName: '' })
+  }
+
   async addProvider(providerName: string) {
     const { registered, loggedIn } = this.agent
 
     if (!registered) await this.register(true)
     else if (!loggedIn) await this.login(true)
 
-    if (!this.agent.socket) throw Error("OAuth agent not available")
+    if (!this.socket) throw Error("OAuth agent not available")
 
-    const socket = this.agent.socket
+    const socket = this.socket
 
     socket.send('ADD_PROVIDER.' + providerName)
     const loginUrl = await new Promise<string>((resolve) => {
@@ -171,8 +209,8 @@ export default class CredentialManager {
   }
 
   async confirmProvider() {
-    if (this.agent.socket && this.agent.socket.readyState === 1) {
-      const socket = this.agent.socket
+    if (this.socket && this.socket.readyState === 1) {
+      const socket = this.socket
       const providerString = await new Promise<string>((resolve) => {
         const timeout = setTimeout(() => { socket.close(); throw Error("OAuth provider authentication request expired") }, 5 * 60 * 1000)
         socket.addEventListener('message', (message: { data: string; }) => {
@@ -192,6 +230,7 @@ export default class CredentialManager {
 
       // Store private token
       await this.updateProviderToken({ providerHash, token, duration })
+      return providerHash
     }
   }
 
@@ -202,9 +241,9 @@ export default class CredentialManager {
     if (!registered) throw new Error("OAuth agent is not registered yet")
     else if (!loggedIn) await this.login(true)
 
-    if (!this.agent.socket) throw Error("OAuth agent not available")
+    if (!this.socket) throw Error("OAuth agent not available")
 
-    const socket = this.agent.socket
+    const socket = this.socket
 
     socket.send('REFRESH_PROVIDER.' + providerHash)
     try {
@@ -241,7 +280,7 @@ export default class CredentialManager {
     if (cachedTokens[providerHash]) {
       const cachedToken = cachedTokens[providerHash]
       const { expire, token } = cachedToken
-      if (expire < new Date().getTime()) {
+      if (expire < new Date().getTime() || !token) {
         const newSession = await this.refreshProvider(providerHash)
         return newSession.token
       } else {
