@@ -26,8 +26,10 @@ export default class CredentialManager {
   credentials: SecretStorage
   globalState: Memento
   endpoint: string;
-  agent: { registered: boolean, id?: string, secret?: string, socket?: WebSocket, loggedIn?: boolean };
+  agent: { registered: boolean, id?: string, secret?: string, socket?: WebSocket, loggedIn?: boolean, pendingRefresh?: boolean };
   socket: WebSocket | null
+  refreshQueue: Set<(v?: unknown) => void>
+  log: Console["log"]
 
   constructor(ctx: ExtensionContext) {
     this.credentials = ctx.secrets
@@ -35,6 +37,13 @@ export default class CredentialManager {
     this.endpoint = (userConfig.get('oauthAgent') as string).replace(/\/?$/, '/')
     this.agent = { registered: false }
     this.socket = null
+    this.refreshQueue = new Set()
+
+    this.log = function () {
+      var args = [].slice.call(arguments);
+      console.log.apply(console.log, [(new Date()).toISOString() + ' ::'].concat(args));
+    };
+
     ctx.secrets.get('vsch-agent-id')
       .then(id => {
         if (id) ctx.secrets.get('vsch-agent-secret').then(secret => {
@@ -48,8 +57,8 @@ export default class CredentialManager {
       const socket = new WebSocket(endpoint)
       this.socket = socket
       await new Promise<void>((resolve) => {
-        socket.addEventListener('open', () => { resolve(); console.log('Socket open') }, { once: true })
-        socket.addEventListener('close', () => console.log('Socket closed'))
+        socket.addEventListener('open', () => { resolve(); this.log('Socket open') })
+        socket.addEventListener('close', () => this.log('Socket closed'))
       })
       return socket
     } catch (e) {
@@ -78,7 +87,7 @@ export default class CredentialManager {
               throw Error("OAuth agent registration failed")
             }
           }
-        })
+        }, { once: true })
       })
     }
     if (!keepAlive) socket.close()
@@ -269,26 +278,55 @@ export default class CredentialManager {
     } catch (e) {
       console.error(e)
       throw new Error("OAuth agent refresh failed with provider ")
-    } finally {
-      socket.close()
     }
   }
 
-  async getProviderToken(providerHash: string) {
+  async invalidateProviderCache(providerHash: string) {
+    return await this.updateProviderToken({ providerHash, token: '', duration: -1 })
+  }
+
+  async getCachedProviderToken(providerHash: string) {
     const cache = await this.credentials.get('vsch-provider-cache')
     const cachedTokens = JSON.parse(cache || '') || {}
     if (cachedTokens[providerHash]) {
       const cachedToken = cachedTokens[providerHash]
       const { expire, token } = cachedToken
-      if (expire < new Date().getTime() || !token) {
-        const newSession = await this.refreshProvider(providerHash)
-        return newSession.token
-      } else {
+      if (expire > new Date().getTime() && token) {
         return token
       }
-    } else {
-      const newSession = await this.refreshProvider(providerHash)
-      return newSession.token
     }
+    return false
+  }
+
+  async getProviderToken(providerHash: string) {
+    const queueCallback = () => {
+      this.agent.pendingRefresh = false
+      if (this.refreshQueue.size) {
+        const [nextCall] = this.refreshQueue
+        nextCall()
+        this.refreshQueue.delete(nextCall)
+      } else this.socket?.close()
+    }
+
+    // Cache try 1
+    const cachedToken = await this.getCachedProviderToken(providerHash)
+    if (cachedToken) { queueCallback(); return cachedToken }
+
+    if (this.agent.pendingRefresh) {
+      // Wait until previous refresh is done
+      await new Promise((resolve) => {
+        this.refreshQueue.add(resolve)
+      })
+      this.agent.pendingRefresh = true
+      // Cache try 2 (after waiting)
+      const cachedToken = await this.getCachedProviderToken(providerHash)
+      if (cachedToken) { queueCallback(); return cachedToken }
+    } else {
+      this.agent.pendingRefresh = true
+    }
+
+    const { token } = await this.refreshProvider(providerHash)
+    queueCallback();
+    return token
   }
 }

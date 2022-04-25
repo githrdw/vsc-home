@@ -55,6 +55,15 @@ const run: Run = {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
   },
+  'invalidateProviderCache': async ({ respond, credentials }, { providerHash }) => {
+    if (!providerHash) return respond({ error: 'No providerHash specified' })
+    try {
+      const { token, duration } = await credentials.invalidateProviderCache(providerHash)
+      respond({ token, duration });
+    } catch (e) {
+      if (e instanceof Error) respond({ error: e.message, stack: e.stack })
+    }
+  },
   'refreshProvider': async ({ respond, credentials }, { providerHash }) => {
     if (!providerHash) return respond({ error: 'No providerHash specified' })
     try {
