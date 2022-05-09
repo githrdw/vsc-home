@@ -3,12 +3,11 @@ const WebSocket = require('ws')
 
 const userConfig = workspace.getConfiguration('home');
 
-interface ProviderIndexes {
-  [index: string]: {
-    accountName: string,
-    providerHash: string
-  }[]
-}
+interface ProviderIndexes extends Array<{
+  providerKey: string,
+  accountName: string,
+  providerHash: string
+}> { }
 
 interface ProviderToken {
   providerHash: string,
@@ -17,7 +16,7 @@ interface ProviderToken {
 }
 
 interface ProviderAccount {
-  provider: string,
+  providerKey: string,
   providerHash: string,
   accountName: string
 }
@@ -133,22 +132,25 @@ export default class CredentialManager {
     this.agent = { registered: false, loggedIn: false }
   }
 
-  async getProviderAccounts(providerName: string) {
+  async getProviderAccounts(providerKey: string) {
     const indexes: ProviderIndexes | undefined = await this.globalState.get('vsch-provider-indexes')
-    return (indexes || {})[providerName] || []
+    return (indexes || []).filter(({ providerKey: _providerKey }) => _providerKey === providerKey)
+  }
+  async getProviderName(providerHash: string) {
+    const indexes: ProviderIndexes | undefined = await this.globalState.get('vsch-provider-indexes')
+    return ((indexes || []).find(({ providerHash: _providerHash }) => _providerHash === providerHash) || {}).providerKey
   }
 
-  async updateProviderAccount({ provider, providerHash, accountName }: ProviderAccount) {
-    const providerIndexes = (await this.globalState.get('vsch-provider-indexes') || {}) as ProviderIndexes
-    const providerIndex = providerIndexes[provider] || []
+  async updateProviderAccount({ providerKey, providerHash, accountName }: ProviderAccount) {
+    const providerIndexes = (await this.globalState.get('vsch-provider-indexes') || []) as ProviderIndexes
     if (accountName) {
-      const newProviderIndex = { ...providerIndexes, [provider]: [...providerIndex, { accountName, providerHash }] }
+      const newProviderIndex = [...providerIndexes, { providerKey, accountName, providerHash }]
       await this.globalState.update('vsch-provider-indexes', newProviderIndex)
     } else {
       // Remove existing provider account if accountName is empty
-      const toRemove = providerIndex.findIndex(({ providerHash: _providerHash }) => providerHash === _providerHash)
-      providerIndex.splice(toRemove, 1)
-      const newProviderIndex = { ...providerIndexes, [provider]: providerIndex }
+      const toRemove = providerIndexes.findIndex(({ providerHash: _providerHash }) => providerHash === _providerHash)
+      providerIndexes.splice(toRemove, 1)
+      const newProviderIndex = [...providerIndexes]
       await this.globalState.update('vsch-provider-indexes', newProviderIndex)
     }
   }
@@ -162,7 +164,7 @@ export default class CredentialManager {
     return tokenObject || { token: null, duration: -1 }
   }
 
-  async removeProvider(provider: string, providerHash: string) {
+  async removeProvider(providerKey: string, providerHash: string) {
     const { registered, loggedIn } = this.agent
 
     if (!registered) await this.register(true)
@@ -187,10 +189,10 @@ export default class CredentialManager {
       }, { once: true })
     })
     this.updateProviderToken({ providerHash, token: '', duration: -1 })
-    this.updateProviderAccount({ provider, providerHash, accountName: '' })
+    this.updateProviderAccount({ providerKey, providerHash, accountName: '' })
   }
 
-  async addProvider(providerName: string) {
+  async addProvider(providerKey: string) {
     const { registered, loggedIn } = this.agent
 
     if (!registered) await this.register(true)
@@ -200,7 +202,7 @@ export default class CredentialManager {
 
     const socket = this.socket
 
-    socket.send('ADD_PROVIDER.' + providerName)
+    socket.send('ADD_PROVIDER.' + providerKey)
     const loginUrl = await new Promise<string>((resolve) => {
       socket.addEventListener('message', (message: { data: string; }) => {
         const [response, payload] = (message.data as string).split(/\.(.*)/s)
@@ -233,9 +235,9 @@ export default class CredentialManager {
           }
         })
       })
-      const { providerHash, accountName, provider, token, duration } = JSON.parse(providerString)
+      const { providerHash, accountName, provider: providerKey, token, duration } = JSON.parse(providerString)
       // Store public providerHash
-      this.updateProviderAccount({ provider, providerHash, accountName })
+      this.updateProviderAccount({ providerKey, providerHash, accountName })
 
       // Store private token
       await this.updateProviderToken({ providerHash, token, duration })
@@ -308,9 +310,11 @@ export default class CredentialManager {
       } else this.socket?.close()
     }
 
+    const providerKey = await this.getProviderName(providerHash)
+
     // Cache try 1
     const cachedToken = await this.getCachedProviderToken(providerHash)
-    if (cachedToken) { queueCallback(); return cachedToken }
+    if (cachedToken) { queueCallback(); return { token: cachedToken, providerKey } }
 
     if (this.agent.pendingRefresh) {
       // Wait until previous refresh is done
@@ -320,13 +324,13 @@ export default class CredentialManager {
       this.agent.pendingRefresh = true
       // Cache try 2 (after waiting)
       const cachedToken = await this.getCachedProviderToken(providerHash)
-      if (cachedToken) { queueCallback(); return cachedToken }
+      if (cachedToken) { queueCallback(); return { token: cachedToken, providerKey } }
     } else {
       this.agent.pendingRefresh = true
     }
 
     const { token } = await this.refreshProvider(providerHash)
     queueCallback();
-    return token
+    return { token, providerKey }
   }
 }

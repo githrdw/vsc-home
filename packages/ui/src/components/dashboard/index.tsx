@@ -57,8 +57,8 @@ const Dashboard = () => {
       }),
       Bus.on(
         'ui.requestAuthentication',
-        ({ payload: { providerName, _node }, resolve }: any) => {
-          authPromise.current = { resolve, providerName, _node };
+        ({ payload: { providerKey, _node }, resolve }: any) => {
+          authPromise.current = { resolve, providerKey, _node };
           setCredentialWindowOpen(true);
         }
       ),

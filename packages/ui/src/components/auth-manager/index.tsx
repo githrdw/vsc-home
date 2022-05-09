@@ -13,6 +13,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Tag,
 } from '@chakra-ui/react';
 import { ArrowForwardIcon, DeleteIcon } from '@chakra-ui/icons';
 
@@ -31,9 +32,9 @@ const Credentials = ({
 
   const getAccounts = async () => {
     const accounts = await Bus.emit('auth.getProviderAccounts', {
-      providerName: authPromise.providerName,
+      providerKey: authPromise.providerKey,
     });
-    setAccounts(accounts);
+    if (accounts && accounts.map) setAccounts(accounts);
   };
 
   useEffect(() => {
@@ -53,7 +54,7 @@ const Credentials = ({
   const addProvider = async () => {
     setProviderPending(true);
     const { providerHash } = await Bus.emit('auth.addProvider', {
-      providerName: authPromise.providerName,
+      providerKey: authPromise.providerKey,
     });
     setProviderPending(false);
     authPromise.resolve({ providerHash });
@@ -75,7 +76,7 @@ const Credentials = ({
           <IconButton
             my={2}
             icon={<DeleteIcon />}
-            onClick={() => remove(authPromise.providerName, providerHash)}
+            onClick={() => remove(authPromise.providerKey, providerHash)}
             aria-label="Remove item"
           ></IconButton>
           <Button
@@ -99,8 +100,8 @@ const Credentials = ({
         <ModalCloseButton />
         {isOpen && (
           <ModalBody>
-            Widget <code>{authPromise._node}</code> requested access to provider{' '}
-            <code>{authPromise.providerName}</code>. Select or add an account to
+            Widget <Tag>{authPromise._node}</Tag> requested access to provider{' '}
+            <Tag>{authPromise.providerKey}</Tag>. Select or add an account to
             continue. You can also deny this request.
           </ModalBody>
         )}

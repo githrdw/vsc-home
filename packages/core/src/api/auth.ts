@@ -33,10 +33,10 @@ const run: Run = {
     await credentials.logout()
     respond();
   },
-  'addProvider': async ({ respond, credentials }, { providerName }) => {
-    if (!providerName) return respond({ error: 'No providerName specified' })
+  'addProvider': async ({ respond, credentials }, { providerKey }) => {
+    if (!providerKey) return respond({ error: 'No providerKey specified' })
     try {
-      const loginUrl = await credentials.addProvider(providerName)
+      const loginUrl = await credentials.addProvider(providerKey)
       if (loginUrl) {
         env.openExternal(Uri.parse(loginUrl));
       }
@@ -73,10 +73,10 @@ const run: Run = {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
   },
-  'getProviderAccounts': async ({ respond, credentials, ctx }, { providerName }) => {
-    if (!providerName) return respond({ error: 'No providerName specified' })
+  'getProviderAccounts': async ({ respond, credentials, ctx }, { providerKey }) => {
+    if (!providerKey) return respond({ error: 'No providerKey specified' })
     try {
-      const data = await credentials.getProviderAccounts(providerName)
+      const data = await credentials.getProviderAccounts(providerKey)
       respond(data);
     } catch (e) {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
@@ -85,8 +85,8 @@ const run: Run = {
   'getProviderToken': async ({ respond, credentials, ctx }, { providerHash }) => {
     if (!providerHash) return respond({ error: 'No providerHash specified' })
     try {
-      const token = await credentials.getProviderToken(providerHash)
-      respond({ token });
+      const tokenObject = await credentials.getProviderToken(providerHash)
+      respond(tokenObject);
     } catch (e) {
       if (e instanceof Error) respond({ error: e.message, stack: e.stack })
     }
