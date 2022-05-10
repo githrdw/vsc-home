@@ -6,16 +6,16 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^13.0.2",
-    "nodemon": "^2.0.7",
-    "rollup": "^2.40.0",
+    "@rollup/plugin-node-resolve": "13.3.0",
+    "nodemon": "2.0.16",
+    "rollup": "2.72.1",
     "rollup-plugin-generate-html-template": "^1.7.0",
     "rollup-plugin-scss": "^3.0.0",
     "rollup-plugin-terser": "^7.0.2"
   },
   "dependencies": {
     "mustache": "^4.1.0",
-    "vsch-core": "^0.0.5"
+    "vsch-core": "0.0.9"
   },
   "scripts": {
     "build": "rollup -c",
