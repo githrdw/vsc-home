@@ -124,9 +124,9 @@ export default class CredentialManager {
   }
 
   async logout() {
-    await this.credentials.delete('vsch-agent-id')
-    await this.credentials.delete('vsch-agent-secret')
-    await this.credentials.delete('vsch-provider-cache')
+    await this.credentials.get('vsch-agent-id') && await this.credentials.delete('vsch-agent-id')
+    await this.credentials.get('vsch-agent-secret') && await this.credentials.delete('vsch-agent-secret')
+    await this.credentials.get('vsch-provider-cache') && await this.credentials.delete('vsch-provider-cache')
     await this.globalState.update('vsch-provider-indexes', undefined)
 
     this.agent = { registered: false, loggedIn: false }
