@@ -36,14 +36,15 @@ The following features are available:
 
 This extension can be found in the [VS Code extension store](https://marketplace.visualstudio.com/items?itemName=rubendew.vsch-core).
 
-You can also go to the [releases](https://github.com/githrdw/vsc-home/releases) to download and install the `.vsix` manually.
-For PowerShell there is [this](https://gist.github.com/githrdw/75eae6fa33a3fbfa11f485ea5d0a826b) script available.
+You can also go to the [releases](https://github.com/githrdw/vsc-home/releases) to download and install the `.vsix` manually.<br/>
+If you want to build this project from source, install [lerna-lite](https://github.com/ghiscoding/lerna-lite) globally with NPM and use Yarn to install the workspace dependencies.
 
 ## How to add your own widget
 
 You can start using the [vsch-template](https://github.com/githrdw/vsch-template):
 
-1. Go to `%appdata%/vsc-home/widgets` or similar
+1. Go to `%appdata%/vsc-home/widgets` (Windows)<br/>
+Go to `/Users/<USER>/Library/Preferences/vsch-home/widgets` (MacOS)
 2. Clone the template and name the directory `vsch_Demo`:
 
 ```
