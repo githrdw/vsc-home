@@ -43,6 +43,11 @@ const BUILTIN_WIDGETS = [
     title: "Notes",
     subtitle: "WYSIWYG editor for taking notes"
   },
+  {
+    id: "repositories",
+    title: "Remote repositories",
+    subtitle: "List of remote repositories"
+  }
 ]
 
 export { WIDGET_META, BUILTIN_WIDGETS }

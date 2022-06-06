@@ -8,6 +8,7 @@ import vsch from './vsch';
 import vscode from './vscode';
 import workbench from './workbench';
 import auth from './auth';
+import git from './git';
 
 export default class Api {
   nodes: Webview[];
@@ -43,6 +44,7 @@ export default class Api {
     else if (module === 'vscode') { vscode(core, instructions, payload); }
     else if (module === 'workbench') { workbench(core, instructions, payload); }
     else if (module === 'auth') { auth(core, instructions, payload); }
+    else if (module === 'git') { git(core, instructions, payload); }
   }
 
   private respondAll(id: string) {

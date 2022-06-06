@@ -89,6 +89,9 @@
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
 	},
+	"extensionDependencies": [
+		"vscode.git"
+	],
 	"dependencies": {
 		"@rubendew/vsch-sidebar": "^0.0.7-alpha.0",
 		"@rubendew/vsch-ui": "^0.0.10-alpha.0",
