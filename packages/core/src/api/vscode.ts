@@ -16,7 +16,7 @@ const run: Run = {
     await commands.executeCommand('vscode.openFolder', uri, newWindow);
     respond();
   },
-  'openExternal': async ({ respond }, {url}) => {
+  'openExternal': async ({ respond }, { url }) => {
     await env.openExternal(Uri.parse(url));
     respond();
   },

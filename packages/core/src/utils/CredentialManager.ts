@@ -24,7 +24,7 @@ interface ProviderAccount {
 export default class CredentialManager {
   credentials: SecretStorage
   globalState: Memento
-  endpoint: string;
+  getEndpoint: () => string;
   agent: { registered: boolean, id?: string, secret?: string, socket?: WebSocket, loggedIn?: boolean, pendingRefresh?: boolean };
   socket: WebSocket | null
   refreshQueue: Set<(v?: unknown) => void>
@@ -33,7 +33,7 @@ export default class CredentialManager {
   constructor(ctx: ExtensionContext) {
     this.credentials = ctx.secrets
     this.globalState = ctx.globalState
-    this.endpoint = (userConfig.get('oauthAgent') as string).replace(/\/?$/, '/')
+    this.getEndpoint = () => (userConfig.get('oauthAgent') as string).replace(/\/?$/, '/')
     this.agent = { registered: false }
     this.socket = null
     this.refreshQueue = new Set()
@@ -51,7 +51,7 @@ export default class CredentialManager {
       })
   }
 
-  async startAgent(endpoint = this.endpoint) {
+  async startAgent(endpoint = this.getEndpoint()) {
     try {
       const socket = new WebSocket(endpoint)
       this.socket = socket
@@ -94,7 +94,7 @@ export default class CredentialManager {
 
   async login(keepAlive = false) {
     const { id, secret } = this.agent
-    const endpoint = this.endpoint + "?publicId=" + id
+    const endpoint = this.getEndpoint() + "?publicId=" + id
     const socket = await this.startAgent(endpoint)
     if (socket && id && secret) {
       socket.send('LOGIN.' + secret)
