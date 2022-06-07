@@ -2,7 +2,7 @@
 	"name": "vsch-core",
 	"displayName": "Home",
 	"description": "Homecoming dashboard for VSCode",
-	"version": "0.0.10-alpha.0",
+	"version": "0.0.10-alpha.1",
 	"publisher": "rubendew",
 	"icon": "assets/logo_vschome.white.min.png",
 	"engines": {
@@ -93,8 +93,8 @@
 		"vscode.git"
 	],
 	"dependencies": {
-		"@rubendew/vsch-sidebar": "^0.0.7-alpha.0",
-		"@rubendew/vsch-ui": "^0.0.10-alpha.0",
+		"@rubendew/vsch-sidebar": "^0.0.7-alpha.1",
+		"@rubendew/vsch-ui": "^0.0.10-alpha.1",
 		"@types/ws": "^8.5.3",
 		"ws": "^8.7.0"
 	},
