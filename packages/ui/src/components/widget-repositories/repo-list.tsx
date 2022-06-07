@@ -73,7 +73,7 @@ export default function RepoList({ token, providerKey }: any) {
     return repos.map(({ full_name, clone_url }) => (
       <ButtonGroup variant="ghost" display="flex" key={clone_url}>
         <Button
-          isFullWidth={true}
+          width="full"
           justifyContent="flex-start"
           fontWeight="normal"
           px={2}

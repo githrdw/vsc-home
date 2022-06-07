@@ -27,9 +27,10 @@ interface IErrorBoundary {
 }
 
 class ErrorBoundary extends React.Component<
-  { data: any; type?: string },
+  { data: any; type?: string; children?: React.ReactNode },
   IErrorBoundary
 > {
+  context: any;
   state = {
     hasError: false,
     showDebug: false,

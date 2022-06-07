@@ -22,7 +22,7 @@ import {
 
 interface FloatingActions {
   open: boolean;
-  children: React.ReactChild;
+  children: React.ReactNode;
   toggleBlock: (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     style: string

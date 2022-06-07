@@ -12,7 +12,7 @@ const ListItem = ({ Icon, path, label, onClick }: any) => {
   return (
     <Button
       leftIcon={<Icon />}
-      isFullWidth={true}
+      width="full"
       justifyContent="flex-start"
       fontWeight="normal"
       px={2}

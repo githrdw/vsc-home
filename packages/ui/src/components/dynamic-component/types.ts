@@ -14,7 +14,9 @@ interface UnpackWidgetArgs {
 }
 
 export interface UnpackWidgetFn {
-  (args: UnpackWidgetArgs): Promise<{ default: ComponentType<any> }>;
+  (args: UnpackWidgetArgs): Promise<{
+    default: ComponentType<React.PropsWithChildren<any>>;
+  }>;
 }
 
 export interface VschLoadWidget {

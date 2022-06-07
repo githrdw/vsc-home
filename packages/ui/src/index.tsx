@@ -1,5 +1,5 @@
 import React from 'react';
-import { hydrate, render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import EventBus, { EventBusInstance } from './hooks/event-bus';
 import { RecoilRoot } from 'recoil';
@@ -34,9 +34,6 @@ const Application = () => {
   );
 };
 
-const rootElement = document.getElementById('app');
-if (rootElement?.hasChildNodes()) {
-  hydrate(<Application />, rootElement);
-} else {
-  render(<Application />, rootElement);
-}
+const container = document.getElementById('app') as HTMLElement;
+const root = createRoot(container);
+root.render(<Application />);

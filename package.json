@@ -5,10 +5,14 @@
     "access": "restricted"
   },
   "devDependencies": {
-    "@lerna-lite/cli": "^1.1.1",
-    "@lerna-lite/exec": "^1.1.1"
+    "@lerna-lite/cli": "^1.4.0",
+    "@lerna-lite/exec": "^1.4.0"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "resolutions": {
+    "@types/react": "18.0.12",
+    "@types/react-dom": "18.0.5"
+  }
 }

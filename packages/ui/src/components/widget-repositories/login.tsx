@@ -30,7 +30,7 @@ export default function Login({
         {Object.keys(PROVIDERS).map(key => (
           <Button
             key={key}
-            isFullWidth={true}
+            width="full"
             my={1}
             onClick={() => requestAuth(key)}
             rightIcon={<ArrowForwardIcon />}

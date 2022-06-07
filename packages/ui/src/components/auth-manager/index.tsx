@@ -81,7 +81,7 @@ const Credentials = ({
           ></IconButton>
           <Button
             disabled={providerPending}
-            isFullWidth={true}
+            width="full"
             onClick={() => confirm(providerHash)}
             rightIcon={<ArrowForwardIcon />}
             my={2}
@@ -112,7 +112,7 @@ const Credentials = ({
             <Button
               isLoading={providerPending}
               loadingText="Follow steps in your browser"
-              isFullWidth={true}
+              width="full"
               variant="ghost"
               onClick={addProvider}
               my={2}
