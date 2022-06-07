@@ -15,29 +15,37 @@ const Widget = ({
   ...widgetMeta
 }: WidgetProps) => {
   const { id, appearance, data, type } = widgetMeta;
-  const { title, color, hideTitlebar, icon } = appearance;
+  const { title, hideTitlebar, icon } = appearance;
   const [callbacks, setCallbacks] = useState<{ delete: any; menu: any }>();
+  const [appearanceState, setAppearanceState] = useState(appearance);
 
   const editMode = useRecoilValue($ui.editMode);
-  const [baseColor, alpha] = color.split('.');
+  const [baseColor, alpha] = appearanceState.color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
 
   const [chakraColor] = useToken('colors', [baseColor]);
 
   const updateAppearance = (key: keyof typeof appearance, value: any) => {
-    if (appearance[key] !== value) {
-      onWidgetUpdate?.({
-        ...widgetMeta,
-        appearance: { ...appearance, [key]: value },
-      });
+    if (appearanceState[key] !== value) {
+      setAppearanceState({ ...appearanceState, [key]: value });
+      onWidgetUpdate?.(
+        {
+          ...widgetMeta,
+          appearance: { ...appearanceState, [key]: value },
+        },
+        true
+      );
     }
   };
 
-  const updateData = (newData: WidgetProps) => {
-    onWidgetUpdate?.({
-      ...widgetMeta,
-      data: { ...data, ...newData },
-    });
+  const updateData = (newData: WidgetProps, skipStateUpdate: boolean) => {
+    onWidgetUpdate?.(
+      {
+        ...widgetMeta,
+        data: { ...data, ...newData },
+      },
+      skipStateUpdate
+    );
     return { ...data, ...newData };
   };
 
@@ -72,7 +80,7 @@ const Widget = ({
     } else {
       return chakraColor;
     }
-  }, [color]);
+  }, [appearanceState]);
 
   return (
     <Box bg={alphaColor} height="100%" display="flex" flexDir="column">

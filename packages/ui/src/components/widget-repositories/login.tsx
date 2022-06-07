@@ -18,6 +18,7 @@ export default function Login({
   const requestAuth = async (providerKey: string) => {
     const { providerHash } = await Bus.emit('vsch.ui.requestAuthentication', {
       providerKey,
+      _node: 'Remote repositories',
     });
     if (providerHash) {
       setProviderHash(providerHash);

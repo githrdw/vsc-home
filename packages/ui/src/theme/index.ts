@@ -34,6 +34,7 @@ const colors = {
 export default extendTheme({
   config: {
     initialColorMode: 'dark',
+    disableTransitionOnChange: false,
   },
   styles,
   colors,

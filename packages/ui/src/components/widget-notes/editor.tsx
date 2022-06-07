@@ -15,11 +15,13 @@ import FloatingActions from './floating-actions';
 const Component = ({
   id,
   raw,
+  updateData,
   setCallbacks,
 }: {
   id: string;
   raw?: string;
   setCallbacks: (callbacks: any) => void;
+  updateData: (data: any, skipStateUpdate?: boolean) => void;
 }) => {
   const [state, _setState] = useState(EditorState.createEmpty());
   const [styleBarActive, setStyleBarActive] = useState(false);
@@ -41,11 +43,15 @@ const Component = ({
     if (state.getCurrentContent() !== content) {
       const data = stateToHTML(content);
 
-      Bus.emit('vsch.ui.setData', {
-        module: 'notes',
-        fileName,
-        data,
-      });
+      if (raw) {
+        updateData({ raw: data }, true);
+      } else {
+        Bus.emit('vsch.ui.setData', {
+          module: 'notes',
+          fileName,
+          data,
+        });
+      }
     }
   };
 

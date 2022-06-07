@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useContext } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 
@@ -6,8 +6,10 @@ import { $ui } from '../../state';
 
 import Widget from '../widget';
 import { WidgetProps } from '@components/widget/types';
+import EventBus from '@hooks/event-bus';
 
 const GridLayout = WidthProvider(Responsive);
+const uid = (window as any).VSCH_UID || 'default';
 
 const grid = {
   cols: { lg: 12, md: 12, sm: 6, xs: 4, xxs: 2 },
@@ -32,6 +34,7 @@ export const Grid = () => {
   const editMode = useRecoilValue($ui.editMode);
   const [droppingItem, setDroppingItem] = useState(DefaultDropItem);
   const preventLayoutChange = useRef(true);
+  const Bus = useContext(EventBus);
 
   const addWidget = (props: WidgetProps) => {
     const id = (
@@ -57,11 +60,18 @@ export const Grid = () => {
     newWidgets.splice(widgetIndex, 1);
     setWidgets(newWidgets);
   };
-  const updateWidget = (props: WidgetProps) => {
+  const updateWidget = (props: WidgetProps, skipStateUpdate?: boolean) => {
     const widgetIndex = widgets.findIndex(({ id }) => id === props.id);
     const newWidgets: any = [...widgets];
     newWidgets[widgetIndex] = props;
-    setWidgets(newWidgets);
+    if (skipStateUpdate) {
+      Bus.emit('vsch.ui.setLayout', {
+        uid,
+        layout: newWidgets,
+      });
+    } else {
+      setWidgets(newWidgets);
+    }
   };
 
   const RenderedWidgets = useMemo(() => {
@@ -71,7 +81,9 @@ export const Grid = () => {
         <div key={props.id}>
           <Widget
             {...props}
-            onWidgetUpdate={data => updateWidget({ id: props.id, ...data })}
+            onWidgetUpdate={(data: any, skipStateUpdate) =>
+              updateWidget({ id: props.id, ...data }, skipStateUpdate)
+            }
             onWidgetDelete={() => deleteWidget(props.id)}
           />
         </div>
