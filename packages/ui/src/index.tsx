@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import EventBus, { EventBusInstance } from './hooks/event-bus';
 import { RecoilRoot } from 'recoil';
@@ -34,6 +34,5 @@ const Application = () => {
   );
 };
 
-const container = document.getElementById('app') as HTMLElement;
-const root = createRoot(container);
-root.render(<Application />);
+const container = document.getElementById('app');
+render(<Application />, container);
