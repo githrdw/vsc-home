@@ -51,6 +51,7 @@
 			"properties": {
 				"home.oauthAgent": {
 					"type": "string",
+					"default": "wss://vsch.hrdw.nl/oauth",
 					"description": "To make accessing serveral online services possible, this OAuth agent can be used to authenticate."
 				},
 				"home.openOnStartup": {
