@@ -1,6 +1,6 @@
 {
   "name": "@rubendew/vsch-sidebar",
-  "version": "0.0.7-beta.0",
+  "version": "0.1.0",
   "description": "Sidebar",
   "main": "index.js",
   "license": "MIT",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "mustache": "^4.1.0",
-    "vsch-core": "^0.0.10-beta.0"
+    "vsch-core": "^0.1.0"
   },
   "scripts": {
     "build": "rollup -c",
