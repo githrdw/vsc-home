@@ -72,7 +72,7 @@ const WidgetCollection = ({
     const filters = {
       Workspace: ['code-workspace'],
     };
-    const { data }: { data?: FileList } = await Bus.emit(
+    const { data }: { data: FileList } = await Bus.emit(
       'vscode.selectResource',
       {
         canSelectFolders: !isWorkspace,

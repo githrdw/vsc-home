@@ -3,7 +3,10 @@ import { ArrowForwardIcon } from '@chakra-ui/icons';
 import EventBus from '@hooks/event-bus';
 
 import React, { useContext } from 'react';
-const PROVIDERS: any = {
+
+type IProviderKeys = 'GITHUB' | 'BITBUCKET' | 'GITLAB';
+
+const PROVIDERS: { [key in IProviderKeys]: string } = {
   GITHUB: 'GitHub',
   BITBUCKET: 'Bitbucket',
   GITLAB: 'GitLab',
@@ -15,7 +18,9 @@ export default function Login({
   setProviderHash: (hash: string) => void;
 }) {
   const Bus = useContext(EventBus);
-  const requestAuth = async (providerKey: string) => {
+  const requestAuth = async (
+    providerKey: 'GITHUB' | 'BITBUCKET' | 'GITLAB'
+  ) => {
     const { providerHash } = await Bus.emit('vsch.ui.requestAuthentication', {
       providerKey,
       _node: 'Remote repositories',
@@ -33,10 +38,10 @@ export default function Login({
             key={key}
             width="full"
             my={1}
-            onClick={() => requestAuth(key)}
+            onClick={() => requestAuth(key as IProviderKeys)}
             rightIcon={<ArrowForwardIcon />}
           >
-            {PROVIDERS[key]}
+            {PROVIDERS[key as IProviderKeys]}
           </Button>
         ))}
       </>
