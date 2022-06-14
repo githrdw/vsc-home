@@ -42,6 +42,7 @@ const TRANSFORM: any = {
     (await response.json()).values.map(({ links, ...rest }: any) => ({
       ...rest,
       clone_url: links.clone.find(({ name }: any) => name === 'ssh').href,
+      html_url: links.html.href,
     })),
   GITHUB: async (response: Response, q: string) => {
     const values = await response.json();
@@ -50,10 +51,11 @@ const TRANSFORM: any = {
   },
   GITLAB: async (response: Response) =>
     (await response.json()).map(
-      ({ path_with_namespace, ssh_url_to_repo, ...rest }: any) => ({
+      ({ path_with_namespace, web_url, ssh_url_to_repo, ...rest }: any) => ({
         ...rest,
         full_name: path_with_namespace,
         clone_url: ssh_url_to_repo,
+        html_url: web_url,
       })
     ),
 };

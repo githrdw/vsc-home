@@ -47,12 +47,13 @@ export default function RepoList({ token, providerKey }: any) {
     } = await Bus.emit('vscode.selectResource', {
       canSelectFolders: true,
     });
-    console.log({ path });
-    const clone = await Bus.emit('git.clone', {
+    await Bus.emit('git.clone', {
       url,
       path,
     });
-    console.log({ clone });
+  };
+  const openUrl = async (url: string) => {
+    await Bus.emit('vscode.openExternal', { url });
   };
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function RepoList({ token, providerKey }: any) {
   }, [search]);
 
   const List = useMemo(() => {
-    return repos.map(({ full_name, clone_url }) => (
+    return repos.map(({ full_name, clone_url, html_url }) => (
       <ButtonGroup variant="ghost" display="flex" key={clone_url}>
         <Button
           width="full"
@@ -80,6 +81,7 @@ export default function RepoList({ token, providerKey }: any) {
           color="inherit"
           userSelect="unset"
           cursor="auto"
+          onClick={() => openUrl(html_url)}
         >
           {full_name}
         </Button>
