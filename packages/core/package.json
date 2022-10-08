@@ -6,7 +6,7 @@
 	"publisher": "rubendew",
 	"icon": "assets/logo_vschome.white.min.png",
 	"engines": {
-		"vscode": "^1.51.1"
+		"vscode": "^1.53.0"
 	},
 	"categories": [
 		"Other"
@@ -103,7 +103,7 @@
 		"@types/glob": "8.0.0",
 		"@types/mocha": "10.0.0",
 		"@types/node": "^14.14.25",
-		"@types/vscode": "1.51.0",
+		"@types/vscode": "1.53.0",
 		"@typescript-eslint/eslint-plugin": "5.39.0",
 		"@typescript-eslint/parser": "5.39.0",
 		"bufferutil": "^4.0.6",
