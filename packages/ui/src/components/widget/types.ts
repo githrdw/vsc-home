@@ -15,7 +15,7 @@ export interface WidgetProps {
   };
   x?: number;
   y?: number;
-  onWidgetUpdate?: (data: WidgetProps, skipStateUpdate?: boolean) => void;
+  onWidgetUpdate?: (widget: any, skipStateUpdate?: boolean) => void;
   onWidgetDelete?: () => void;
 }
 

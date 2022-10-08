@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, createElement, useState } from 'react';
+import React, { useContext, createElement, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { ButtonGroup, MenuItem } from '@chakra-ui/react';
 import {
@@ -59,6 +59,7 @@ const WidgetCollection = ({
   id,
   size,
   items,
+  updateData,
   setCallbacks,
 }: WidgetCollectionProps) => {
   const Bus = useContext(EventBus);
@@ -91,8 +92,7 @@ const WidgetCollection = ({
             path: entry.path,
           });
         }
-        widget.data = { ...widget.data, items };
-        setWidgets([...widgets]);
+        updateData?.({ ...widget.data, items });
       }
     }
   });
@@ -104,7 +104,8 @@ const WidgetCollection = ({
       },
     });
   }
-  const ItemList = useMemo(() => {
+
+  const ItemList = () => {
     const Children = [];
     if (items) {
       for (const item of items.slice(0, size)) {
@@ -125,18 +126,18 @@ const WidgetCollection = ({
               );
             };
         Children.push(
-          <div key={path}>
+          <div key={Children.length}>
             <ListItem {...{ Icon, name, label, path, onClick }} />
           </div>
         );
       }
     }
-    return Children;
-  }, [items, removeMode]);
+    return <>{Children}</>;
+  };
 
   return (
     <ButtonGroup display="block" spacing={0} variant="ghost">
-      {ItemList}
+      <ItemList />
     </ButtonGroup>
   );
 };

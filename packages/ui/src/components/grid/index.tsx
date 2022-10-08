@@ -1,4 +1,10 @@
-import React, { useMemo, useRef, useState, useContext } from 'react';
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 
@@ -60,19 +66,22 @@ export const Grid = () => {
     newWidgets.splice(widgetIndex, 1);
     setWidgets(newWidgets);
   };
-  const updateWidget = (props: WidgetProps, skipStateUpdate?: boolean) => {
-    const widgetIndex = widgets.findIndex(({ id }) => id === props.id);
-    const newWidgets: any = [...widgets];
-    newWidgets[widgetIndex] = props;
-    if (skipStateUpdate) {
-      Bus.emit('vsch.ui.setLayout', {
-        uid,
-        layout: newWidgets,
-      });
-    } else {
-      setWidgets(newWidgets);
-    }
-  };
+  const updateWidget = useCallback(
+    (props: WidgetProps, skipStateUpdate?: boolean) => {
+      const widgetIndex = widgets.findIndex(({ id }) => id === props.id);
+      const newWidgets: any = [...widgets];
+      newWidgets[widgetIndex] = { ...widgets[widgetIndex], ...props };
+      if (skipStateUpdate) {
+        Bus.emit('vsch.ui.setLayout', {
+          uid,
+          layout: newWidgets,
+        });
+      } else {
+        setWidgets(newWidgets);
+      }
+    },
+    [widgets]
+  );
 
   const RenderedWidgets = useMemo(() => {
     const Children = [];
@@ -81,8 +90,8 @@ export const Grid = () => {
         <div key={props.id}>
           <Widget
             {...props}
-            onWidgetUpdate={(data: any, skipStateUpdate) =>
-              updateWidget({ id: props.id, ...data }, skipStateUpdate)
+            onWidgetUpdate={(widget, skipStateUpdate) =>
+              updateWidget({ id: props.id, ...widget }, skipStateUpdate)
             }
             onWidgetDelete={() => deleteWidget(props.id)}
           />

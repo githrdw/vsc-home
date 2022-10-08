@@ -1,3 +1,5 @@
+import { WidgetProps } from '@components/widget/types';
+
 export const enum FsTypes {
   Workspace = 'workspace',
   Folder = 'folder',
@@ -30,6 +32,7 @@ export interface WidgetCollectionProps {
   items: CollectionItem[];
   size: number;
   setCallbacks?: (callbacks: any) => void;
+  updateData?: (newData: WidgetProps, skipStateUpdate?: boolean) => void;
 }
 
 export type FileList = Array<{ path: string }>;

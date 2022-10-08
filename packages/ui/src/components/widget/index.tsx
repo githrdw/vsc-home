@@ -17,35 +17,22 @@ const Widget = ({
   const { id, appearance, data, type } = widgetMeta;
   const { title, hideTitlebar, icon } = appearance;
   const [callbacks, setCallbacks] = useState<{ delete: any; menu: any }>();
-  const [appearanceState, setAppearanceState] = useState(appearance);
 
   const editMode = useRecoilValue($ui.editMode);
-  const [baseColor, alpha] = appearanceState.color.split('.');
+  const widgets = useRecoilValue($ui.widgets);
+  const [baseColor, alpha] = appearance.color.split('.');
   const confirm = useRef<() => Promise<() => void>>();
 
   const [chakraColor] = useToken('colors', [baseColor]);
 
   const updateAppearance = (key: keyof typeof appearance, value: any) => {
-    if (appearanceState[key] !== value) {
-      setAppearanceState({ ...appearanceState, [key]: value });
-      onWidgetUpdate?.(
-        {
-          ...widgetMeta,
-          appearance: { ...appearanceState, [key]: value },
-        },
-        true
-      );
+    if (appearance[key] !== value) {
+      onWidgetUpdate?.({ appearance: { ...appearance, [key]: value } });
     }
   };
 
   const updateData = (newData: WidgetProps, skipStateUpdate: boolean) => {
-    onWidgetUpdate?.(
-      {
-        ...widgetMeta,
-        data: { ...data, ...newData },
-      },
-      skipStateUpdate
-    );
+    onWidgetUpdate?.({ data: { ...data, ...newData } }, skipStateUpdate);
     return { ...data, ...newData };
   };
 
@@ -66,7 +53,7 @@ const Widget = ({
         <Component {...{ id, setCallbacks, updateData, ...data }} />
       </Suspense>
     );
-  }, [id, appearance, type === 'custom' ? undefined : data, type]);
+  }, [id, appearance, type === 'custom' ? undefined : widgets, type]);
 
   const alphaColor = useMemo(() => {
     const hexAlpha = Math.round((Number(alpha) / 10) * 255)
@@ -80,7 +67,7 @@ const Widget = ({
     } else {
       return chakraColor;
     }
-  }, [appearanceState]);
+  }, [appearance]);
 
   return (
     <Box bg={alphaColor} height="100%" display="flex" flexDir="column">
