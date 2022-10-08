@@ -5,8 +5,8 @@
     "access": "restricted"
   },
   "devDependencies": {
-    "@lerna-lite/cli": "^1.4.0",
-    "@lerna-lite/exec": "^1.4.0"
+    "@lerna-lite/cli": "1.11.3",
+    "@lerna-lite/exec": "^1.11.3"
   },
   "workspaces": [
     "packages/*"
