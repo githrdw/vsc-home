@@ -6,20 +6,20 @@ const WIDGET_META = {
   },
   layout: {
     sm: {
-      w: 6,
-      h: 6,
+      w: 2,
+      h: 4,
       minW: 2,
       minH: 2
     },
     md: {
-      w: 3,
-      h: 6,
+      w: 2,
+      h: 4,
       minW: 2,
       minH: 2
     },
     lg: {
-      w: 3,
-      h: 6,
+      w: 2,
+      h: 4,
       minW: 2,
       minH: 2
     }

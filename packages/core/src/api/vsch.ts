@@ -198,7 +198,11 @@ const run: Run = {
         const data = await workspace.fs.readFile(packageUri);
         const text = new TextDecoder("utf-8").decode(data);
         const json = text ? JSON.parse(text) : null;
-        if (json) {
+        if (json && Array.isArray(json.vsch)) {
+          for (const subWidget of json.vsch) {
+            widgetsDetails.push({ lib, ...subWidget });
+          }
+        } else if (json) {
           widgetsDetails.push({ lib, ...json.vsch });
         }
       } catch (e: any) {

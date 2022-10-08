@@ -113,10 +113,9 @@ export const Grid = () => {
         const dl: { type: string }[] = Array.from(e.dataTransfer.items);
         const meta = dl.find(({ type }: any) => type.match(/^vsch\/widget/gm));
         if (meta && droppingItem._unset) {
-          console.warn({ meta });
           setDroppingItem({
             i: 'DROP',
-            w: 6,
+            w: 2,
             h: 2,
             _unset: false,
           });

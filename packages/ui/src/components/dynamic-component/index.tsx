@@ -20,7 +20,7 @@ const fetchWidget = ({ lib, path }: FetchWidgetArgs) => {
     script.async = true;
 
     script.onload = resolve;
-    script.onerror = () => reject(`Failed to import widget ${lib}`);
+    script.onerror = () => reject(`Failed to fetch widget ${lib}`);
 
     document.head.appendChild(script);
   });
@@ -28,7 +28,7 @@ const fetchWidget = ({ lib, path }: FetchWidgetArgs) => {
 
 const unpackWidget: UnpackWidgetFn = async ({ Bus, lib, entry }) => {
   // Resolve the uri path to the widget through API Core
-  const { path }: any = await Bus.emit('vsch.core.loadCustomWidget', { lib });
+  const { path } = await Bus.emit('vsch.core.loadCustomWidget', { lib });
   const globalName = `vsch_${lib}`;
 
   if (!path) throw new Error('No plugin path returned from API');

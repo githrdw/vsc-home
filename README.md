@@ -50,7 +50,8 @@ Go to `/Users/<USER>/Library/Preferences/vsch-home/widgets` (MacOS)
 ```
 git clone git@github.com:githrdw/vsch-template.git vsch_Demo
 ```
-
+> **Note**
+<br/> Subdirectories in `vsch-home/widgets` MUST start with `vsch_` because of how Webpack works. 
 3. Build and install the widget
 
 ```
