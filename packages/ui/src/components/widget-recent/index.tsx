@@ -21,7 +21,7 @@ const RecentMenu = createElement(() => {
   };
   return (
     <>
-      <Flex py=".4rem" px=".8rem">
+      <Flex py=".4rem" px=".8rem" fontSize="13.333px">
         <Flex as="span" pe=".75rem" alignItems="center">
           <VscListUnordered />
         </Flex>

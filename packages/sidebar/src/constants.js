@@ -47,6 +47,11 @@ const BUILTIN_WIDGETS = [
     id: "repositories",
     title: "Remote repositories",
     subtitle: "List of remote repositories"
+  },
+  {
+    id: "iframe",
+    title: "Iframe",
+    subtitle: "Embed your favorite page"
   }
 ]
 
