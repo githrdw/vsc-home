@@ -60,6 +60,10 @@ button {
   height: 16px;
 }
 
+.vscode-light .chakra-popover__arrow {
+  --popper-arrow-shadow-color: rgba(0, 0, 0, 0.16) !important;
+}
+
 pre.public-DraftStyleDefault-pre {
   padding: 0.2em;
   border-radius: 2px;

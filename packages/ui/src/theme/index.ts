@@ -22,6 +22,9 @@ const styles = {
       fontFamily: 'var(--vscode-editor-font-family, Monaco)',
       margin: 0,
     },
+    'button.chakra-button, input::placeholder': {
+      color: 'var(--vscode-foreground, #cccccc)',
+    },
   },
 };
 
