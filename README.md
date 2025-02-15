@@ -5,8 +5,8 @@
 <i><p align="center">
 A homecoming dashboard extension for Visual Studio Code
 <br/><br/>
-<a href="https://marketplace.visualstudio.com/items?itemName=rubendew.vsch-core"><img src="https://vsmarketplacebadge.apphb.com/version/rubendew.vsch-core.svg" alt="Visual Studio Marketplace - Version" />
-<img src="https://vsmarketplacebadge.apphb.com/rating-star/rubendew.vsch-core.svg" alt="Visual Studio Marketplace - Rating" /></a>
+<a href="https://marketplace.visualstudio.com/items?itemName=rubendew.vsch-core"><img src="https://vsmarketplacebadges.dev/version/rubendew.vsch-core.svg" alt="Visual Studio Marketplace - Version" />
+<img src="https://vsmarketplacebadges.dev/installs-short/rubendew.vsch-core.svg" alt="Visual Studio Marketplace - Installs" /></a>
 </p></i>
 <br/>
 <img src="packages/core/assets/Demo - Dashboard 4.png" alt="Screenshot of usage" />
